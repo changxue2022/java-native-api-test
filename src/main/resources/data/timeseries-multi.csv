@@ -1,0 +1,10 @@
+paths,datatypes,encoding,compression,props,tags,attrs,alias
+l:root.sgm.single.alignedTimeSeriesBoolean,l:boolean,l:PLAIN,l:UNCOMPRESSED,l:null,l:null,l:null,l:shortest_boolean
+l:root.sgm.single.alignedTimeSeriesInt,l:int,l:PLAIN,l:UNCOMPRESSED,l:null,l:null,l:null,l:shortest_int
+l:root.sgm.single.alignedTimeSeriesLong,l:long,l:PLAIN,l:UNCOMPRESSED,l:null,l:null,l:null,l:shortest_long
+l:root.sgm.single.alignedTimeSeriesFloat,l:float,l:PLAIN,l:UNCOMPRESSED,l:null,l:null,l:null,l:shortest_float
+l:root.sgm.single.alignedTimeSeriesDouble,l:double,l:PLAIN,l:UNCOMPRESSED,l:null,l:null,l:null,l:shortestDouble
+l:root.sgm.single.alignedTimeSeriesText,l:text,l:PLAIN,l:UNCOMPRESSED,l:null,l:null,l:null,l:shortest_text_ts
+
+"l:root.sgm.multi.alignedBoolean,root.sgm.multi.alignedInt,root.sgm.multi.alignedLong,root.sgm.multi.alignedFloat,root.sgm.multi.alignedDouble,root.sgm.multi.alignedText","l:text,text,text,text,text,text","l:PLAIN,PLAIN,PLAIN,PLAIN,PLAIN,PLAIN","l:UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED","l:m:p1:boolean|p2:int|p3:long|p4:float|p5:double|p6:text","l:m:t1:boolean|t2:int|t3:long|t4:float|t5:double|t6:text","l:m:a1:boolean|a2:int|a3:long|a4:float|a5:double|a6:text","l:nor_boolean,nor_int,nor_long,nor_float,nor_double,nor_text"
+"l:root.sgm.multi.alignedBoolean,root.sgm.multi.alignedInt,root.sgm.multi.alignedLong,root.sgm.multi.alignedFloat,root.sgm.multi.alignedDouble,root.sgm.multi.alignedText","l:text,text,text,text,text,text","l:PLAIN,PLAIN,PLAIN,PLAIN,PLAIN,PLAIN","l:UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED","l:null",l:null,l:null,l:shortest_text_ts33

@@ -1,0 +1,6 @@
+input,expect,comment
+,error,空值
+\0,error,结束符
+null,error,null值
+root.**,error,库内为空
+root.abc.bbbb,error,没有匹配

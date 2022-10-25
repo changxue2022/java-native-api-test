@@ -1,0 +1,17 @@
+input,expect,comment
+root.level34,Ok,for delete
+root.test0.test1.test2.test3.test4,OK,for delete
+root.level3,OK,for delete
+root._level2.level3,OK,for delete
+root.test22.level3,OK,for delete
+root.`Contain.Point`.`201.34567b`.level3,OK,for delete
+root.a.b.c.d.e.f.g.h.level3,OK,for delete
+root.`112`.bcd.level3.level5,OK, for delete
+root.test1.level3.a,OK,for delete
+root.test2.level3.a.b,OK,for delete
+root.test3.level3.a.b.c,OK,for delete
+root.test4.level3.a.b.c.d,OK,for delete
+root.level12.level3.a,OK,for delete
+root.level13.level3.a.b,OK,for delete
+root.level14.level3.a.b.c,OK,for delete
+root.level15.level3.a.b.c.d,OK,for delete

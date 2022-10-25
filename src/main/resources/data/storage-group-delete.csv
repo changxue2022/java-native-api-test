@@ -1,0 +1,9 @@
+input,expect,comment
+root.*.*.*.*.*,OK,仅5层匹配
+root.*.level3,OK,第3层为level3
+root.*.level3.**,OK,第3层为level3 但不止3层
+root.**.level3,OK,最后一层为level3
+root.**.level3.**,OK,含有level3
+root.level*.**,Ok,第2层级以level开头 不限层级
+root.**,0,delete all
+

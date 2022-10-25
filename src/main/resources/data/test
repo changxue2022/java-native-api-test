@@ -1,0 +1,2 @@
+path,datatype,encoding,compressor,props,tags,attributes,measurementAlias,comment
+root.cx.test1.status,boolean,
