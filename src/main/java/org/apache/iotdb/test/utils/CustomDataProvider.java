@@ -134,6 +134,6 @@ public class CustomDataProvider {
 //            }
 //            out.println("--------------");
 //        }
-        out.println(new Date().getTime());
+
     }
 }
