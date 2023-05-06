@@ -1,0 +1,10 @@
+Time,Device,s_boolean(BOOLEAN),s_int(INT32),s_long(INT64),s_float(FLOAT),s_double(DOUBLE),s_text(TEXT)
+1,root.jni.d1,0,1,2,3,4,D1-1
+2,root.jni.d1,1,10,20,30,40,D1-2
+3,root.jni.d3,1,19,38,57,76,D3-1
+4,root.jni.d3,null,28,56,84,112,D3-2
+5,root.jni.d3,1,null,74,111,148,D3-3
+6,root.jni.d3,0,46,null,138,184,D3-4
+7,root.jni.d3,0,55,110,null,220,D3-5
+8,root.jni.d3,0,64,115,145,null,D3-6
+9,root.jni.d2,0,74,128,192,256,D2-1

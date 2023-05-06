@@ -1,0 +1,14 @@
+tag,comment
+m:empty,空map
+m:name:,value为空
+m:name:null,value 为 null
+m:city:Beijing,key 和 value都是英文
+m:IP_Address:172.20.70.44,IP value
+m:latitude:56.332, float value
+m:age:13,int value
+m:name:杯弓蛇影,中文 value
+m:k:3,key只有一个字符
+m:1:true,数值型key
+m:中文key:32,中文key
+m:city:Beijing|IP_Address:172.20.70.44,2个tag
+m:city:北京|IP_Address:172.20.70.45|年龄:15|status:true,4个tag 中文 类型

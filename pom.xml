@@ -4,27 +4,37 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.apache.iotdb.test</groupId>
+    <groupId>org.apache.iotdb.api.test</groupId>
     <artifactId>java-native-api-test</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>common</module>
+        <module>business</module>
+        <module>details</module>
+        <module>concurrent</module>
+        <module>dynamic</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <aspectj.version>1.9.19</aspectj.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.iotdb</groupId>
             <artifactId>iotdb-session</artifactId>
-            <version>0.14.0-SNAPSHOT</version>
+            <version>1.2.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>7.5</version>
-            <scope>test</scope>
+<!--            <scope>test</scope>-->
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-csv -->
         <dependency>
@@ -38,7 +48,6 @@
             <version>23.0.0</version>
             <scope>compile</scope>
         </dependency>
-
     </dependencies>
     <build>
         <pluginManagement>
@@ -56,9 +65,14 @@
                     <configuration>
                         <suiteXmlFiles>
                             <![CDATA[! testng.xml所在的路径，这里指的是相对路径]]>
+<!--                            <suiteXmlFile>${project.build.directory}/src/main/resources/testng.xml</suiteXmlFile>-->
                             <suiteXmlFile>src/main/resources/testng.xml</suiteXmlFile>
                         </suiteXmlFiles>
+                        <parallel>class</parallel>
+                        <threadCount>1</threadCount>
+                        <testFailureIgnore>true</testFailureIgnore>
                     </configuration>
+
                     <version>2.22.1</version>
                 </plugin>
             </plugins>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="DynamicSuite" verbose="1" preserve-order="true" parallel="false">
+<test name="DynamicTest">
+<!--    <packages>-->
+<!--        <package name="org.apache.iotdb.api.test.dynamic"></package>-->
+<!--    </packages>-->
+    <classes>
+        <class name="org.apache.iotdb.api.test.dynamic.TestDynamicTemplateMin" />
+        <class name="org.apache.iotdb.api.test.dynamic.TestDynamicTemplateMulti" />
+        <class name="org.apache.iotdb.api.test.dynamic.TestOrdinary" />
+    </classes>
+</test>
+</suite>

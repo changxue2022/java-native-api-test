@@ -2,12 +2,5 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 <suite name="Default Suite" verbose="1">
     <test name="java-native-api-test">
-        <classes>
-            <class name="org.apache.iotdb.api.test.TestStroageGroup"></class>
-            <class name="org.apache.iotdb.api.test.TestTimeSeries"></class>
-        </classes>
-<!--        <packages>-->
-<!--            <package name="org.apache.iotdb.api.test"/>-->
-<!--        </packages>-->
     </test> <!-- java-native-api-test -->
 </suite> <!-- Default Suite -->

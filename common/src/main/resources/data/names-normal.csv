@@ -1,0 +1,253 @@
+name,comment
+#一般关键字：
+ADD,一般关键字
+AFTER,一般关键字
+ALIAS,一般关键字
+ALIGN,一般关键字
+ALIGNED,一般关键字
+ALL,一般关键字
+ALTER,一般关键字
+ALTER_TIMESERIES,一般关键字
+ANY,一般关键字
+APPEND,一般关键字
+APPLY_TEMPLATE,一般关键字
+AS,一般关键字
+ASC,一般关键字
+ATTRIBUTES,一般关键字
+BEFORE,一般关键字
+BEGIN,一般关键字
+BLOCKED,一般关键字
+BOUNDARY,一般关键字
+BY,一般关键字
+CACHE,一般关键字
+CHILD,一般关键字
+CLEAR,一般关键字
+CLUSTER,一般关键字
+CONCAT,一般关键字
+CONFIGNODES,一般关键字
+CONFIGURATION,一般关键字
+CONTINUOUS,一般关键字
+COUNT,一般关键字
+CONTAIN,一般关键字
+CQ,一般关键字
+CQS,一般关键字
+CREATE,一般关键字
+CREATE_CONTINUOUS_QUERY,一般关键字
+CREATE_FUNCTION,一般关键字
+CREATE_ROLE,一般关键字
+CREATE_TIMESERIES,一般关键字
+CREATE_TRIGGER,一般关键字
+CREATE_USER,一般关键字
+DATA,一般关键字
+DATABASE,一般关键字
+DATABASES,一般关键字
+DATANODES,一般关键字
+DEACTIVATE,一般关键字
+DEBUG,一般关键字
+DELETE,一般关键字
+DELETE_ROLE,一般关键字
+DELETE_STORAGE_GROUP,一般关键字
+DELETE_TIMESERIES,一般关键字
+DELETE_USER,一般关键字
+DESC,一般关键字
+DESCRIBE,一般关键字
+DEVICE,一般关键字
+DEVICES,一般关键字
+DISABLE,一般关键字
+DISCARD,一般关键字
+DROP,一般关键字
+DROP_CONTINUOUS_QUERY,一般关键字
+DROP_FUNCTION,一般关键字
+DROP_TRIGGER,一般关键字
+END,一般关键字
+ENDTIME,一般关键字
+EVERY,一般关键字
+EXPLAIN,一般关键字
+FILL,一般关键字
+FILE,一般关键字
+FLUSH,一般关键字
+FOR,一般关键字
+FROM,一般关键字
+FULL,一般关键字
+FUNCTION,一般关键字
+FUNCTIONS,一般关键字
+GLOBAL,一般关键字
+GRANT,一般关键字
+GRANT_ROLE_PRIVILEGE,一般关键字
+GRANT_USER_PRIVILEGE,一般关键字
+GRANT_USER_ROLE,一般关键字
+GROUP,一般关键字
+HAVING,一般关键字
+INDEX,一般关键字
+INFO,一般关键字
+INSERT,一般关键字
+INSERT_TIMESERIES,一般关键字
+INTO,一般关键字
+KILL,一般关键字
+LABEL,一般关键字
+LAST,一般关键字
+LATEST,一般关键字
+LEVEL,一般关键字
+LIKE,一般关键字
+LIMIT,一般关键字
+LINEAR,一般关键字
+LINK,一般关键字
+LIST,一般关键字
+LIST_ROLE,一般关键字
+LIST_USER,一般关键字
+LOAD,一般关键字
+LOCAL,一般关键字
+LOCK,一般关键字
+MERGE,一般关键字
+METADATA,一般关键字
+MODIFY_PASSWORD,一般关键字
+NODES,一般关键字
+NONE,一般关键字
+NOW,一般关键字
+OF,一般关键字
+OFF,一般关键字
+OFFSET,一般关键字
+ON,一般关键字
+ORDER,一般关键字
+ONSUCCESS,一般关键字
+PARTITION,一般关键字
+PASSWORD,一般关键字
+PATHS,一般关键字
+PIPE,一般关键字
+PIPES,一般关键字
+PIPESINK,一般关键字
+PIPESINKS,一般关键字
+PIPESINKTYPE,一般关键字
+POLICY,一般关键字
+PREVIOUS,一般关键字
+PREVIOUSUNTILLAST,一般关键字
+PRIVILEGES,一般关键字
+PROCESSLIST,一般关键字
+PROPERTY,一般关键字
+PRUNE,一般关键字
+QUERIES,一般关键字
+QUERY,一般关键字
+RANGE,一般关键字
+READONLY,一般关键字
+READ_TEMPLATE,一般关键字
+READ_TEMPLATE_APPLICATION,一般关键字
+READ_TIMESERIES,一般关键字
+REGEXP,一般关键字
+REGIONID,一般关键字
+REGIONS,一般关键字
+REMOVE,一般关键字
+RENAME,一般关键字
+RESAMPLE,一般关键字
+RESOURCE,一般关键字
+REVOKE,一般关键字
+REVOKE_ROLE_PRIVILEGE,一般关键字
+REVOKE_USER_PRIVILEGE,一般关键字
+REVOKE_USER_ROLE,一般关键字
+ROLE,一般关键字
+RUNNING,一般关键字
+SCHEMA,一般关键字
+SELECT,一般关键字
+SERIESSLOTID,一般关键字
+SET,一般关键字
+SET_STORAGE_GROUP,一般关键字
+SETTLE,一般关键字
+SGLEVEL,一般关键字
+SHOW,一般关键字
+SLIMIT,一般关键字
+SOFFSET,一般关键字
+STORAGE,一般关键字
+START,一般关键字
+STARTTIME,一般关键字
+STATELESS,一般关键字
+STATEFUL,一般关键字
+STOP,一般关键字
+SYSTEM,一般关键字
+TAGS,一般关键字
+TASK,一般关键字
+TEMPLATE,一般关键字
+TIMEOUT,一般关键字
+TIMESERIES,一般关键字
+TIMESLOTID,一般关键字
+TO,一般关键字
+TOLERANCE,一般关键字
+TOP,一般关键字
+TRACING,一般关键字
+TRIGGER,一般关键字
+TRIGGERS,一般关键字
+TTL,一般关键字
+UNLINK,一般关键字
+UNLOAD,一般关键字
+UNSET,一般关键字
+UPDATE,一般关键字
+UPDATE_TEMPLATE,一般关键字
+UPSERT,一般关键字
+URI,一般关键字
+USER,一般关键字
+USING,一般关键字
+VALUES,一般关键字
+VERIFY,一般关键字
+VERSION,一般关键字
+# root.db.factory.WATERMARK_EMBEDDING is not a legal path
+# WATERMARK_EMBEDDING,一般关键字
+WHERE,一般关键字
+WITH,一般关键字
+WITHOUT,一般关键字
+WRITABLE,一般关键字
+c,单个字符
+_start,下划线开头
+_Start,大小写
+"`123`",全数字
+"`123.89`",带小数点
+"`a.b.1.c`",带点
+"`6`",单个数字
+"`timecho.com`",网址格式
+中文,中文
+"`française`",法语
+`العربية`,阿拉伯语
+"`Español`",西班牙语
+にほんご,日语
+"`Русский`",俄语
+"`한국어`",韩语
+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345,max database length
+`1234567891234567891234567891234567891234567891234567891234`,max database length:all number
+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ab,最大长度字符
+`123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789.12345678912345678912345678912345678912345678912345678912345678912345678912345678912356`,最大长度数值
+
+"`org(1)`",special word
+"`ab```",with backquotes
+"`ab,`",coma with backquotes
+"`ab|`",| with backquotes
+"`ab!`",! with backquotes
+"`ab@`",@ with backquotes
+"`ab#`",# with backquotes
+"`ab\$`",$ with backquotes
+"`ab\%`",% with backquotes
+"`ab\^`",^ with backquotes
+"`ab\&`",^ with backquotes
+"`ab\(`",( with backquotes
+"`ab\)`",) with backquotes
+"`ab\-`",- with backquotes
+"`ab\+`",+ with backquotes
+"`ab\=`",= with backquotes
+"`ab\]`",] with backquotes
+"`ab\[`",[ with backquotes
+"`ab\|`",| with backquotes
+"`ab\{`",{ with backquotes
+"`ab\}`",} with backquotes
+"`ab\:`",: with backquotes
+"`ab\;`",; with backquotes
+"`ab\?`",? with backquotes
+"`ab\<`",< with backquotes
+"`ab\>`",> with backquotes
+"`ab\'`",' with backquotes
+"`ab\/`",/ with backquotes
+"`ab\\`",\ with backquotes
+"`ab\。`",。 with backquotes
+"`ab\……`",…… with backquotes
+"`ab\ `",white space with backquotes
+
+#"`ab\*`",^ with backquotes
+#`ab`	` is not a legal path
+#"`ab`\t`",tab with backquotes
+#"`*`",wildcard
+#"`**`",wildcard

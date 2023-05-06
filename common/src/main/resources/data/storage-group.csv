@@ -1,0 +1,38 @@
+input,expect,comment
+root.cx.test1,OK,normal
+root.c,OK,length:valid shortest
+root.1c,OK,start with number
+root._ab,OK,start with under line
+root._AB,OK,case sensitive
+# 数字
+root.`111`.ts,OK,all number with backquotes
+root.`10.123`.ts,OK,real number with backquotes
+root.cx3.`www.Timecho.com`,OK, dot with backquotes
+root.`123`.`456`,OK,2 level with all number
+# 关键字
+import,key-value.csv
+root.select,OK,key word of select
+root.from.select.delete.show.create.set.where.group.order.by.upd,OK,key words
+
+# 最大长度和层级测试
+root.abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456,OK,length:64 characters
+root.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l,OK,length:max ? dots 64 characters
+root.`1234567891234567891234567891234567891234567891234567891234`,max database length:all number
+
+# 国际化支持
+root.中文,OK,language:chinese characters
+root.cx2.中文1.中文2,OK,language:Chinese characters 4 level
+root.にほんご,OK,language:Japanese characters
+root.quote4.`にほんご`,OK,language:Japanese characters with backquotes
+# IOTDB-4707
+#root.française,OK,language:French characters
+#root.اللغة العربية,OK,language:Arabic characters
+#root.Español,OK,language:Spanish characters
+#root.Русский,OK,language:Russian characters
+#root.한국어,OK,language:Korean characters
+#root.quote1.`française`,OK,language:French characters with backquotes
+#root.quote2.`اللغة العربية`,OK,language:Arabic characters with backquotes
+#root.quote3.`Español`,OK,language:Spanish characters with backquotes
+#root.quote5.`Русский`,OK,language:Russian characters with backquotes
+#root.quote6.`한국어`,OK,language:Korean characters with backquotes
+

@@ -1,0 +1,12 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="BusinessSuite" verbose="1" preserve-order="true" parallel="false">
+    <test name="businessTest">
+<!--        <classes>-->
+<!--            <class name="org.apache.iotdb.api.test.bussiness.TestAlignedTSAdd" />-->
+<!--        </classes>-->
+        <packages>
+            <package name="org.apache.iotdb.api.test.bussiness" />
+        </packages>
+    </test> <!-- java-native-api-test -->
+</suite> <!-- Default Suite -->
