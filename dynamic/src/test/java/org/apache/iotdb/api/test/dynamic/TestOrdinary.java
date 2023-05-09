@@ -27,24 +27,26 @@ public class TestOrdinary extends BaseTestSuite {
     private String tsPrefix = "sensors_";
     private String tsName = "appendSensor";
     private String templateName = templatePrefix+1;
-    private boolean isAligned = true;
-    private boolean verbose = true;
-    private boolean auto_create_schema = true;
-
     private int loop = 10000;
     private int expectCount = 0;
     @BeforeClass
     public void BeforeClass() throws IOException, IoTDBConnectionException, StatementExecutionException {
-        cleanDatabases(verbose);
-        cleanTemplates(verbose);
+        cleanup();
         structures = new CustomDataProvider().parseTSStructure("data/ts-structures.csv");
         errStructures = new CustomDataProvider().parseTSStructure("data/ts-structures-error.csv");
 //        schemaList.add(new MeasurementSchema("s_append", TSDataType.TEXT, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED));
     }
+    private void cleanup() throws IoTDBConnectionException, StatementExecutionException {
+        if (checkStroageGroupExists(databasePrefix)) {
+            session.deleteDatabase(databasePrefix);
+        }
+        if (checkTemplateExists(templateName)) {
+            session.dropSchemaTemplate(templateName);
+        }
+    }
     @AfterClass
     public void AfterClass() throws IoTDBConnectionException, StatementExecutionException {
-        cleanDatabases(verbose);
-        cleanTemplates(verbose);
+        cleanup();
     }
 
     @Test(priority = 10)
@@ -244,6 +246,7 @@ public class TestOrdinary extends BaseTestSuite {
                 insertTabletMulti(d, schemaList, 1, isAligned);
             });
         }
+        session.deleteDatabase(database);
     }
     @Test(priority = 50)
     public void testTSAndTemplate() throws IoTDBConnectionException, StatementExecutionException {
@@ -287,6 +290,7 @@ public class TestOrdinary extends BaseTestSuite {
                 insertTabletSingle(d , "normalTS2", TSDataType.FLOAT, 1, isAligned);
             });
         }
+        session.deleteTimeseries(database);
     }
 
     @Test(priority = 60)
@@ -397,6 +401,7 @@ public class TestOrdinary extends BaseTestSuite {
 //        int expectCount = appendCount + structures.size();
 //        assert expectCount == actualCount: "append 成功:expect="+expectCount+" actual="+actualCount;
         insertTabletMulti(device, schemaList, appendCount, isAligned);
+        session.deleteDatabase(databasePrefix+2);
 
     }
     @Test(enabled = false, priority = 120) //189130 //3930 insert
@@ -437,6 +442,7 @@ public class TestOrdinary extends BaseTestSuite {
                 }
             }
         }
+        session.deleteDatabase(databasePrefix+1);
     }
 
 

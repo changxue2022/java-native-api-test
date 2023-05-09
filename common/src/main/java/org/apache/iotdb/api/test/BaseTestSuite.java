@@ -2,6 +2,7 @@ package org.apache.iotdb.api.test;
 
 import org.apache.iotdb.api.test.utils.GenerateValues;
 import org.apache.iotdb.api.test.utils.PrepareConnection;
+import org.apache.iotdb.api.test.utils.ReadConfig;
 import org.apache.iotdb.isession.SessionDataSet;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
@@ -14,7 +15,9 @@ import org.apache.iotdb.tsfile.write.record.Tablet;
 import org.apache.iotdb.tsfile.write.schema.MeasurementSchema;
 import org.jetbrains.annotations.NotNull;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeSuite;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,10 +26,18 @@ import java.util.StringJoiner;
 
 public class BaseTestSuite {
     public Session session = null;
-
+    // 是对齐/非对齐序列。dynamic module. 动态模版相关
+    protected boolean isAligned;
+    // 是否打印查询结果
+    protected boolean verbose;
+    // 自动创建元数据开关。 dynamic module. 动态模版相关
+    protected boolean auto_create_schema;
     @BeforeClass
     public void beforeSuite() throws IoTDBConnectionException, IOException {
         session = PrepareConnection.getSession();
+        verbose = Boolean.parseBoolean(ReadConfig.getInstance().getValue("verbose"));
+        isAligned = Boolean.parseBoolean(ReadConfig.getInstance().getValue("isAligned"));
+        auto_create_schema = Boolean.parseBoolean(ReadConfig.getInstance().getValue("auto_create_schema"));
     }
     @AfterClass
     public void afterSuie() throws IoTDBConnectionException {

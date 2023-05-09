@@ -33,8 +33,6 @@ public class TestTemplate extends BaseTestSuite {
     private List<MeasurementSchema> schemaList = new ArrayList<>(7);// tablet
     private List<List<Object>> structures;
     private List<List<Object>> errStructures;
-    private boolean verbose = true;
-    private boolean isAligned = true;
 
     @BeforeClass(enabled = true)
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException, IOException {

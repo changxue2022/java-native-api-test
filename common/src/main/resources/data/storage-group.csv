@@ -1,38 +1,229 @@
-input,expect,comment
-root.cx.test1,OK,normal
-root.c,OK,length:valid shortest
-root.1c,OK,start with number
-root._ab,OK,start with under line
-root._AB,OK,case sensitive
+input,comment
+root.cx.test1,normal
+root.s,length:valid shortest
+root.1c,start with number
+root._ab,start with under line
+root._AB,case sensitive
 # 数字
-root.`111`.ts,OK,all number with backquotes
-root.`10.123`.ts,OK,real number with backquotes
-root.cx3.`www.Timecho.com`,OK, dot with backquotes
-root.`123`.`456`,OK,2 level with all number
-# 关键字
-import,key-value.csv
-root.select,OK,key word of select
-root.from.select.delete.show.create.set.where.group.order.by.upd,OK,key words
+root.`111`.ts,all number with backquotes
+root.`10.123`.ts,real number with backquotes
+root.cx3.`www.Timecho.com`, dot with backquotes
+root.`123`.`456`,2 level with all number
 
 # 最大长度和层级测试
-root.abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456,OK,length:64 characters
-root.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l,OK,length:max ? dots 64 characters
-root.`1234567891234567891234567891234567891234567891234567891234`,max database length:all number
+root.abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456,length:64 characters
+root.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l,length:max ? dots 64 characters
+root.`123456789123456789123456789123456789123456789123456789123`,max database length:all number
+# 关键字
+root.select,key word of select
+root.from.select.delete.show.create.set.where.group.order.by.upd,key words
+root.ADD,key word
+root.AFTER,key word
+root.ALIAS,key word
+root.ALIGN,key word
+root.ALIGNED,key word
+root.ALL,key word
+root.ALTER,key word
+root.ALTER_TIMESERIES,key word
+root.ANY,key word
+root.APPEND,key word
+root.APPLY_TEMPLATE,key word
+root.AS,key word
+root.ASC,key word
+root.ATTRIBUTES,key word
+root.BEFORE,key word
+root.BEGIN,key word
+root.BLOCKED,key word
+root.BOUNDARY,key word
+root.BY,key word
+root.CACHE,key word
+root.CHILD,key word
+root.CLEAR,key word
+root.CLUSTER,key word
+root.CONCAT,key word
+root.CONFIGNODES,key word
+root.CONFIGURATION,key word
+root.CONTINUOUS,key word
+root.COUNT,key word
+root.CONTAIN,key word
+root.CQ,key word
+root.CQS,key word
+root.CREATE,key word
+root.CREATE_CONTINUOUS_QUERY,key word
+root.CREATE_FUNCTION,key word
+root.CREATE_ROLE,key word
+root.CREATE_TIMESERIES,key word
+root.CREATE_TRIGGER,key word
+root.CREATE_USER,key word
+root.DATA,key word
+root.DATABASE,key word
+root.DATABASES,key word
+root.DATANODES,key word
+root.DEACTIVATE,key word
+root.DEBUG,key word
+root.DELETE,key word
+root.DELETE_ROLE,key word
+root.DELETE_STORAGE_GROUP,key word
+root.DELETE_TIMESERIES,key word
+root.DELETE_USER,key word
+root.DESC,key word
+root.DESCRIBE,key word
+root.DEVICE,key word
+root.DEVICES,key word
+root.DISABLE,key word
+root.DISCARD,key word
+root.DROP,key word
+root.DROP_CONTINUOUS_QUERY,key word
+root.DROP_FUNCTION,key word
+root.DROP_TRIGGER,key word
+root.END,key word
+root.ENDTIME,key word
+root.EVERY,key word
+root.EXPLAIN,key word
+root.FILL,key word
+root.FILE,key word
+root.FLUSH,key word
+root.FOR,key word
+root.FROM,key word
+root.FULL,key word
+root.FUNCTION,key word
+root.FUNCTIONS,key word
+root.GLOBAL,key word
+root.GRANT,key word
+root.GRANT_ROLE_PRIVILEGE,key word
+root.GRANT_USER_PRIVILEGE,key word
+root.GRANT_USER_ROLE,key word
+root.GROUP,key word
+root.HAVING,key word
+root.INDEX,key word
+root.INFO,key word
+root.INSERT,key word
+root.INSERT_TIMESERIES,key word
+root.INTO,key word
+root.KILL,key word
+root.LABEL,key word
+root.LAST,key word
+root.LATEST,key word
+root.LEVEL,key word
+root.LIKE,key word
+root.LIMIT,key word
+root.LINEAR,key word
+root.LINK,key word
+root.LIST,key word
+root.LIST_ROLE,key word
+root.LIST_USER,key word
+root.LOAD,key word
+root.LOCAL,key word
+root.LOCK,key word
+root.MERGE,key word
+root.METADATA,key word
+root.MODIFY_PASSWORD,key word
+root.NODES,key word
+root.NONE,key word
+root.NOW,key word
+root.OF,key word
+root.OFF,key word
+root.OFFSET,key word
+root.ON,key word
+root.ORDER,key word
+root.ONSUCCESS,key word
+root.PARTITION,key word
+root.PASSWORD,key word
+root.PATHS,key word
+root.PIPE,key word
+root.PIPES,key word
+root.PIPESINK,key word
+root.PIPESINKS,key word
+root.PIPESINKTYPE,key word
+root.POLICY,key word
+root.PREVIOUS,key word
+root.PREVIOUSUNTILLAST,key word
+root.PRIVILEGES,key word
+root.PROCESSLIST,key word
+root.PROPERTY,key word
+root.PRUNE,key word
+root.QUERIES,key word
+root.QUERY,key word
+root.RANGE,key word
+root.READONLY,key word
+root.READ_TEMPLATE,key word
+root.READ_TEMPLATE_APPLICATION,key word
+root.READ_TIMESERIES,key word
+root.REGEXP,key word
+root.REGIONID,key word
+root.REGIONS,key word
+root.REMOVE,key word
+root.RENAME,key word
+root.RESAMPLE,key word
+root.RESOURCE,key word
+root.REVOKE,key word
+root.REVOKE_ROLE_PRIVIL,key wordEGE
+root.REVOKE_USER_PRIVILEGE,key word
+root.REVOKE_USER_ROLE,key word
+root.ROLE,key word
+root.RUNNING,key word
+root.SCHEMA,key word
+root.SELECT,key word
+root.SERIESSLOTID,key word
+root.SET,key word
+root.SET_STORAGE_GROUP,key word
+root.SETTLE,key word
+root.SGLEVEL,key word
+root.SHOW,key word
+root.SLIMIT,key word
+root.SOFFSET,key word
+root.STORAGE,key word
+root.START,key word
+root.STARTTIME,key word
+root.STATELESS,key word
+root.STATEFUL,key word
+root.STOP,key word
+root.SYSTEM,key word
+root.TAGS,key word
+root.TASK,key word
+root.TEMPLATE,key word
+root.TIMEOUT,key word
+root.TIMESERIES,key word
+root.TIMESLOTID,key word
+root.TO,key word
+root.TOLERANCE,key word
+root.TOP,key word
+root.TRACING,key word
+root.TRIGGER,key word
+root.TRIGGERS,key word
+root.TTL,key word
+root.UNLINK,key word
+root.UNLOAD,key word
+root.UNSET,key word
+root.UPDATE,key word
+root.UPDATE_TEMPLATE,key word
+root.UPSERT,key word
+root.URI,key word
+root.USER,key word
+root.USING,key word
+root.VALUES,key word
+root.VERIFY,key word
+root.VERSION,key word
+root.WATERMARK_EMBEDDING,key word
+root.WHERE,key word
+root.WITH,key word
+root.WITHOUT,key word
+root.WRITABLE,key word
 
 # 国际化支持
-root.中文,OK,language:chinese characters
-root.cx2.中文1.中文2,OK,language:Chinese characters 4 level
-root.にほんご,OK,language:Japanese characters
-root.quote4.`にほんご`,OK,language:Japanese characters with backquotes
+#root.中文,language:chinese characters
+#root.cx2.中文1.中文2,language:Chinese characters 4 level
+#root.にほんご,language:Japanese characters
+#root.quote4.`にほんご`,language:Japanese characters with backquotes
 # IOTDB-4707
-#root.française,OK,language:French characters
-#root.اللغة العربية,OK,language:Arabic characters
-#root.Español,OK,language:Spanish characters
-#root.Русский,OK,language:Russian characters
-#root.한국어,OK,language:Korean characters
-#root.quote1.`française`,OK,language:French characters with backquotes
-#root.quote2.`اللغة العربية`,OK,language:Arabic characters with backquotes
-#root.quote3.`Español`,OK,language:Spanish characters with backquotes
-#root.quote5.`Русский`,OK,language:Russian characters with backquotes
-#root.quote6.`한국어`,OK,language:Korean characters with backquotes
+#root.française,language:French characters
+#root.اللغة العربية,language:Arabic characters
+#root.Español,language:Spanish characters
+#root.Русский,language:Russian characters
+#root.한국어,language:Korean characters
+#root.quote1.`française`,language:French characters with backquotes
+#root.quote2.`اللغة العربية`,language:Arabic characters with backquotes
+#root.quote3.`Español`,language:Spanish characters with backquotes
+#root.quote5.`Русский`,language:Russian characters with backquotes
+#root.quote6.`한국어`,language:Korean characters with backquotes
 

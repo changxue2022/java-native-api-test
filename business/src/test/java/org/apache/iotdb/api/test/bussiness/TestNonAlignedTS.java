@@ -91,7 +91,7 @@ public class TestNonAlignedTS extends BaseTestSuite {
     @Test(priority = 20)
     public void testInsert() throws IOException, IoTDBConnectionException, StatementExecutionException {
         Tablet tablet = new Tablet(device, schemaList, 100);
-        assert 0 == getRecordCount(device, true) : "插入前record数目";
+        assert 0 == getRecordCount(device, verbose) : "插入前record数目";
         int rowIndex = 0;
         int col = 0;
         tablet.initBitMaps();
@@ -130,7 +130,7 @@ public class TestNonAlignedTS extends BaseTestSuite {
             }
         }
         session.insertTablet(tablet);
-        assert expectCount-1 == getRecordCount(device, true) : "插入record数目";
+        assert expectCount-1 == getRecordCount(device, verbose) : "插入record数目";
         Assert.assertThrows(StatementExecutionException.class, ()->session.insertAlignedTablet(tablet));
     }
     @Test(priority = 30)
@@ -178,7 +178,7 @@ public class TestNonAlignedTS extends BaseTestSuite {
         values.add(876.44);
         values.add("insert after delete");
         session.insertRecord(device, timestamp, measurements, dataTypes, values);
-        assert 2 == getRecordCount(device, true) : "确认结果:删除后插入成功";
+        assert 2 == getRecordCount(device, verbose) : "确认结果:删除后插入成功";
         checkQueryResult("select s_long from "+device +" where time="+timestamp+";", timestamp);
         checkQueryResult("select s_double from "+device +" where time="+timestamp+";", 876.44);
     }

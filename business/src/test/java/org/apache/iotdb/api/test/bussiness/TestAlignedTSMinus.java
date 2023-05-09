@@ -124,7 +124,7 @@ public class TestAlignedTSMinus extends BaseTestSuite {
             }
         }
         session.insertAlignedTablet(tablet);
-        assert expectCount-1 == getRecordCount(device, true) : "插入record数目";
+        assert expectCount-1 == getRecordCount(device, verbose) : "插入record数目";
         Assert.assertThrows(StatementExecutionException.class, ()->session.insertTablet(tablet));
     }
     @Test(priority = 30)
@@ -194,7 +194,7 @@ public class TestAlignedTSMinus extends BaseTestSuite {
     @Test(priority = 50)
     public void testDelete() throws IoTDBConnectionException, StatementExecutionException {
         session.deleteData(device+".*", 1669109404000L);
-        assert 1 == getRecordCount(device, true) : "确认结果:删除后还剩一条数据";
+        assert 1 == getRecordCount(device, verbose) : "确认结果:删除后还剩一条数据";
     }
     @Test(priority = 60)
     public void testInsertAfterDelete() throws IoTDBConnectionException, StatementExecutionException {

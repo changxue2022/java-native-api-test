@@ -26,7 +26,6 @@ import java.util.*;
  */
 public class TestTemplateNonAligned extends BaseTestSuite {
     private String templateName = "nonAligned_template";
-    private boolean verbose = true;
     private String loadNode = "root.business.nonAligned";
     private String device = loadNode+".d1";
     private String database = loadNode.substring(0,loadNode.lastIndexOf('.'));

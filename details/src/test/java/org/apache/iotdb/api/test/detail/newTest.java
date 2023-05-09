@@ -21,7 +21,6 @@ import org.testng.log4testng.Logger;
 
 public class newTest extends BaseTestSuite {
     private static Logger logger = Logger.getLogger(newTest.class);
-    private boolean verbose = true;
     private String database = "root.cx3.`www.Timecho.com`";
     private String device = database + ".`multi(1)`";
     private static final int maxLevel = 256;
@@ -43,7 +42,7 @@ public class newTest extends BaseTestSuite {
 //        List<Map<String, String>> tags = new CustomDataProvider().loadProps("data/tag-normal.csv");
 
     }
-    @AfterClass(enabled = false)
+    @AfterClass(enabled = true)
     public void  afterClass() throws IoTDBConnectionException, StatementExecutionException {
         cleanDatabases(verbose);
         cleanTemplates(verbose);
@@ -140,14 +139,6 @@ public class newTest extends BaseTestSuite {
             insertTabletSingle(joiner.toString(), "sensor_0", tsDataType, 10, verbose);
             // session.deleteTimeseries(path);
         }
-    }
-
-    /**
-     * path test
-     *
-     */
-    public void testPath() {
-
     }
 
 }

@@ -80,8 +80,8 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
      * 工具函数，用于查询比较 TS 中插入条数，清除已插入数据
      */
     public void afterMethod(int expectNonAligned, int expectAligned, String msg) throws IoTDBConnectionException, StatementExecutionException {
-        int actualNonAligned = getRecordCount(device, true);
-        int actualAligned = getRecordCount(alignedDevice, true);
+        int actualNonAligned = getRecordCount(device, verbose);
+        int actualAligned = getRecordCount(alignedDevice, verbose);
         assert actualNonAligned == expectNonAligned : "非对齐：" + msg;
         assert actualAligned == expectAligned : "对齐：" + msg;
 
@@ -96,7 +96,7 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
     public void checkInsertMultiDevices(String msg) throws IoTDBConnectionException, StatementExecutionException {
         int[] expectValueList = new int[]{2,1,6};
         for (int i = 0; i < 3; i++) {
-            assert getRecordCount("root.jni.d"+(i+1), true) == expectValueList[i] : "root.jni.d"+(i+1)+":" + msg;
+            assert getRecordCount("root.jni.d"+(i+1), verbose) == expectValueList[i] : "root.jni.d"+(i+1)+":" + msg;
         }
         out.println("清理数据");
         session.deleteTimeseries("root.jni.**");

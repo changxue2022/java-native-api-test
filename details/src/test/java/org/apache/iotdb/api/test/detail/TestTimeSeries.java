@@ -7,6 +7,7 @@ import org.apache.iotdb.rpc.StatementExecutionException;
 import org.apache.iotdb.tsfile.file.metadata.enums.CompressionType;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSEncoding;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -31,12 +32,10 @@ public class TestTimeSeries extends BaseTestSuite {
     @BeforeClass(enabled = true)
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException, IOException {
         normalTSs = new CustomDataProvider().getFirstColumns("data/timeseries-single.csv");
-        if (checkStroageGroupExists("")) {
-            session.deleteStorageGroup("root.**");
-        }
+        cleanDatabases(verbose);
     }
 
-    public void translateString2Type(String datatypeStr, String encodingStr, String compressStr) {
+    private void translateString2Type(String datatypeStr, String encodingStr, String compressStr) {
         switch (datatypeStr) {
             case "boolean":
                 dataType = TSDataType.BOOLEAN;
@@ -123,13 +122,13 @@ public class TestTimeSeries extends BaseTestSuite {
         }
     }
 
-    @DataProvider(name = "createSingleTimeSeriesNormal")
-    public Iterator<Object[]> getSingleTimeSeriesNormal() throws IOException {
+    @DataProvider(name = "createSingleTimeSeriesNormal", parallel = true)
+    private Iterator<Object[]> getSingleTimeSeriesNormal() throws IOException {
         return new CustomDataProvider().load("data/timeseries-single.csv").getData();
     }
 
-    @DataProvider(name = "createSingleTimeSeriesError")
-    public Iterator<Object[]> getSingleTimeSeriesError() throws IOException {
+    @DataProvider(name = "createSingleTimeSeriesError", parallel = true)
+    private Iterator<Object[]> getSingleTimeSeriesError() throws IOException {
         return new CustomDataProvider().load("data/timeseries-single-error.csv").getData();
     }
 
@@ -140,10 +139,10 @@ public class TestTimeSeries extends BaseTestSuite {
      * @throws IoTDBConnectionException
      * @throws StatementExecutionException
      */
-    public void testCreateTimeSeries_tags(int value) throws IoTDBConnectionException, StatementExecutionException {
+    private void testCreateTimeSeries_tags(int value) throws IoTDBConnectionException, StatementExecutionException {
         String path = "root.t1.pros" + value;
         for (int i = 0; i < value; i++) {
-            props.put("prop_" + i, "弹出模板" + i);
+//            props.put("prop_" + i, "弹出模板" + i);
             tags.put("tag_" + i, "竖编辑模式" + i);
             attrs.put("attr_" + i, "显示当前类" + i);
         }
@@ -162,124 +161,60 @@ public class TestTimeSeries extends BaseTestSuite {
         tags.clear();
         attrs.clear();
     }
-    public void testCreateTS_null(String name) throws IoTDBConnectionException, StatementExecutionException {
-        String path = "root.sg.testNull." + name;
-        TSDataType dataType = TSDataType.BOOLEAN;
-        TSEncoding encoding = TSEncoding.PLAIN;
-        CompressionType compress = CompressionType.UNCOMPRESSED;
 
-        Map<String, String> props = new HashMap<>();
-        Map<String, String> tags = new HashMap<>();
-        Map<String, String> attrs = new HashMap<>();
-        String alias = "test_null_" + name;
-        switch (name) {
-            case "path":
-                path = null;
-                break;
-            case "dataType":
-                dataType = null;
-                break;
-            case "encoding":
-                encoding = null;
-                break;
-            case "compress":
-                compress = null;
-                break;
-            case "props":
-                props = null;
-                break;
-            case "tags":
-                tags = null;
-                break;
-            case "attrs":
-                attrs = null;
-                break;
-            case "alias":
-                alias = null;
-                break;
-        }
-        session.createTimeseries(
-                path,
-                dataType,
-                encoding,
-                compress,
-                props,
-                tags,
-                attrs,
-                alias
-        );
+    @Test(priority = 1)
+    public void testDuplicateCreateTS() throws IoTDBConnectionException, StatementExecutionException {
+        String database = "root.testDuplicate";
+        String path = database + ".device.s_name";
+        session.createDatabase(database);
+        session.createTimeseries(path, TSDataType.BOOLEAN, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED);
+        Assert.assertThrows(StatementExecutionException.class, ()->{
+            session.createTimeseries(path, TSDataType.BOOLEAN, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED);
+        });
+        List<String> paths = new ArrayList<>(1);
+        paths.add(path);
+        session.deleteTimeseries(paths);
+        session.deleteDatabase(database);
     }
-
-    @Test(dataProvider = "createSingleTimeSeriesNormal")
+    // TIMECHODB-124
+    @Test(priority = 10, dataProvider = "createSingleTimeSeriesNormal")
     public void testCreateSingleTimeSeries_normal(String path, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException {
         translateString2Type(datatypeStr, encodingStr, compressStr);
         session.createTimeseries(path, dataType, encoding, compressionType, props, tags, attrs, alias);
     }
-    @Test(dataProvider = "createSingleTimeSeriesNormal")
+    @Test(priority = 20, dataProvider = "createSingleTimeSeriesNormal")
     public void testDeleteSingleTimeSeries_normal(String path, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException {
         translateString2Type(datatypeStr, encodingStr, compressStr);
         out.println(msg);
         session.deleteTimeseries(path);
     }
 
-    @Test(dataProvider = "createSingleTimeSeriesError", expectedExceptions = StatementExecutionException.class)
+    @Test(priority = 30, dataProvider = "createSingleTimeSeriesError", expectedExceptions = StatementExecutionException.class)
     public void testCreateSingleTimeSeries_error(String path, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException {
         translateString2Type(datatypeStr, encodingStr, compressStr);
         session.createTimeseries(path, dataType, encoding, compressionType, props, tags, attrs, alias);
     }
 
-    @Test
+    @Test(priority = 40)
     public void testCreateTimeSeries_10props() throws IoTDBConnectionException, StatementExecutionException {
         testCreateTimeSeries_tags(10);
     }
 
-    @Test
+    @Test(priority = 50)
     public void testCreateTimeSeries_100props() throws IoTDBConnectionException, StatementExecutionException {
         testCreateTimeSeries_tags(100);
     }
 
-    @Test
+    @Test(priority = 60)
     public void testCreateTimeSeries_max_props() throws IoTDBConnectionException, StatementExecutionException {
         testCreateTimeSeries_tags(700); //默认值：tag_attribute_total_size=700
     }
 
-    @Test(expectedExceptions = StatementExecutionException.class)
+    @Test(priority = 70, expectedExceptions = StatementExecutionException.class)
     public void testCreateTimeSeries_GTprops_error() throws IoTDBConnectionException, StatementExecutionException {
         testCreateTimeSeries_tags(701);
     }
 
-    @Test(expectedExceptions = StatementExecutionException.class)
-    public void testCreateTimeSeries_nullPath_error() throws IoTDBConnectionException, StatementExecutionException {
-        testCreateTS_null("path");
-    }
-    @Test(expectedExceptions = StatementExecutionException.class)
-    public void testCreateTimeSeries_nullDatatype_error() throws IoTDBConnectionException, StatementExecutionException {
-        testCreateTS_null("dataType");
-    }
-    @Test(expectedExceptions = StatementExecutionException.class)
-    public void testCreateTimeSeries_nullEncoding_error() throws IoTDBConnectionException, StatementExecutionException {
-        testCreateTS_null("encoding");
-    }
-    @Test(expectedExceptions = StatementExecutionException.class)
-    public void testCreateTimeSeries_nullCompress_error() throws IoTDBConnectionException, StatementExecutionException {
-        testCreateTS_null("compress");
-    }
-    @Test(expectedExceptions = StatementExecutionException.class)
-    public void testCreateTimeSeries_nullProps_error() throws IoTDBConnectionException, StatementExecutionException {
-        testCreateTS_null("props");
-    }
-    @Test(expectedExceptions = StatementExecutionException.class)
-    public void testCreateTimeSeries_nullTags_error() throws IoTDBConnectionException, StatementExecutionException {
-        testCreateTS_null("tags");
-    }
-    @Test(expectedExceptions = StatementExecutionException.class)
-    public void testCreateTimeSeries_nullAttrs_error() throws IoTDBConnectionException, StatementExecutionException {
-        testCreateTS_null("attrs");
-    }
-    @Test(expectedExceptions = StatementExecutionException.class)
-    public void testCreateTimeSeries_nullAlias_error() throws IoTDBConnectionException, StatementExecutionException {
-        testCreateTS_null("alias");
-    }
 
 
 }

@@ -12,19 +12,12 @@ import org.apache.iotdb.tsfile.file.metadata.enums.TSEncoding;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.lang.System.out;
 
 public class Tmp extends BaseTestSuite {
     private Map<String, Object[]> structureInfo = new LinkedHashMap<>(6);
-    //    @Test
-    public void test() throws IoTDBConnectionException, StatementExecutionException {
-        session.deleteData("root.db.factory0.d1.group3.*", 3);
-    }
 //    @BeforeClass
     public void BeforeClass() {
         structureInfo.put("s_boolean", new Object[]{TSDataType.BOOLEAN, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
@@ -33,12 +26,6 @@ public class Tmp extends BaseTestSuite {
         structureInfo.put("s_float", new Object[]{TSDataType.FLOAT, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
         structureInfo.put("s_double", new Object[]{TSDataType.DOUBLE, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
         structureInfo.put("s_text", new Object[]{TSDataType.TEXT, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
-    }
-    @Test
-    public void testPath() throws IOException {
-        out.println("##########");
-        System.out.println("filepath="+ CustomDataProvider.class.getClassLoader().getResource("data/ts-structures.csv").getPath());
-        System.out.println(System.getProperty("user.dir"));
     }
 
 //    @Test
@@ -68,5 +55,13 @@ public class Tmp extends BaseTestSuite {
         session.deleteDatabase(database);
         session.dropSchemaTemplate(templateName);
     }
+    // TIMECHODB-124
+    @Test
+    public void test() throws IoTDBConnectionException, StatementExecutionException {
+        Map<String,String> props = new HashMap<>();
+        props.put("Prop1", "3");
+        session.createTimeseries("root.sg.d.s_name", TSDataType.BOOLEAN, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED, props, null, null, null);
+    }
+
 
 }

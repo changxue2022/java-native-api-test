@@ -21,7 +21,6 @@ import java.util.*;
 
 public class TestTemplateAlignedAddTS extends BaseTestSuite {
     private String database = "root.blendAddTS";
-    private boolean verbose = true;
     private String[] devices = new String[]{database+".alignedUsingTemp", database+".nonAlignedUsingTemp"};
     private String[] templateNames = new String[]{"aligned_template", "nonAligned_template"};
     private int expectCount = 17;

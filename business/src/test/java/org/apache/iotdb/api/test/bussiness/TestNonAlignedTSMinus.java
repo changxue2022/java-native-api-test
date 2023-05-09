@@ -130,7 +130,7 @@ public class TestNonAlignedTSMinus extends BaseTestSuite {
             }
         }
         session.insertTablet(tablet);
-        assert expectCount-1 == getRecordCount(device, true) : "插入record数目";
+        assert expectCount-1 == getRecordCount(device, verbose) : "插入record数目";
         Assert.assertThrows(StatementExecutionException.class, ()->session.insertAlignedTablet(tablet));
     }
     @Test(priority = 30)
@@ -195,7 +195,7 @@ public class TestNonAlignedTSMinus extends BaseTestSuite {
     @Test(priority = 50)
     public void testDelete() throws IoTDBConnectionException, StatementExecutionException {
         session.deleteData(device+".*", 1669109404000L);
-        assert 2 == getRecordCount(device, true) : "确认结果:删除后还剩一条数据";
+        assert 2 == getRecordCount(device, verbose) : "确认结果:删除后还剩一条数据";
     }
     @Test(priority = 60)
     public void testInsertAfterDelete() throws IoTDBConnectionException, StatementExecutionException {
@@ -207,7 +207,7 @@ public class TestNonAlignedTSMinus extends BaseTestSuite {
         values.add(876.44);
         values.add("insert after delete");
         session.insertRecord(device, timestamp, measurements, dataTypes, values);
-        assert 3 == getRecordCount(device, true) : "确认结果:删除后插入成功";
+        assert 3 == getRecordCount(device, verbose) : "确认结果:删除后插入成功";
         checkQueryResult("select s_double from "+device+" where time="+timestamp+";", 876.44);
     }
 

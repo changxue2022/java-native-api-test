@@ -24,21 +24,6 @@ public class TestDynamicTemplateMulti extends BaseTestSuite {
     private String tsPrefix = "sensors_";
     private String templateName_clean = templatePrefix + 2;
 
-    private boolean isAligned = true;
-    private boolean verbose = true;
-    private boolean auto_create_schema = true;
-
-    @BeforeClass
-    public void BeforeClass() throws IOException, IoTDBConnectionException, StatementExecutionException {
-        cleanDatabases(verbose);
-        cleanTemplates(verbose);
-    }
-    @AfterClass
-    public void AfterClass() throws IoTDBConnectionException, StatementExecutionException {
-        cleanDatabases(verbose);
-        cleanTemplates(verbose);
-    }
-
     private void createTemplate(int databaseCount, int deviceCount, String templateName, String suffix) throws StatementExecutionException, IoTDBConnectionException, IOException {
         int templateNodeCount = 10;
         List<MeasurementSchema> schemaList = new ArrayList<>(templateNodeCount);
@@ -104,7 +89,9 @@ public class TestDynamicTemplateMulti extends BaseTestSuite {
         }
         for (int i = 0; i < databaseCount; i++) {
             String database = databasePrefix + "_" + i;
-            session.createDatabase(database);
+            if (!checkStroageGroupExists(database)) {
+                session.createDatabase(database);
+            }
             databases.add(database);
             for (int j = 0; j < deviceCount; j++) {
                 devicePaths.add(String.format("%s.WT%05d.info", database, j));
@@ -188,11 +175,11 @@ public class TestDynamicTemplateMulti extends BaseTestSuite {
         }
 
         //清理
-//        for (int i = 0; i < databases.size(); i++) {
-//            session.deleteDatabase(databases.get(i));
-//        }
-//        for (int i = 0; i < templateCount; i++) {
-//            session.dropSchemaTemplate(templateNames.get(i));
-//        }
+        for (int i = 0; i < databases.size(); i++) {
+            session.deleteDatabase(databases.get(i));
+        }
+        for (int i = 0; i < templateCount; i++) {
+            session.dropSchemaTemplate(templateNames.get(i));
+        }
     }
 }

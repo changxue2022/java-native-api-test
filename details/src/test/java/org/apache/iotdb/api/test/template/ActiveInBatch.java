@@ -35,8 +35,6 @@ public class ActiveInBatch extends BaseTestSuite {
     private static final String tName = "tempGroupSingle";
     private static final String tsName = "s0";
     private static int maxDatabaseLength;
-    private boolean isAligned = true;
-    private boolean verbose = true;
 
     @BeforeClass
     public void BeforeClass() throws IOException, IoTDBConnectionException, StatementExecutionException {

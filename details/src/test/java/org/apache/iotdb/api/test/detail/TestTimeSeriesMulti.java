@@ -242,7 +242,7 @@ public class TestTimeSeriesMulti extends BaseTestSuite {
         }
         session.createMultiTimeseries(
                 paths, tsDataTypes, tsEncodings, compressionTypes, props, tags, attrs, alias);
-        assert getTimeSeriesCount("root.**", true) == paths.size() : "createMultiTimeseries normal";
+        assert getTimeSeriesCount("root.**", verbose) == paths.size() : "createMultiTimeseries normal";
         session.deleteTimeseries(paths);
     }
     @Test(dataProvider = "createTimeSeriesMultiError", expectedExceptions = StatementExecutionException.class, priority = 25)
@@ -302,7 +302,7 @@ public class TestTimeSeriesMulti extends BaseTestSuite {
             if (!deviceId.equals(oldDeviceId)) {
                 if (!oldDeviceId.isEmpty()) {
                     session.createAlignedTimeseries(deviceId, meaurements, dataTypes, encodings, compressionTypes, alias, props, tags);
-                    assert getTimeSeriesCount("root.**", true) == meaurements.size() : "createAlignedTimeseries normal: "+deviceId;
+                    assert getTimeSeriesCount("root.**", verbose) == meaurements.size() : "createAlignedTimeseries normal: "+deviceId;
                 }
                 oldDeviceId = deviceId;
             }
@@ -379,9 +379,9 @@ public class TestTimeSeriesMulti extends BaseTestSuite {
         }
         System.out.println(ts_list);
         createTimeSeriesIgnoreError(total-1);
-        int expectCount = getTimeSeriesCount("", true) - total + 1 ;
+        int expectCount = getTimeSeriesCount("", verbose) - total + 1 ;
         session.deleteStorageGroups(ts_list);
-        int actualCount = getTimeSeriesCount("", true);
+        int actualCount = getTimeSeriesCount("", verbose);
         System.out.println(msg);
         Thread.sleep(1000);
         assert expectCount == actualCount: "删除后 actual=:" + actualCount + ", expect=" +expectCount + ", total="+total;

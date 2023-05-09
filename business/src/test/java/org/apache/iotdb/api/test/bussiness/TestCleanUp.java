@@ -32,7 +32,6 @@ public class TestCleanUp extends BaseTestSuite {
     private List<String> paths = new ArrayList<>(6);
     private List<TSEncoding> encodings = new ArrayList<>(6);
     private List<CompressionType> compressionTypes = new ArrayList<>(6);
-    private boolean verbose = true;
 
     @BeforeClass
     public void BeforeClass() throws IoTDBConnectionException, StatementExecutionException {

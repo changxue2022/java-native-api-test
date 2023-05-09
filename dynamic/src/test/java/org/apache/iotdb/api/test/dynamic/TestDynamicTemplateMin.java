@@ -19,6 +19,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 单模版，多database
+ */
 public class TestDynamicTemplateMin extends BaseTestSuite {
     private List<List<Object>> structures;
     private Map<String, Object[]> structureInfo = new LinkedHashMap<>(6);
@@ -26,18 +29,14 @@ public class TestDynamicTemplateMin extends BaseTestSuite {
     private List<MeasurementSchema> schemaList_err = new ArrayList<>(6);
     private List<MeasurementSchema> schemaList_more = new ArrayList<>();
     private List<MeasurementSchema> schemaList_less = new ArrayList<>();
+    private List<String> databases = new ArrayList<>(3);
     private List<String> devicePaths = new ArrayList<>();
     private String databasePrefix = "root.db.factory";
-    private String templatePrefix = "template0";
-
-    private boolean isAligned = true;
-    private boolean verbose = true;
-    private boolean auto_create_schema = true;
+    private String templateName = "template01";
 
     @BeforeClass
     public void BeforeClass() throws IOException, IoTDBConnectionException, StatementExecutionException {
-        cleanDatabases(verbose);
-        cleanTemplates(verbose);
+        cleanup();
         structures = new CustomDataProvider().parseTSStructure("data/ts-structures.csv");
         structureInfo.put("s_boolean", new Object[]{TSDataType.BOOLEAN, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
         structureInfo.put("s_int", new Object[]{TSDataType.INT32, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
@@ -55,11 +54,19 @@ public class TestDynamicTemplateMin extends BaseTestSuite {
         }
         schemaList_err.add(new MeasurementSchema("s_boolean", TSDataType.INT32, TSEncoding.PLAIN, CompressionType.SNAPPY));
     }
-
-//    @AfterClass
-    public void AfterClass() throws IoTDBConnectionException, StatementExecutionException {
-        cleanDatabases(verbose);
-        cleanTemplates(verbose);
+    private void cleanup() throws IoTDBConnectionException, StatementExecutionException {
+        for (int i = 0; i < databases.size(); i++) {
+            if (checkStroageGroupExists(databasePrefix)) {
+                session.deleteDatabase(databasePrefix);
+            }
+        }
+        if (checkTemplateExists(templateName)) {
+            session.dropSchemaTemplate(templateName);
+        }
+    }
+    @AfterMethod
+    public void afterMethod() throws IoTDBConnectionException, StatementExecutionException {
+        cleanup();
     }
 
     private void business(List<Object> ... structs) throws IoTDBConnectionException, IOException, StatementExecutionException {
@@ -71,10 +78,8 @@ public class TestDynamicTemplateMin extends BaseTestSuite {
                 (CompressionType) structs[0].get(2)));
         // 创建template
         int templateCount = getTemplateCount(verbose);
-        String templateName = templatePrefix + "1";
 
-        // database 用于主要业务，database2用于清理，database3用于普通序列的测试
-        List<String> databases = new ArrayList<>(3);
+        // database0 用于主要业务，database1用于清理，database2用于普通序列的测试
         for (int i = 0; i < 3; i++) {
             databases.add(databasePrefix + i);
             if (!checkStroageGroupExists(databases.get(i))) {
@@ -120,6 +125,7 @@ public class TestDynamicTemplateMin extends BaseTestSuite {
         }
         expectTSCountEach = schemaList_org.size();
         if (auto_create_schema){
+            getTimeSeriesCount(devicePaths.get(0) + ".**", verbose);
             Assert.assertThrows(StatementExecutionException.class, ()-> {
                 session.setSchemaTemplate(templateName, devicePaths.get(0));
             });
@@ -331,7 +337,7 @@ public class TestDynamicTemplateMin extends BaseTestSuite {
 //        Assert.assertThrows(StatementExecutionException.class, ()->{
 //            session.unsetSchemaTemplate(database, templateName);
 //        });
-        countLines("show databases;", verbose);
+//        countLines("show databases;", verbose);
         for (int i = 0; i <databases.size(); i++) {
             session.deleteDatabase(databases.get(i));
         }
@@ -340,6 +346,8 @@ public class TestDynamicTemplateMin extends BaseTestSuite {
         getTimeSeriesCount("", verbose);
 
         schemaList_more.clear();
+        devicePaths.clear();
+        databases.clear();
     }
 
     @Test(priority = 10)
@@ -350,7 +358,7 @@ public class TestDynamicTemplateMin extends BaseTestSuite {
         }
     }
 
-//    @Test(priority = 20)
+    @Test(priority = 20)
     public void testStructure_add6() throws IoTDBConnectionException, IOException, StatementExecutionException {
         List<List<Object>> structs = new ArrayList<>(structureInfo.size());
         structureInfo.forEach((key,value)->{
@@ -362,6 +370,5 @@ public class TestDynamicTemplateMin extends BaseTestSuite {
         });
         business(structs.get(0),structs.get(1),structs.get(2),structs.get(3),structs.get(4),structs.get(5));
     }
-
 
 }

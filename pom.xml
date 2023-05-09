@@ -14,6 +14,7 @@
         <module>details</module>
         <module>concurrent</module>
         <module>dynamic</module>
+        <module>namecheck</module>
     </modules>
 
     <properties>
@@ -68,8 +69,8 @@
 <!--                            <suiteXmlFile>${project.build.directory}/src/main/resources/testng.xml</suiteXmlFile>-->
                             <suiteXmlFile>src/main/resources/testng.xml</suiteXmlFile>
                         </suiteXmlFiles>
-                        <parallel>class</parallel>
-                        <threadCount>1</threadCount>
+<!--                        <parallel>class</parallel>-->
+<!--                        <threadCount>1</threadCount>-->
                         <testFailureIgnore>true</testFailureIgnore>
                     </configuration>
 

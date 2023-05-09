@@ -86,8 +86,8 @@ public class TestInsertNormal extends BaseTestSuite {
      * 工具函数，用于查询比较 TS 中插入条数，清除已插入数据
      */
     public void afterMethod(int expectNonAligned, int expectAligned, String msg) throws IoTDBConnectionException, StatementExecutionException {
-        int actualNonAligned = getRecordCount(device, true);
-        int actualAligned = getRecordCount(alignedDevice, true);
+        int actualNonAligned = getRecordCount(device, verbose);
+        int actualAligned = getRecordCount(alignedDevice, verbose);
         assert actualNonAligned == expectNonAligned : "非对齐：" + msg;
         assert actualAligned == expectAligned : "对齐：" + msg;
 

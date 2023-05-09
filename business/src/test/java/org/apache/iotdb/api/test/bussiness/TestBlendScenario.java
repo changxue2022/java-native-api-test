@@ -21,7 +21,6 @@ import java.util.*;
 
 public class TestBlendScenario extends BaseTestSuite {
     private String database = "root.blend";
-    private boolean verbose = true;
     private String[] devices = new String[]{database+".alignedUsingTemp", database+".nonAlignedUsingTemp", database+".aligned", database+".nonAligned"};
     private String[] templateNames = new String[]{"aligned_template", "nonAligned_template"};
     private int expectCount = 17;

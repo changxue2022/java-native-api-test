@@ -26,7 +26,6 @@ import java.util.*;
  */
 public class TestTemplateAligned extends BaseTestSuite {
     private String templateName = "aligned_template";
-    private boolean verbose = true;
     private String loadNode = "root.business.aligned";
     private String device = loadNode+".d1";
     private String database = loadNode.substring(0,loadNode.lastIndexOf('.'));

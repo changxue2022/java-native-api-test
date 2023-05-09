@@ -91,7 +91,7 @@ public class TestNonAlignedTSAdd extends BaseTestSuite {
     @Test(priority = 20)
     public void testInsert() throws IOException, IoTDBConnectionException, StatementExecutionException {
         Tablet tablet = new Tablet(device, schemaList, 100);
-        assert 0 == getRecordCount(device, true) : "插入前record数目";
+        assert 0 == getRecordCount(device, verbose) : "插入前record数目";
         int rowIndex = 0;
         int col = 0;
         tablet.initBitMaps();
@@ -130,7 +130,7 @@ public class TestNonAlignedTSAdd extends BaseTestSuite {
             }
         }
         session.insertTablet(tablet);
-        assert expectCount-1 == getRecordCount(device, true) : "插入record数目";
+        assert expectCount-1 == getRecordCount(device, verbose) : "插入record数目";
         Assert.assertThrows(StatementExecutionException.class, ()->session.insertAlignedTablet(tablet));
     }
     @Test(priority = 30)
