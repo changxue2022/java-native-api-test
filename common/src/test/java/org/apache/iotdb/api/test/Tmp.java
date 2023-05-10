@@ -56,12 +56,21 @@ public class Tmp extends BaseTestSuite {
         session.dropSchemaTemplate(templateName);
     }
     // TIMECHODB-124
-    @Test
+//    @Test
     public void test() throws IoTDBConnectionException, StatementExecutionException {
         Map<String,String> props = new HashMap<>();
         props.put("Prop1", "3");
         session.createTimeseries("root.sg.d.s_name", TSDataType.BOOLEAN, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED, props, null, null, null);
     }
-
+    @Test
+    public void test111() throws IOException {
+        Iterator<Object[]> i = new CustomDataProvider().load("data/timeseries-multi.csv").getData();
+        while (i.hasNext()) {
+            for(Object r: i.next()) {
+                out.println(r.toString());
+            }
+            out.println("--------------");
+        }
+    }
 
 }

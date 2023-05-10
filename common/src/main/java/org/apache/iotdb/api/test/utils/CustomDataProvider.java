@@ -15,6 +15,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static java.lang.System.out;
+
 /**
  * 读取csv文件，返回除第一行header外的数据，供给给测试方法使用
  * Author: xue.chang@timecho.com
@@ -110,23 +112,30 @@ public class CustomDataProvider {
             List<Object> columns_arr = new ArrayList<>();
             Iterator<String> record_iter = record.iterator();
             // 如果以#开头，那么跳过
-            String first_cols = record_iter.next();
-            if (!first_cols.startsWith("#")) {
-                //out.println("####### "+first_cols);
-                columns_arr.add(first_cols);
-                while (record_iter.hasNext()) {
-                    String cols = record_iter.next();
+            out.println("#############");
+            String cols = record_iter.next();
+            boolean breakFlag = false;
+            if (!cols.startsWith("#")) {
+                while (true) {
                     if (cols.startsWith("m:")) {
                         cols = cols.substring(2);
                         columns_arr.add(processMapField(cols));
                     } else if (cols.startsWith("l:")) {
+                        cols = cols.substring(2);
                         columns_arr.add(processListField(cols));
                     } else if (cols.equals("null")) {
                         columns_arr.add(null);
                     } else {
                         columns_arr.add(cols);
                     }
+                    if (record_iter.hasNext()) {
+                        cols = record_iter.next();
+                    } else {
+                        breakFlag = true;
+                    }
+                    if (breakFlag) break;
                 }
+                out.println(columns_arr);
                 this.testCases.add(columns_arr.stream().toArray());
             }
         }
@@ -290,6 +299,29 @@ public class CustomDataProvider {
         this.reader.close();
         return columns_arr;
     }
+
+    /**
+     * 解析csv文件，将第一列device和第二列tsName拼接为完整的path,返回path list
+     * @param filepath
+     * @return
+     * @throws IOException
+     */
+    public List<String> getDeviceAndTs(String filepath) throws IOException {
+        Iterable<CSVRecord> records = this.readCSV(filepath, ',');
+        List<String> columns_arr = new ArrayList<>();
+        for (CSVRecord record : records) {
+            // 解析每一行
+            Iterator<String> record_iter = record.iterator();
+            // 如果以#开头，那么跳过
+            String first_cols = record_iter.next();
+            if (!first_cols.startsWith("#")) {
+                //out.println("####### "+first_cols);
+                columns_arr.add(first_cols+"."+record_iter.next());
+            }
+        }
+        this.reader.close();
+        return columns_arr;
+    }
     public List<String> getFirstColumns(String filepath) throws IOException {
         return getFirstColumns(filepath, ',');
     }
@@ -327,14 +359,15 @@ public class CustomDataProvider {
         return (Iterator<Object[]>) testCases.iterator();
     }
 
-    public static void main(String[] args) throws IOException {
-//        Iterator<Object[]> i = new CustomDataProvider().load("data/test.csv").getData();
+//    public static void main(String[] args) throws IOException {
+//
+//        Iterator<Object[]> i = new CustomDataProvider().load("data/timeseries-multi.csv").getData();
 //        while (i.hasNext()) {
 //            for(Object r: i.next()) {
 //                out.println(r.toString());
 //            }
 //            out.println("--------------");
 //        }
-
-    }
+//
+//    }
 }

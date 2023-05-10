@@ -84,3 +84,5 @@ root.sg.d1.alias4,long,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,A-b,Alias:-
 root.sg.d1.alias5,long,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,123456,Alias:all number
 root.sg.d1.alias6,long,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,汉语是中国使用人数最多的语言也是世界上作为第一语言使用人数最多的语言中国除汉族使用汉语外回族满族等也基本使用或转用汉语其他民族都有,Alias:65中文
 root.sg.d1.alias7,long,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abc,Alias:65英文数字
+root.sg.d1,int,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,parent_ts,parent_ts child ts
+root.sg.d1.props1,int,PLAIN,UNCOMPRESSED,m:props:2,m:null,m:null,contain_props,contain 1 property error

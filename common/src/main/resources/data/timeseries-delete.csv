@@ -1,2 +1,6 @@
 path,comment
-root.key.*,wildcard level 1
+root.key.*,wildcard 最末
+root.sg.*.internationalization, wildcard 中间
+root.l.**,wildcard 2个星
+root.abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234.d.s_text2,精确匹配
+root.**,全部

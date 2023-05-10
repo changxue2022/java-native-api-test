@@ -1,4 +1,5 @@
 paths,datatypes,encoding,compression,props,tags,attrs,alias
+# 单个
 l:null,l:boolean,l:PLAIN,l:UNCOMPRESSED,l:null,l:null,l:null,l:empty_path
 "l:",l:boolean,l:PLAIN,l:UNCOMPRESSED,l:null,l:null,l:null,l:empty_string_path
 l:root.sgm.error.aligned_datatype,l:null,l:PLAIN,l:UNCOMPRESSED,l:null,l:null,l:null,l:invalid_datatype
@@ -12,7 +13,7 @@ l:root.sgm.error.aligned_tag_invalid,l:int,"l:PLAIN","l:UNCOMPRESSED","l:null",l
 l:root.sgm.error.aligned_attr_invalid,l:int,"l:PLAIN","l:UNCOMPRESSED","l:null",l:null,l:,l:invalid_attr_emptyString
 l:root.sgm.error.aligned_alias_invalid,l:int,"l:PLAIN","l:UNCOMPRESSED","l:null",l:null,l:null,l:null
 l:root.sgm.error.aligned_alias_invalid2,l:int,"l:PLAIN","l:UNCOMPRESSED","l:null",l:null,l:null,"l:"
-# paths
+# paths 多个
 "l:,root.sgm02.multi.alignedInt,root.sgm02.multi.alignedLong,root.sgm02.multi.alignedFloat,root.sgm02.multi.alignedDouble,root.sgm02.multi.alignedText","l:boolean,int,long,float,double,text","l:PLAIN,PLAIN,PLAIN,PLAIN,PLAIN,PLAIN","l:UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED","l:m:p1:boolean|p2:int|p3:long|p4:float|p5:double|p6:text","l:m:t1:boolean|t2:int|t3:long|t4:float|t5:double|t6:text","l:m:a1:boolean|a2:int|a3:long|a4:float|a5:double|a6:text","l:1_boolean,1_int,1_long,1_float,1_double,1_text"
 "l:root.sgm02.multi.alignedBoolean,root.sgm02.multi.alignedInt,,root.sgm02.multi.alignedFloat,root.sgm02.multi.alignedDouble,root.sgm02.multi.alignedText","l:boolean,int,long,float,double,text","l:PLAIN,PLAIN,PLAIN,PLAIN,PLAIN,PLAIN","l:UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED","l:m:p1:boolean|p2:int|p3:long|p4:float|p5:double|p6:text","l:m:t1:boolean|t2:int|t3:long|t4:float|t5:double|t6:text","l:m:a1:boolean|a2:int|a3:long|a4:float|a5:double|a6:text","l:2_boolean,2_int,2_long,2_float,2_double,2_text"
 "l:root.sgm02.multi.alignedBoolean,root.sgm02.multi.alignedInt,root.sgm02.multi.alignedLong,root.sgm02.multi.alignedFloat,root.sgm02.multi.alignedDouble,","l:boolean,int,long,float,double,text","l:PLAIN,PLAIN,PLAIN,PLAIN,PLAIN,PLAIN","l:UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED","l:m:p1:boolean|p2:int|p3:long|p4:float|p5:double|p6:text","l:m:t1:boolean|t2:int|t3:long|t4:float|t5:double|t6:text","l:m:a1:boolean|a2:int|a3:long|a4:float|a5:double|a6:text","l:3_boolean,3_int,3_long,3_float,3_double,3_text"
@@ -32,4 +33,7 @@ l:root.sgm.error.aligned_alias_invalid2,l:int,"l:PLAIN","l:UNCOMPRESSED","l:null
 "l:root.sgm06.multi.alignedBoolean,root.sgm06.multi.alignedInt,root.sgm06.multi.alignedLong,root.sgm06.multi.alignedFloat,root.sgm06.multi.alignedDouble,root.sgm06.multi.alignedText","l:boolean,int,long,float,double,text","l:PLAIN,PLAIN,PLAIN,PLAIN,PLAIN,PLAIN","l:UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED","l:m:p1:boolean|p2:int|p3:long|p4:float|p5:double|p6:text","l:m:t1:boolean|t2:int|t3:long|t4:float|t5:double|t6:text","l:m:a1:boolean|a2:int|a3:long|a4:float|a5:double|a6:text","l:,nor_int4,nor_long4,nor_float4,nor_double4,nor_text4"
 "l:root.sgm06.multi.alignedBoolean,root.sgm06.multi.alignedInt,root.sgm06.multi.alignedLong,root.sgm06.multi.alignedFloat,root.sgm06.multi.alignedDouble,root.sgm06.multi.alignedText","l:boolean,int,long,float,double,text","l:PLAIN,PLAIN,PLAIN,PLAIN,PLAIN,PLAIN","l:UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED","l:m:p1:boolean|p2:int|p3:long|p4:float|p5:double|p6:text","l:m:t1:boolean|t2:int|t3:long|t4:float|t5:double|t6:text","l:m:a1:boolean|a2:int|a3:long|a4:float|a5:double|a6:text","l:nor_boolean5,nor_int5,nor_long5,,nor_double5,nor_text5"
 "l:root.sgm06.multi.alignedBoolean,root.sgm06.multi.alignedInt,root.sgm06.multi.alignedLong,root.sgm06.multi.alignedFloat,root.sgm06.multi.alignedDouble,root.sgm06.multi.alignedText","l:boolean,int,long,float,double,text","l:PLAIN,PLAIN,PLAIN,PLAIN,PLAIN,PLAIN","l:UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED,UNCOMPRESSED","l:m:p1:boolean|p2:int|p3:long|p4:float|p5:double|p6:text","l:m:t1:boolean|t2:int|t3:long|t4:float|t5:double|t6:text","l:m:a1:boolean|a2:int|a3:long|a4:float|a5:double|a6:text","l:nor_boolean6,nor_int6,nor_long6,nor_float6,nor_double6,"
+# 2个duplicate
+"l:root.sgm07.duplicate.dupName,root.sgm07.duplicate.dupName","l:float,double","l:RLE,TS_2DIFF","l:GZIP,SNAPPY",null,null,null,"同名不同类型"
+"l:root.sgm07.duplicate.dupName2,root.sgm07.duplicate.dupName2","l:float,float","l:RLE,RLE","l:GZIP,GZIP",null,null,null,"同名同类型"
 
