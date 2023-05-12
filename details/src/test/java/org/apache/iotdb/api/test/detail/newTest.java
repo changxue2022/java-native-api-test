@@ -47,13 +47,13 @@ public class newTest extends BaseTestSuite {
         cleanDatabases(verbose);
         cleanTemplates(verbose);
     }
-    @DataProvider(name="storageGroupNormal")
+    @DataProvider(name="storageGroupNormal", parallel = true)
     public Iterator<Object[]> getStorageGroupNormal() throws IOException {
         return new CustomDataProvider().load("data/storage-group.csv").getData();
     }
 
     @Test(enabled = true, priority = 10, dataProvider = "storageGroupNormal")
-    public void testNormalTS_nonAligned(String databaseName, String expect, String comment) throws IoTDBConnectionException, StatementExecutionException {
+    public void testNormalTS_nonAligned(String databaseName, String comment) throws IoTDBConnectionException, StatementExecutionException {
         session.createDatabase(databaseName);
         int count = normalNames.size()+normalNames_keyword.size();
         System.out.println(normalNames.size());

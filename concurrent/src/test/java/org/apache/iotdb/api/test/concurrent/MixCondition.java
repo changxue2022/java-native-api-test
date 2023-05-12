@@ -1,4 +1,4 @@
-package org.apache.iotdb.api.test.dynamic.concurrent;
+package org.apache.iotdb.api.test.concurrent;
 
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
 import org.apache.iotdb.isession.SessionDataSet;

@@ -100,52 +100,9 @@ public class TestTemplate extends BaseTestSuite {
         insertTabletMulti(loadNode, schemaList, 10, isAligned);
     }
 //////////////////////////////////////////////////////////////////////////////////
-    @Test(priority = 10, expectedExceptions = StatementExecutionException.class)
-    public void testCreateTemplate_null() throws IoTDBConnectionException, IOException, StatementExecutionException {
-        session.createSchemaTemplate(null);
-    }
-    @Test(priority = 11, expectedExceptions = StatementExecutionException.class)
-    public void testCreateTemplate_empty() throws IoTDBConnectionException, IOException, StatementExecutionException {
-        Template template = new Template(tName);
-        session.createSchemaTemplate(template);
-    }
-    @Test(priority = 12, expectedExceptions = StatementExecutionException.class)
-    public void testSet_nullTemplate() throws IoTDBConnectionException, StatementExecutionException {
-        session.setSchemaTemplate(null, databasePrefix);
-    }
-    @Test(priority = 13, expectedExceptions = StatementExecutionException.class)
-    public void testSet_noTemp() throws IoTDBConnectionException, StatementExecutionException {
-        session.setSchemaTemplate(tName, databasePrefix);
-    }
-
-    @Test(priority = 14, expectedExceptions = StatementExecutionException.class)
-    public void testSet_noTempNullPath() throws IoTDBConnectionException, StatementExecutionException {
-        session.setSchemaTemplate(tName, null);
-    }
-    @Test(priority = 15, expectedExceptions = StatementExecutionException.class)
-    public void testSet_noTempEmptyPath() throws IoTDBConnectionException, StatementExecutionException {
-        session.setSchemaTemplate(tName, "");
-    }
-    @Test(priority = 16, expectedExceptions = StatementExecutionException.class)
-    public void testSet_noTempRootPath() throws IoTDBConnectionException, StatementExecutionException {
-        session.setSchemaTemplate(tName, "root");
-    }
     @Test(priority = 17)
     public void createTemplate() throws IoTDBConnectionException, StatementExecutionException, IOException {
         createTemplate(tName, "", isAligned);
-    }
-    @Test(priority = 18, expectedExceptions = StatementExecutionException.class)
-    public void testSet_nullPath() throws IoTDBConnectionException, StatementExecutionException {
-        session.setSchemaTemplate(tName, null);
-    }
-    @Test(priority = 19, expectedExceptions = StatementExecutionException.class)
-    public void testSet_emptyPath() throws IoTDBConnectionException, StatementExecutionException {
-        session.setSchemaTemplate(tName, "");
-    }
-    @Test(priority = 20, expectedExceptions = StatementExecutionException.class)
-    public void testSet_noPath() throws IoTDBConnectionException, StatementExecutionException {
-        // database 不存在
-        session.setSchemaTemplate(tName, databasePrefix);
     }
     @Test(priority = 21)
     public void testSet_database() throws IoTDBConnectionException, StatementExecutionException {

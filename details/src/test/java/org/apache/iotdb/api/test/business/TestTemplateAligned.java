@@ -1,10 +1,11 @@
-package org.apache.iotdb.api.test.bussiness;
+package org.apache.iotdb.api.test.business;
 
-import com.sun.glass.ui.Clipboard;
 import org.apache.iotdb.api.test.BaseTestSuite;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
+import org.apache.iotdb.isession.template.Template;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
+import org.apache.iotdb.session.template.MeasurementNode;
 import org.apache.iotdb.tsfile.file.metadata.enums.CompressionType;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSEncoding;
@@ -19,23 +20,21 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * 减少TS non-aligned
- * 创建unaligned Device(6 sensor), 插入数据，查询数据，删除数据，减少TS，插入数据，查询数据，删除Device
- * 2022-12-28
+ * 无修改结构 aligned
+ * 创建aligned template(6 sensor),插入数据，查询数据，删除数据，插入数据，删除template, 查询
+ * 2022-12-29
  */
-public class TestNonAlignedTSMinus extends BaseTestSuite {
-    private String device = "root.business.nonAlignedTSMinus";
-    private String database = device.substring(0,device.lastIndexOf('.'));
+public class TestTemplateAligned extends BaseTestSuite {
+    private String templateName = "aligned_template";
+    private String loadNode = "root.business.aligned";
+    private String device = loadNode+".d1";
+    private String database = loadNode.substring(0,loadNode.lastIndexOf('.'));
     private int expectCount = 17;
     private Map<String, TSDataType> measureTSTypeInfos = new LinkedHashMap<>(6);
     private List<String> paths = new ArrayList<>(6);
     private List<String> measurements = new ArrayList<>(6);
     private List<TSDataType> dataTypes = new ArrayList<>(6);
     private List<MeasurementSchema> schemaList = new ArrayList<>(6);// tablet
-
-    private List<TSEncoding> encodings = new ArrayList<>(6);
-    private List<CompressionType> compressors = new ArrayList<>(6);
-    private List<String> alias = new ArrayList<>(6);
 
 
     @BeforeClass(enabled = true)
@@ -44,6 +43,9 @@ public class TestNonAlignedTSMinus extends BaseTestSuite {
             session.deleteStorageGroup(database);
         }
         session.setStorageGroup(database);
+        if (checkTemplateExists(templateName)) {
+            session.dropSchemaTemplate(templateName);
+        }
         measureTSTypeInfos.put("s_boolean", TSDataType.BOOLEAN);
         measureTSTypeInfos.put("s_int", TSDataType.INT32);
         measureTSTypeInfos.put("s_long", TSDataType.INT64);
@@ -57,36 +59,49 @@ public class TestNonAlignedTSMinus extends BaseTestSuite {
             dataTypes.add(value);
             schemaList.add(new MeasurementSchema(key, value));
         });
+
     }
 
     @AfterClass
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
         session.deleteStorageGroup(database);
+        session.dropSchemaTemplate(templateName);
     }
     public Iterator<Object[]> getSingleNormal() throws IOException {
         return new CustomDataProvider().load("data/business-insert-records.csv").getData();
     }
 
     @Test(priority = 10)
-    public void testCreateTS() throws IoTDBConnectionException, StatementExecutionException {
-        for (int i = 0; i <3 ; i++) {
-            encodings.add(TSEncoding.RLE);
-        }
-        encodings.add(TSEncoding.GORILLA);
-        encodings.add(TSEncoding.GORILLA);
-        encodings.add(TSEncoding.DICTIONARY);
+    public void testCreateTemplate() throws IoTDBConnectionException, StatementExecutionException, IOException {
+        assert 0 == getTemplateCount(verbose) : "创建前无模版";
+        Template template = new Template(templateName, true);
+        MeasurementNode mNodeS1 =
+                new MeasurementNode("s_boolean", TSDataType.BOOLEAN, TSEncoding.RLE, CompressionType.SNAPPY);
+        MeasurementNode mNodeS2 =
+                new MeasurementNode("s_int", TSDataType.INT32, TSEncoding.RLE, CompressionType.SNAPPY);
+        MeasurementNode mNodeS3 =
+                new MeasurementNode("s_long", TSDataType.INT64, TSEncoding.RLE, CompressionType.SNAPPY);
+        MeasurementNode mNodeS4 =
+                new MeasurementNode("s_float", TSDataType.FLOAT, TSEncoding.GORILLA, CompressionType.SNAPPY);
+        MeasurementNode mNodeS5 =
+                new MeasurementNode("s_double", TSDataType.DOUBLE, TSEncoding.GORILLA, CompressionType.SNAPPY);
+        MeasurementNode mNodeS6 =
+                new MeasurementNode("s_text", TSDataType.TEXT, TSEncoding.DICTIONARY, CompressionType.SNAPPY);
 
-        for (int i = 0; i < 6; i++) {
-            compressors.add(CompressionType.SNAPPY);
-        }
-        measureTSTypeInfos.forEach((key,value) -> {
-            alias.add("aligned_"+key);
-        });
+        template.addToTemplate(mNodeS1);
+        template.addToTemplate(mNodeS2);
+        template.addToTemplate(mNodeS3);
+        template.addToTemplate(mNodeS4);
+        template.addToTemplate(mNodeS5);
+        template.addToTemplate(mNodeS6);
 
-        session.createMultiTimeseries(paths, dataTypes,
-                encodings,compressors,
-                null,null,null, alias);
-        assert  6 == getTimeSeriesCount(device+".*", false) : "创建TS数目";
+        session.createSchemaTemplate(template);
+        //  IOTDB-5437 StatementExecutionException: 300: COUNT_MEASUREMENTShas not been supported.
+//        assert 6 == session.countMeasurementsInTemplate(templateName) : "查看模版中sensor数目";
+        session.setSchemaTemplate(templateName, loadNode);
+        assert 1 == getTemplateCount(verbose) : "创建模版成功";
+        assert checkTemplateContainPath(templateName, loadNode) : "挂载模版成功";
+        assert 1 == getSetPathsCount(templateName,  verbose): "挂载模版成功count";
     }
 
     @Test(priority = 20)
@@ -129,9 +144,9 @@ public class TestNonAlignedTSMinus extends BaseTestSuite {
                 }
             }
         }
-        session.insertTablet(tablet);
-        assert expectCount-1 == getRecordCount(device, verbose) : "插入record数目";
-        Assert.assertThrows(StatementExecutionException.class, ()->session.insertAlignedTablet(tablet));
+        session.insertAlignedTablet(tablet);
+        assert expectCount-1 == getRecordCount(device, true) : "插入record数目";
+        Assert.assertThrows(StatementExecutionException.class, ()->session.insertTablet(tablet));
     }
     @Test(priority = 30)
     public void testQuery() throws IoTDBConnectionException, StatementExecutionException {
@@ -157,65 +172,42 @@ public class TestNonAlignedTSMinus extends BaseTestSuite {
         values.add(4.0);
         values.add("update_value");
         valuesList.add(values);
-        session.insertRecordsOfOneDevice(device, times, measurementsList, datatypeList, valuesList);
+        session.insertAlignedRecordsOfOneDevice(device, times, measurementsList,datatypeList,valuesList);
         checkQueryResult("select s_text from "+device +" where time="+timestamp+";", "update_value");
-        checkQueryResult("select s_double from "+device +" where time="+timestamp+";", 4.0);
-    }
-    @Test(priority = 41)
-    public void testMinusTS() throws IoTDBConnectionException, StatementExecutionException {
-        assert 6 == getTimeSeriesCount(device+".*", false) : "删除TS前，TS数量";
-        session.deleteTimeseries(device+".s_boolean");
-        assert 5 == getTimeSeriesCount(device+".*", false) : "删除TS后，TS数量";
-        measurements.remove(0);
-        dataTypes.remove(0);
-    }
-
-    @Test(priority = 42)
-    public void testInsertAfterUpdate() throws IoTDBConnectionException, StatementExecutionException {
-        long timestamp = 1669109508000L;
-        List<Long> times = new ArrayList<>(1);
-        List<List<String>> valueList = new ArrayList<>(1);
-        List<String> values = new ArrayList<>(5);
-        List<List<String>> measurementList = new ArrayList<>(1);
-        times.add(timestamp);
-        measurementList.add(measurements);
-
-        values.add("1");
-        values.add(String.valueOf(timestamp));
-        values.add(String.valueOf(3.0f));
-        values.add(String.valueOf(4.0));
-        values.add("testInsertAfterUpdate");
-        valueList.add(values);
-
-        session.insertStringRecordsOfOneDevice(device, times, measurementList, valueList);
-        checkQueryResult("select s_long from "+device+" where time="+timestamp+";", timestamp);
-        checkQueryResult("select s_text from "+device+" where time="+timestamp+";", "testInsertAfterUpdate");
+        checkQueryResult("select s_long from "+device +" where time="+timestamp+";", 2);
     }
 
     @Test(priority = 50)
     public void testDelete() throws IoTDBConnectionException, StatementExecutionException {
         session.deleteData(device+".*", 1669109404000L);
-        assert 2 == getRecordCount(device, verbose) : "确认结果:删除后还剩一条数据";
+        assert 1 == getRecordCount(device, true) : "确认结果:删除后还剩一条数据";
     }
     @Test(priority = 60)
     public void testInsertAfterDelete() throws IoTDBConnectionException, StatementExecutionException {
         long timestamp = 1669109406000L;
-        List<Object> values = new ArrayList<>(5);
+        List<Object> values = new ArrayList<>(6);
+        values.add(false);
         values.add(55);
         values.add(timestamp);
         values.add(13.33f);
         values.add(876.44);
         values.add("insert after delete");
-        session.insertRecord(device, timestamp, measurements, dataTypes, values);
-        assert 3 == getRecordCount(device, verbose) : "确认结果:删除后插入成功";
+        session.insertAlignedRecord(device, timestamp, measurements, dataTypes, values);
+        assert 2 == getRecordCount(device, false) : "确认结果:删除后插入成功";
         checkQueryResult("select s_double from "+device+" where time="+timestamp+";", 876.44);
     }
 
     @Test(priority = 70)
-    public void testDropTimeseries() throws IoTDBConnectionException, StatementExecutionException {
-        assert true == session.checkTimeseriesExists(device+".s_int") :"TS int exists";
-        session.deleteTimeseries(device+".*");
-        assert false == session.checkTimeseriesExists(device+".s_int") :"TS int 已删除";
+    public void testDropTemplate() throws IoTDBConnectionException, StatementExecutionException, IOException {
+        assert checkTemplateExists(templateName) : "模版存在";
+//        System.out.println(getPathsCountOfTemplate(templateName));
+        assert checkTemplateContainPath(templateName, loadNode) : "挂载模版路径";
+        assert 1 == getSetPathsCount(templateName, verbose) : "挂载模版路径==1";
+        // IOTDB-5436 StatementExecutionException: 300: Modify template has not been supported.
+//        session.deleteNodeInTemplate(templateName, loadNode);
+//        assert getPathsCountOfTemplate(templateName).isEmpty() : "解除挂载模版成功";
+//        session.dropSchemaTemplate(templateName);
+//        assert false == checkTemplateExists(templateName) : "删除模版成功";
     }
 
 }

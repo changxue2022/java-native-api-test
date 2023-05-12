@@ -10,17 +10,14 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>common</module>
-        <module>business</module>
         <module>details</module>
-        <module>concurrent</module>
-        <module>dynamic</module>
+<!--        <module>concurrent</module>-->
     </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <aspectj.version>1.9.19</aspectj.version>
     </properties>
 
     <dependencies>
@@ -68,17 +65,28 @@
 <!--                            <suiteXmlFile>${project.build.directory}/src/main/resources/testng.xml</suiteXmlFile>-->
                             <suiteXmlFile>src/main/resources/testng.xml</suiteXmlFile>
                         </suiteXmlFiles>
-<!--                        <parallel>class</parallel>-->
+                        <parallel>false</parallel>
 <!--                        <threadCount>1</threadCount>-->
                         <testFailureIgnore>true</testFailureIgnore>
                     </configuration>
-
-                    <version>3.0.0-M4</version>
+                    <version>3.0.0-M5</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-report-plugin</artifactId>
-                    <version>3.0.0-M4</version>
+                    <version>3.0.0-M5</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.2.2</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>test-jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>

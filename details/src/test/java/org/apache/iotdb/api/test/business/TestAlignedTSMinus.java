@@ -1,4 +1,4 @@
-package org.apache.iotdb.api.test.bussiness;
+package org.apache.iotdb.api.test.business;
 
 import org.apache.iotdb.api.test.BaseTestSuite;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
@@ -18,20 +18,22 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * 增加TS non-aligned
- * 创建unaligned Device(6 sensor), 插入数据，查询数据，增加TS，插入数据，查询数据，更新数据，删除数据，删除Device
+ * 减少TS aligned
+ * 创建aligned Device(6 sensor), 插入数据，查询数据，删除数据，减少TS，插入数据，查询数据，删除Device
  * 2022-12-28
  */
-public class TestNonAlignedTSAdd extends BaseTestSuite {
-    private String device = "root.business.nonAlignedTSAdd";
+public class TestAlignedTSMinus extends BaseTestSuite {
+    private String device = "root.business.alignedTSMinus";
     private String database = device.substring(0,device.lastIndexOf('.'));
     private int expectCount = 17;
-
-    private List<String> paths = new ArrayList<>(7);
-    private List<String> measurements = new ArrayList<>(7);
-    private List<TSDataType> dataTypes = new ArrayList<>(7);
-    private List<MeasurementSchema> schemaList = new ArrayList<>(7);// tablet
     private Map<String, TSDataType> measureTSTypeInfos = new LinkedHashMap<>(6);
+
+    private List<String> measurements = new ArrayList<>(6);
+    private List<TSDataType> dataTypes = new ArrayList<>(6);
+    private List<MeasurementSchema> schemaList = new ArrayList<>(6);// tablet
+    private List<TSEncoding> encodings = new ArrayList<>(6);
+    private List<CompressionType> compressors = new ArrayList<>(6);
+    private List<String> alias = new ArrayList<>(6);
 
 
     @BeforeClass(enabled = true)
@@ -48,7 +50,6 @@ public class TestNonAlignedTSAdd extends BaseTestSuite {
         measureTSTypeInfos.put("s_text", TSDataType.TEXT);
 
         measureTSTypeInfos.forEach((key,value) -> {
-            paths.add(device + "." + key);
             measurements.add(key);
             dataTypes.add(value);
             schemaList.add(new MeasurementSchema(key, value));
@@ -65,9 +66,6 @@ public class TestNonAlignedTSAdd extends BaseTestSuite {
 
     @Test(priority = 10)
     public void testCreateTS() throws IoTDBConnectionException, StatementExecutionException {
-        List<TSEncoding> encodings = new ArrayList<>(6);
-        List<CompressionType> compressors = new ArrayList<>(6);
-        List<String> alias = new ArrayList<>(6);
         for (int i = 0; i <3 ; i++) {
             encodings.add(TSEncoding.RLE);
         }
@@ -81,17 +79,13 @@ public class TestNonAlignedTSAdd extends BaseTestSuite {
         measureTSTypeInfos.forEach((key,value) -> {
             alias.add("aligned_"+key);
         });
-
-        session.createMultiTimeseries(paths, dataTypes,
-                encodings,compressors,
-                null,null,null, alias);
+        session.createAlignedTimeseries(device, measurements, dataTypes, encodings, compressors, alias);
         assert  6 == getTimeSeriesCount(device+".*", false) : "创建TS数目";
     }
 
     @Test(priority = 20)
     public void testInsert() throws IOException, IoTDBConnectionException, StatementExecutionException {
         Tablet tablet = new Tablet(device, schemaList, 100);
-        assert 0 == getRecordCount(device, verbose) : "插入前record数目";
         int rowIndex = 0;
         int col = 0;
         tablet.initBitMaps();
@@ -129,9 +123,9 @@ public class TestNonAlignedTSAdd extends BaseTestSuite {
                 }
             }
         }
-        session.insertTablet(tablet);
+        session.insertAlignedTablet(tablet);
         assert expectCount-1 == getRecordCount(device, verbose) : "插入record数目";
-        Assert.assertThrows(StatementExecutionException.class, ()->session.insertAlignedTablet(tablet));
+        Assert.assertThrows(StatementExecutionException.class, ()->session.insertTablet(tablet));
     }
     @Test(priority = 30)
     public void testQuery() throws IoTDBConnectionException, StatementExecutionException {
@@ -157,75 +151,68 @@ public class TestNonAlignedTSAdd extends BaseTestSuite {
         values.add(4.0);
         values.add("update_value");
         valuesList.add(values);
-        session.insertRecordsOfOneDevice(device, times, measurementsList, datatypeList, valuesList);
+        session.insertAlignedRecordsOfOneDevice(device, times, measurementsList,datatypeList,valuesList);
         checkQueryResult("select s_text from "+device +" where time="+timestamp+";", "update_value");
         checkQueryResult("select s_long from "+device +" where time="+timestamp+";", 2);
     }
     @Test(priority = 41)
-    public void testAddTS() throws IoTDBConnectionException, StatementExecutionException {
-        assert 6 == getTimeSeriesCount(device+".*", false) : "增加TS前，TS数量";
-        String path = device+".appendFloat";
-        session.createTimeseries(path, TSDataType.FLOAT, TSEncoding.GORILLA, CompressionType.SNAPPY);
-        assert 7 == getTimeSeriesCount(device+".*", false) : "增加TS后，TS数量";
-        measurements.add("appendFloat");
-        dataTypes.add(TSDataType.FLOAT);
+    public void testMinusTS() throws IoTDBConnectionException, StatementExecutionException {
+        assert 6 == getTimeSeriesCount(device+".*", false) : "删除TS前，TS数量";
+        session.deleteTimeseries(device+".s_boolean");
+        assert 5 == getTimeSeriesCount(device+".*", false) : "删除TS后，TS数量";
+        measurements.remove(0);
+        dataTypes.remove(0);
+        encodings.remove(0);
+        compressors.remove(0);
+        alias.remove(0);
     }
 
     @Test(priority = 42)
     public void testInsertAfterUpdate() throws IoTDBConnectionException, StatementExecutionException {
-        long timestamp1 = 1669109508000L;
-        long timestamp2 = 1669109398772L;
-        List<Long> times = new ArrayList<>(2);
-        List<List<String>> valueList = new ArrayList<>(2);
-        List<List<String>> measurementList = new ArrayList<>(2);
-        times.add(timestamp1);
-        times.add(timestamp2);
-        measurementList.add(measurements);
-        measurementList.add(measurements);
+        long timestamp = 1669109398772L;
+        checkQueryResult("select s_text from "+device +" where time="+timestamp+";",  "update_value");
 
-        for (int i=0; i<2; i++) {
-            List<String> values = new ArrayList<>(7);
-            values.add(String.valueOf(false));
-            values.add(String.valueOf(i));
-            values.add(String.valueOf(times.get(i)));
-            values.add(String.valueOf((i+1)*13.33f));
-            values.add(String.valueOf((i+1)*144.44));
-            values.add("add/update after update TS:"+i);
-            values.add(String.valueOf((i+1)*34567f));
-            valueList.add(values);
-        }
-        session.insertStringRecordsOfOneDevice(device, times, measurementList, valueList);
-        checkQueryResult("select s_float from "+device+" where time="+timestamp1+";", 13.33);
-        checkQueryResult("select appendFloat from "+device+" where time="+timestamp1+";", 34567.0);
-        checkQueryResult("select s_long from "+device+" where time="+timestamp2+";", timestamp2);
-        checkQueryResult("select appendFloat from "+device+" where time="+timestamp2+";", 69134.0);
+        List<Long> times = new ArrayList<>(1);
+        List<List<String>> measurementsList = new ArrayList<>(1);
+        List<List<Object>> valuesList = new ArrayList<>(1);
+        List<List<TSDataType>> datatypeList = new ArrayList<>(1);
+        times.add(timestamp);
+        measurementsList.add(measurements);
+        datatypeList.add(dataTypes);
+        List<Object> values = new ArrayList<>(6);
+        values.add(1);
+        values.add(timestamp);
+        values.add(3.0f);
+        values.add(4.0);
+        values.add("testInsertAfterUpdate");
+        valuesList.add(values);
+        session.insertAlignedRecordsOfOneDevice(device, times, measurementsList,datatypeList,valuesList);
+        checkQueryResult("select s_text from "+device +" where time="+timestamp+";", "testInsertAfterUpdate");
+        checkQueryResult("select s_long from "+device +" where time="+timestamp+";", timestamp);
+
     }
-
     @Test(priority = 50)
     public void testDelete() throws IoTDBConnectionException, StatementExecutionException {
         session.deleteData(device+".*", 1669109404000L);
-        assert 2 == getRecordCount(device, false) : "确认结果:删除后还剩一条数据";
+        assert 1 == getRecordCount(device, verbose) : "确认结果:删除后还剩一条数据";
     }
     @Test(priority = 60)
     public void testInsertAfterDelete() throws IoTDBConnectionException, StatementExecutionException {
         List<Object> values = new ArrayList<>(6);
-        values.add(true);
         values.add(55);
         values.add(1669109406000L);
         values.add(13.33f);
         values.add(876.44);
         values.add("insert after delete");
-        values.add(23.33f);
-        session.insertRecord(device, 1669109406000L, measurements, dataTypes, values);
-        assert 3 == getRecordCount(device, false) : "确认结果:删除后插入成功";
-        checkQueryResult("select appendFloat from "+device+" where time=1669109406000;", 23.33f);
+        session.insertAlignedRecord(device, 1669109406000L, measurements, dataTypes, values);
+        assert 2 == getRecordCount(device, false) : "确认结果:删除后插入成功";
     }
 
     @Test(priority = 70)
     public void testDropTimeseries() throws IoTDBConnectionException, StatementExecutionException {
-        assert true == session.checkTimeseriesExists(device+".s_boolean") :"TS boolean exists";
+        assert true == session.checkTimeseriesExists(device+".s_int") :"TS int exists";
         session.deleteTimeseries(device+".*");
-        assert false == session.checkTimeseriesExists(device+".s_boolean") :"TS boolean 已删除";
+        assert false == session.checkTimeseriesExists(device+".s_int") :"TS int 已删除";
     }
 
 }

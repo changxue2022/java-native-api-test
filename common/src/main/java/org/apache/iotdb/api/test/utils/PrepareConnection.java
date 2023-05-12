@@ -43,7 +43,7 @@ public class PrepareConnection {
                         .port(Integer.parseInt(config.getValue("port")))
                         .username(config.getValue("user"))
                         .password(config.getValue("password"))
-//                        .enableRedirection(false)
+                        .enableRedirection(false)
                         .build();
             }
         }

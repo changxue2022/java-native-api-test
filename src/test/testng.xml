@@ -3,4 +3,8 @@
 <suite name="Default Suite" verbose="1">
     <test name="java-native-api-test">
     </test> <!-- java-native-api-test -->
+    <listeners>
+        <listener class-name="org.testng.reporters.XMLSuiteResultWriter"/>
+        <listener class-name="org.testng.reporters.JUnitXMLReporter"/>
+    </listeners>
 </suite> <!-- Default Suite -->

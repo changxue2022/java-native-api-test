@@ -1,4 +1,4 @@
-package org.apache.iotdb.api.test.bussiness;
+package org.apache.iotdb.api.test.business;
 
 import org.apache.iotdb.api.test.BaseTestSuite;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
@@ -24,9 +24,9 @@ import java.util.*;
  * 创建aligned template(6 sensor),插入数据，查询数据，删除数据，插入数据，删除template, 查询
  * 2022-12-29
  */
-public class TestTemplateAligned extends BaseTestSuite {
-    private String templateName = "aligned_template";
-    private String loadNode = "root.business.aligned";
+public class TestTemplateNonAligned extends BaseTestSuite {
+    private String templateName = "nonAligned_template";
+    private String loadNode = "root.business.nonAligned";
     private String device = loadNode+".d1";
     private String database = loadNode.substring(0,loadNode.lastIndexOf('.'));
     private int expectCount = 17;
@@ -64,8 +64,12 @@ public class TestTemplateAligned extends BaseTestSuite {
 
     @AfterClass
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
-        session.deleteStorageGroup(database);
-        session.dropSchemaTemplate(templateName);
+        if (checkStroageGroupExists(database)) {
+            session.deleteStorageGroup(database);
+        }
+        if (checkTemplateExists(templateName)) {
+            session.dropSchemaTemplate(templateName);
+        }
     }
     public Iterator<Object[]> getSingleNormal() throws IOException {
         return new CustomDataProvider().load("data/business-insert-records.csv").getData();
@@ -74,7 +78,7 @@ public class TestTemplateAligned extends BaseTestSuite {
     @Test(priority = 10)
     public void testCreateTemplate() throws IoTDBConnectionException, StatementExecutionException, IOException {
         assert 0 == getTemplateCount(verbose) : "创建前无模版";
-        Template template = new Template(templateName, true);
+        Template template = new Template(templateName, false);
         MeasurementNode mNodeS1 =
                 new MeasurementNode("s_boolean", TSDataType.BOOLEAN, TSEncoding.RLE, CompressionType.SNAPPY);
         MeasurementNode mNodeS2 =
@@ -96,12 +100,13 @@ public class TestTemplateAligned extends BaseTestSuite {
         template.addToTemplate(mNodeS6);
 
         session.createSchemaTemplate(template);
-        //  IOTDB-5437 StatementExecutionException: 300: COUNT_MEASUREMENTShas not been supported.
+        // IOTDB-5437 StatementExecutionException: 300: COUNT_MEASUREMENTShas not been supported.
 //        assert 6 == session.countMeasurementsInTemplate(templateName) : "查看模版中sensor数目";
+        assert 6 == getTSCountInTemplate(templateName, verbose) : "查看模版中sensor数目";
         session.setSchemaTemplate(templateName, loadNode);
-        assert 1 == getTemplateCount(verbose) : "创建模版成功";
+        assert 1 == getTemplateCount(verbose): "创建模版成功";
+        assert 1 == getSetPathsCount(templateName, verbose) : "挂载模版成功count";
         assert checkTemplateContainPath(templateName, loadNode) : "挂载模版成功";
-        assert 1 == getSetPathsCount(templateName,  verbose): "挂载模版成功count";
     }
 
     @Test(priority = 20)
@@ -144,9 +149,9 @@ public class TestTemplateAligned extends BaseTestSuite {
                 }
             }
         }
-        session.insertAlignedTablet(tablet);
-        assert expectCount-1 == getRecordCount(device, true) : "插入record数目";
-        Assert.assertThrows(StatementExecutionException.class, ()->session.insertTablet(tablet));
+        session.insertTablet(tablet);
+        assert expectCount-1 == getRecordCount(device, verbose) : "插入record数目";
+        Assert.assertThrows(StatementExecutionException.class, ()->session.insertAlignedTablet(tablet));
     }
     @Test(priority = 30)
     public void testQuery() throws IoTDBConnectionException, StatementExecutionException {
@@ -172,7 +177,7 @@ public class TestTemplateAligned extends BaseTestSuite {
         values.add(4.0);
         values.add("update_value");
         valuesList.add(values);
-        session.insertAlignedRecordsOfOneDevice(device, times, measurementsList,datatypeList,valuesList);
+        session.insertRecordsOfOneDevice(device, times, measurementsList,datatypeList,valuesList);
         checkQueryResult("select s_text from "+device +" where time="+timestamp+";", "update_value");
         checkQueryResult("select s_long from "+device +" where time="+timestamp+";", 2);
     }
@@ -180,7 +185,7 @@ public class TestTemplateAligned extends BaseTestSuite {
     @Test(priority = 50)
     public void testDelete() throws IoTDBConnectionException, StatementExecutionException {
         session.deleteData(device+".*", 1669109404000L);
-        assert 1 == getRecordCount(device, true) : "确认结果:删除后还剩一条数据";
+        assert 1 == getRecordCount(device, verbose) : "确认结果:删除后还剩一条数据";
     }
     @Test(priority = 60)
     public void testInsertAfterDelete() throws IoTDBConnectionException, StatementExecutionException {
@@ -192,7 +197,7 @@ public class TestTemplateAligned extends BaseTestSuite {
         values.add(13.33f);
         values.add(876.44);
         values.add("insert after delete");
-        session.insertAlignedRecord(device, timestamp, measurements, dataTypes, values);
+        session.insertRecord(device, timestamp, measurements, dataTypes, values);
         assert 2 == getRecordCount(device, false) : "确认结果:删除后插入成功";
         checkQueryResult("select s_double from "+device+" where time="+timestamp+";", 876.44);
     }
@@ -200,14 +205,18 @@ public class TestTemplateAligned extends BaseTestSuite {
     @Test(priority = 70)
     public void testDropTemplate() throws IoTDBConnectionException, StatementExecutionException, IOException {
         assert checkTemplateExists(templateName) : "模版存在";
-//        System.out.println(getPathsCountOfTemplate(templateName));
         assert checkTemplateContainPath(templateName, loadNode) : "挂载模版路径";
-        assert 1 == getSetPathsCount(templateName, verbose) : "挂载模版路径==1";
+        assert 1 == getSetPathsCount(templateName, verbose) : "挂载路径数";
+        assert 1 == getActivePathsCount(templateName, verbose) : "激活路径数";
+        deactiveTemplate(templateName, device);
         // IOTDB-5436 StatementExecutionException: 300: Modify template has not been supported.
 //        session.deleteNodeInTemplate(templateName, loadNode);
-//        assert getPathsCountOfTemplate(templateName).isEmpty() : "解除挂载模版成功";
-//        session.dropSchemaTemplate(templateName);
-//        assert false == checkTemplateExists(templateName) : "删除模版成功";
+        assert 0 == getActivePathsCount(templateName, verbose) : "解除挂载模版路径成功";
+        session.unsetSchemaTemplate(loadNode, templateName);
+        assert 0 == getSetPathsCount(templateName, verbose) : "卸载路径成功";
+        assert false == checkTemplateContainPath(templateName, loadNode) : "挂载模版路径";
+        session.dropSchemaTemplate(templateName);
+        assert false == checkTemplateExists(templateName) : "删除模版成功";
     }
 
 }
