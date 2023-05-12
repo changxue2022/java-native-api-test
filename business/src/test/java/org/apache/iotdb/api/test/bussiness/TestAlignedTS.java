@@ -35,9 +35,9 @@ public class TestAlignedTS extends BaseTestSuite {
     @BeforeClass(enabled = true)
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException, IOException {
         if (checkStroageGroupExists(database)) {
-            session.deleteStorageGroup(database);
+            session.deleteDatabase(database);
         }
-        session.setStorageGroup(database);
+        session.createDatabase(database);
         measureTSTypeInfos.put("s_boolean", TSDataType.BOOLEAN);
         measureTSTypeInfos.put("s_int", TSDataType.INT32);
         measureTSTypeInfos.put("s_long", TSDataType.INT64);
@@ -55,7 +55,7 @@ public class TestAlignedTS extends BaseTestSuite {
 
     @AfterClass(enabled = true)
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
-        session.deleteStorageGroup(database);
+        session.deleteDatabase(database);
     }
     public Iterator<Object[]> getSingleNormal() throws IOException {
         return new CustomDataProvider().load("data/business-insert-records.csv").getData();

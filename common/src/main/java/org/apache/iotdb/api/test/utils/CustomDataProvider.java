@@ -68,7 +68,9 @@ public class CustomDataProvider {
      * @return
      */
     private @NotNull List processListField(@NotNull String cols) {
-        if (cols.startsWith("m:")) {
+        if (cols.equals("null")) {
+            return null;
+        } else if (cols.startsWith("m:")) {
             List<Map<String, String>> result = new ArrayList<Map<String, String>>();
             for (String item_l: cols.split(",")) {
                 item_l = item_l.substring(2);
@@ -112,7 +114,6 @@ public class CustomDataProvider {
             List<Object> columns_arr = new ArrayList<>();
             Iterator<String> record_iter = record.iterator();
             // 如果以#开头，那么跳过
-            out.println("#############");
             String cols = record_iter.next();
             boolean breakFlag = false;
             if (!cols.startsWith("#")) {
@@ -135,7 +136,7 @@ public class CustomDataProvider {
                     }
                     if (breakFlag) break;
                 }
-                out.println(columns_arr);
+//                out.println(columns_arr);
                 this.testCases.add(columns_arr.stream().toArray());
             }
         }

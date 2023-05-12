@@ -109,7 +109,7 @@ public class TestTimeSeriesParams extends BaseTestSuite {
         testCreateTS_null("alias");
     }
 
-    private void testCreateMultiTS_null(String name) throws IoTDBConnectionException, StatementExecutionException {
+    private void testCreateMultiTS_null(String name, boolean isAligned, boolean nullInList) throws IoTDBConnectionException, StatementExecutionException {
         List<String> paths = new ArrayList<>();
         List<TSDataType> dataTypes = new ArrayList<>();
         List<TSEncoding> encodings = new ArrayList<>();
@@ -119,7 +119,13 @@ public class TestTimeSeriesParams extends BaseTestSuite {
         List<Map<String, String>> attrs = new ArrayList<>();
         List<String> alias = new ArrayList<>();
 
-        String path = database+"testMultiCreateNull." + name;
+        String device = database+".testMultiCreateNull_true";
+        String path = "";
+        if (isAligned) {
+            path = name;
+        } else {
+            path = database+".testMultiCreateNull_false." + name;
+        }
         TSDataType dataType = TSDataType.BOOLEAN;
         TSEncoding encoding = TSEncoding.PLAIN;
         CompressionType compress = CompressionType.UNCOMPRESSED;
@@ -127,7 +133,7 @@ public class TestTimeSeriesParams extends BaseTestSuite {
         Map<String, String> prop = new HashMap<>();
         Map<String, String> tag = new HashMap<>();
         Map<String, String> attr = new HashMap<>();
-        String alias_single = "test_multiCreateNull_" + name;
+        String alias_single = "test_multiCreateNull_"+isAligned+"_" + name;
 
         paths.add(path);
         dataTypes.add(dataType);
@@ -140,73 +146,219 @@ public class TestTimeSeriesParams extends BaseTestSuite {
 
         switch (name) {
             case "path":
-                paths = null;
+                if (nullInList) {
+                    paths.clear();
+                    paths.add(null);
+                } else {
+                    paths = null;
+                }
                 break;
             case "dataType":
-                dataTypes = null;
+                if (nullInList) {
+                    dataTypes.clear();
+                    dataTypes.add(null);
+                } else {
+                    dataTypes = null;
+                }
                 break;
             case "encoding":
-                encodings = null;
+                if (nullInList) {
+                    encodings.clear();
+                    encodings.add(null);
+                } else {
+                    encodings = null;
+                }
                 break;
             case "compress":
-                compressionTypes = null;
+                if (nullInList) {
+                    compressionTypes.clear();
+                    compressionTypes.add(null);
+                } else {
+                    compressionTypes = null;
+                }
                 break;
             case "props":
-                props = null;
+                if (nullInList) {
+                    props.clear();
+                    props.add(null);
+                } else {
+                    props = null;
+                }
                 break;
             case "tags":
-                tags = null;
+                if (nullInList) {
+                    tags.clear();
+                    tags.add(null);
+                } else {
+                    tags = null;
+                }
                 break;
             case "attrs":
-                attrs = null;
+                if (nullInList) {
+                    attrs.clear();
+                    attrs.add(null);
+                } else {
+                    attrs = null;
+                }
                 break;
             case "alias":
-                alias = null;
+                if (nullInList) {
+                    alias.clear();
+                    alias.add(null);
+                } else {
+                    alias = null;
+                }
                 break;
         }
-        session.createMultiTimeseries(
-                paths,
-                dataTypes,
-                encodings,
-                compressionTypes,
-                props,
-                tags,
-                attrs,
-                alias
-        );
+        if (isAligned) {
+            session.createAlignedTimeseries(device, paths, dataTypes,
+                    encodings,
+                    compressionTypes,
+                    alias,
+                    tags,
+                    attrs
+            );
+        } else {
+            session.createMultiTimeseries(
+                    paths,
+                    dataTypes,
+                    encodings,
+                    compressionTypes,
+                    props,
+                    tags,
+                    attrs,
+                    alias
+            );
+        }
     }
     // TIMECHODB-127
+    @Test(expectedExceptions = StatementExecutionException.class, priority = 50)
+    public void testCreateAligned_nullPaths() throws IoTDBConnectionException, StatementExecutionException {
+        testCreateMultiTS_null("path", true, false);
+    }
+    @Test(expectedExceptions = StatementExecutionException.class, priority = 51)
+    public void testCreatAligned_nullDataTypes() throws IoTDBConnectionException, StatementExecutionException {
+        testCreateMultiTS_null("dataType", true, false);
+    }
+    @Test(expectedExceptions = StatementExecutionException.class, priority = 52)
+    public void testCreateAligned_nullEncoding() throws IoTDBConnectionException, StatementExecutionException {
+        testCreateMultiTS_null("encoding", true, false);
+    }
+    @Test(expectedExceptions = StatementExecutionException.class, priority = 53)
+    public void testCreateAligned_nullCompression() throws IoTDBConnectionException, StatementExecutionException {
+        testCreateMultiTS_null("compress", true, false);
+    }
+    @Test(priority = 54)
+    public void testCreateAligned_nullProps() throws IoTDBConnectionException, StatementExecutionException {
+        testCreateMultiTS_null("props", true, false);
+    }
+    @Test(priority = 55)
+    public void testCreateAligned_nullTags() throws IoTDBConnectionException, StatementExecutionException {
+        testCreateMultiTS_null("tags", true, false);
+    }
+    @Test(priority = 56)
+    public void testCreateAligned_nullAttrs() throws IoTDBConnectionException, StatementExecutionException {
+        testCreateMultiTS_null("attrs", true, false);
+    }
+    @Test(priority = 57)
+    public void testCreateAligned_nullAlias() throws IoTDBConnectionException, StatementExecutionException {
+        testCreateMultiTS_null("alias", true, false);
+    }
     @Test(expectedExceptions = StatementExecutionException.class, priority = 30)
     public void testCreateMulti_nullPaths() throws IoTDBConnectionException, StatementExecutionException {
-        testCreateMultiTS_null("path");
+        testCreateMultiTS_null("path", false, false);
     }
     @Test(expectedExceptions = StatementExecutionException.class, priority = 31)
     public void testCreateMulti_nullDataTypes() throws IoTDBConnectionException, StatementExecutionException {
-        testCreateMultiTS_null("dataType");
+        testCreateMultiTS_null("dataType", false, false);
     }
     @Test(expectedExceptions = StatementExecutionException.class, priority = 32)
     public void testCreateMulti_nullEncoding() throws IoTDBConnectionException, StatementExecutionException {
-        testCreateMultiTS_null("encoding");
+        testCreateMultiTS_null("encoding", false, false);
     }
-    @Test(expectedExceptions = StatementExecutionException.class, priority = 32)
+    @Test(expectedExceptions = StatementExecutionException.class, priority = 33)
     public void testCreateMulti_nullCompression() throws IoTDBConnectionException, StatementExecutionException {
-        testCreateMultiTS_null("compress");
-    }
-    @Test(priority = 33)
-    public void testCreateMulti_nullProps() throws IoTDBConnectionException, StatementExecutionException {
-        testCreateMultiTS_null("props");
+        testCreateMultiTS_null("compress", false, false);
     }
     @Test(priority = 34)
-    public void testCreateMulti_nullTags() throws IoTDBConnectionException, StatementExecutionException {
-        testCreateMultiTS_null("tags");
+    public void testCreateMulti_nullProps() throws IoTDBConnectionException, StatementExecutionException {
+        testCreateMultiTS_null("props", false, false);
     }
     @Test(priority = 35)
-    public void testCreateMulti_nullAttrs() throws IoTDBConnectionException, StatementExecutionException {
-        testCreateMultiTS_null("attrs");
+    public void testCreateMulti_nullTags() throws IoTDBConnectionException, StatementExecutionException {
+        testCreateMultiTS_null("tags", false, false);
     }
     @Test(priority = 36)
+    public void testCreateMulti_nullAttrs() throws IoTDBConnectionException, StatementExecutionException {
+        testCreateMultiTS_null("attrs", false, false);
+    }
+    @Test(priority = 37)
     public void testCreateMulti_nullAlias() throws IoTDBConnectionException, StatementExecutionException {
-        testCreateMultiTS_null("alias");
+        testCreateMultiTS_null("alias", false, false);
+    }
+   @Test(expectedExceptions = StatementExecutionException.class, priority = 60)
+    public void testCreateAligned_pathsNullInList() throws IoTDBConnectionException, StatementExecutionException {
+        testCreateMultiTS_null("path", true, true);
+    }
+    @Test(expectedExceptions = StatementExecutionException.class, priority = 61)
+    public void testCreatAligned_dataTypesNullInList() throws IoTDBConnectionException, StatementExecutionException {
+        testCreateMultiTS_null("dataType", true, true);
+    }
+    @Test(expectedExceptions = StatementExecutionException.class, priority = 62)
+    public void testCreateAligned_encodingNullInList() throws IoTDBConnectionException, StatementExecutionException {
+        testCreateMultiTS_null("encoding", true, true);
+    }
+    @Test(expectedExceptions = StatementExecutionException.class, priority = 63)
+    public void testCreateAligned_CompressionNullInList() throws IoTDBConnectionException, StatementExecutionException {
+        testCreateMultiTS_null("compress", true, true);
+    }
+    @Test(priority = 64)
+    public void testCreateAligned_PropsNullInList() throws IoTDBConnectionException, StatementExecutionException {
+        testCreateMultiTS_null("props", true, true);
+    }
+    @Test(priority = 65)
+    public void testCreateAligned_TagsNullInList() throws IoTDBConnectionException, StatementExecutionException {
+        testCreateMultiTS_null("tags", true, true);
+    }
+    @Test(priority = 66)
+    public void testCreateAligned_AttrsNullInList() throws IoTDBConnectionException, StatementExecutionException {
+        testCreateMultiTS_null("attrs", true, true);
+    }
+    @Test(priority = 67)
+    public void testCreateAligned_AliasNullInList() throws IoTDBConnectionException, StatementExecutionException {
+        testCreateMultiTS_null("alias", true, true);
+    }
+    @Test(expectedExceptions = StatementExecutionException.class, priority = 70)
+    public void testCreateMulti_PathsNullInList() throws IoTDBConnectionException, StatementExecutionException {
+        testCreateMultiTS_null("path", false, true);
+    }
+    @Test(expectedExceptions = StatementExecutionException.class, priority = 71)
+    public void testCreateMulti_DataTypesNullInList() throws IoTDBConnectionException, StatementExecutionException {
+        testCreateMultiTS_null("dataType", false, true);
+    }
+    @Test(expectedExceptions = StatementExecutionException.class, priority = 72)
+    public void testCreateMulti_EncodingNullInList() throws IoTDBConnectionException, StatementExecutionException {
+        testCreateMultiTS_null("encoding", false, true);
+    }
+    @Test(expectedExceptions = StatementExecutionException.class, priority = 73)
+    public void testCreateMulti_CompressionNullInList() throws IoTDBConnectionException, StatementExecutionException {
+        testCreateMultiTS_null("compress", false, true);
+    }
+    @Test(priority = 74)
+    public void testCreateMulti_PropsNullInList() throws IoTDBConnectionException, StatementExecutionException {
+        testCreateMultiTS_null("props", false, true);
+    }
+    @Test(priority = 75)
+    public void testCreateMulti_TagsNullInList() throws IoTDBConnectionException, StatementExecutionException {
+        testCreateMultiTS_null("tags", false, true);
+    }
+    @Test(priority = 76)
+    public void testCreateMulti_AttrsNullInList() throws IoTDBConnectionException, StatementExecutionException {
+        testCreateMultiTS_null("attrs", false, true);
+    }
+    @Test(priority = 77)
+    public void testCreateMulti_AliasNullInList() throws IoTDBConnectionException, StatementExecutionException {
+        testCreateMultiTS_null("alias", false, true);
     }
 
     // TIMECHODB-128

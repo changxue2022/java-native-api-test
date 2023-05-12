@@ -62,7 +62,7 @@ public class Tmp extends BaseTestSuite {
         props.put("Prop1", "3");
         session.createTimeseries("root.sg.d.s_name", TSDataType.BOOLEAN, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED, props, null, null, null);
     }
-    @Test
+//    @Test
     public void test111() throws IOException {
         Iterator<Object[]> i = new CustomDataProvider().load("data/timeseries-multi.csv").getData();
         while (i.hasNext()) {
@@ -71,6 +71,21 @@ public class Tmp extends BaseTestSuite {
             }
             out.println("--------------");
         }
+    }
+    @Test
+    public void testAligned() throws IoTDBConnectionException, StatementExecutionException {
+        String device = "root.sg.d1.max.abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUV.d";
+        List<String> tsList = new ArrayList<>(1);
+        List<String> alias = new ArrayList<>(1);
+        List<TSDataType> tsDataTypes = new ArrayList<>(1);
+        List<TSEncoding> tsEncodings = new ArrayList<>(1);
+        List<CompressionType> compressionTypes = new ArrayList<>(1);
+        tsList.add("s_text1");
+        tsDataTypes.add(TSDataType.TEXT);
+        tsEncodings.add(TSEncoding.PLAIN);
+        compressionTypes.add(CompressionType.UNCOMPRESSED);
+        alias.add(null);
+        session.createAlignedTimeseries(device,tsList, tsDataTypes,tsEncodings,compressionTypes,alias);
     }
 
 }

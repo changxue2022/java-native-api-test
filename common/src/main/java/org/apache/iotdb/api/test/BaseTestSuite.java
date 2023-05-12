@@ -15,9 +15,7 @@ import org.apache.iotdb.tsfile.write.record.Tablet;
 import org.apache.iotdb.tsfile.write.schema.MeasurementSchema;
 import org.jetbrains.annotations.NotNull;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeSuite;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -113,6 +111,7 @@ public class BaseTestSuite {
     }
 
     public void checkQueryResult(String sql, Object expectValue) throws IoTDBConnectionException, StatementExecutionException {
+        System.out.println("sql="+sql);
         SessionDataSet dataSet = session.executeQueryStatement(sql);
         while (dataSet.hasNext()) {
             RowRecord records = dataSet.next();
@@ -213,9 +212,10 @@ public class BaseTestSuite {
         }
     }
     public void insertRecordMulti(String device, List<String> tsNames, List<TSDataType> tsDataTypeList, int timestamp, boolean isAligned, List<String> aliasList) throws IoTDBConnectionException, StatementExecutionException {
-        System.out.println("######## insertRecordMulti device = "+device);
+//        System.out.println("######## insertRecordMulti device = "+device);
         List<Object> values = new ArrayList<>(tsDataTypeList.size());
-        for (TSDataType tsDataType : tsDataTypeList) {
+        for (int i = 0; i < tsDataTypeList.size(); i++) {
+            TSDataType tsDataType = tsDataTypeList.get(i);
             switch (tsDataType) {
                 case BOOLEAN:
                     values.add(GenerateValues.getBoolean());
@@ -236,15 +236,15 @@ public class BaseTestSuite {
                     values.add(GenerateValues.getCombinedCode());
                     break;
             }
-//            System.out.println("-----------");
-//            System.out.println(tsDataTypeList);
-//            System.out.println(values);
-//            System.out.println("-----------");
-            if (isAligned) {
-                session.insertAlignedRecord(device, timestamp++, tsNames, tsDataTypeList, values);
-            } else {
-                session.insertRecord(device, timestamp++, tsNames, tsDataTypeList, values);
-            }
+        }
+//        System.out.println("-----------");
+//        System.out.println(tsDataTypeList);
+//        System.out.println(values);
+//        System.out.println("-----------");
+        if (isAligned) {
+            session.insertAlignedRecord(device, timestamp, tsNames, tsDataTypeList, values);
+        } else {
+            session.insertRecord(device, timestamp, tsNames, tsDataTypeList, values);
         }
         for (int i = 0; i < tsNames.size(); i++) {
             checkQueryResult("select " + tsNames.get(i) + " from "
@@ -314,7 +314,7 @@ public class BaseTestSuite {
     public void queryLastData(List<String> paths, List<String> expectValues, boolean verbose, Long gtTime) throws IoTDBConnectionException, StatementExecutionException {
         SessionDataSet dataSet ;
         if (gtTime != null) {
-            dataSet = session.executeLastDataQuery(paths, gtTime);
+            dataSet = session.executeLastDataQuery(paths, gtTime, 1000L);
         } else {
             dataSet = session.executeLastDataQuery(paths);
         }

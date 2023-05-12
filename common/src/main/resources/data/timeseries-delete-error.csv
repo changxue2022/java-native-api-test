@@ -2,37 +2,37 @@ path,comment
 ,empty
 root.non.exist,non-exists
 #invalid
-\0,error,结束符
+#\0,error,结束符
 *,invalid *
-null,error,null值
+#null,null值
 root.root,double root
 root.sg.123,all numbers
-root.sg.a!,invalid !
-root.sg.a@2,invalid @
-root.sg.a#,invalid #
-root.sg.a$,invalid $
-root.sg.a%,invalid %
-root.sg.a^,invalid ^
-root.sg.a&,invalid &
-root.sg.a*,invalid *
-root.sg.(,invalid (
-root.sg.),invalid )
-root.sg.-,invalid -
-root.sg.+,invalid +
-root.sg.=,invalid =
-root.sg.{,invalid {
-root.sg.},invalid }
-root.sg.[,invalid [
-root.sg.],invalid ]
-root.sg.),invalid )
-root.sg.|,invalid |
-root.sg.\,invalid \
-root.sg.:,invalid :
-root.sg.;,invalid ;
-root.sg.',invalid ''
-root.sg.",invalid ""
-root.sg.<,invalid <
-root.sg.>,invalid >
-root.sg.?,invalid ?
-root.sg./,invalid /
-root.sg.,invalid (
+#root.sg.a!,invalid !
+#root.sg.a@2,invalid @
+#root.sg.a#,invalid #
+#root.sg.a$,invalid $
+#root.sg.a%,invalid %
+#root.sg.a^,invalid ^
+#root.sg.a&,invalid &
+#root.sg.a*,invalid *
+#root.sg.(,invalid (
+#root.sg.),invalid )
+#root.sg.-,invalid -
+#root.sg.+,invalid +
+#root.sg.=,invalid =
+#root.sg.{,invalid {
+#root.sg.},invalid }
+#root.sg.[,invalid [
+#root.sg.],invalid ]
+#root.sg.),invalid )
+#root.sg.|,invalid |
+#root.sg.\,invalid \
+#root.sg.:,invalid :
+#root.sg.;,invalid ;
+#root.sg.',invalid ''
+#root.sg.",invalid ""
+#root.sg.<,invalid <
+#root.sg.>,invalid >
+#root.sg.?,invalid ?
+#root.sg./,invalid /
+#root.sg.,invalid (

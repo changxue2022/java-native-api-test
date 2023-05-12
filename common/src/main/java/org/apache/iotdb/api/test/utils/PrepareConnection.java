@@ -3,6 +3,7 @@ package org.apache.iotdb.api.test.utils;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
 import org.apache.iotdb.session.Session;
+import org.apache.iotdb.session.pool.SessionPool;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.apache.iotdb.tsfile.write.record.Tablet;
 import org.apache.iotdb.tsfile.write.schema.MeasurementSchema;
@@ -17,8 +18,16 @@ import static java.lang.System.out;
 
 public class PrepareConnection {
     private static Session session = null;
+    private static SessionPool sessionPool = null;
+    private static ReadConfig config;
+    static {
+        try {
+            config = ReadConfig.getInstance();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
     public static Session getSession() throws IoTDBConnectionException, IOException {
-        ReadConfig config = ReadConfig.getInstance();
         if ( session == null) {
             if (config.getValue("is_cluster").equals("true")) {
                 String host_nodes_str = config.getValue("host_nodes");
@@ -26,6 +35,7 @@ public class PrepareConnection {
                         .nodeUrls(Arrays.asList(host_nodes_str.split(",")))
                         .username(config.getValue("user"))
                         .password(config.getValue("password"))
+                        .enableRedirection(false)
                         .build();
             } else {
                 session = new Session.Builder()
@@ -33,15 +43,39 @@ public class PrepareConnection {
                         .port(Integer.parseInt(config.getValue("port")))
                         .username(config.getValue("user"))
                         .password(config.getValue("password"))
-                        .enableRedirection(false)
+//                        .enableRedirection(false)
                         .build();
             }
         }
         session.open(false);
-
         // set session fetchSize
         session.setFetchSize(10000);
         return session;
+    }
+    public static SessionPool getSessionPool() {
+        if (sessionPool == null) {
+            if (config.getValue("is_cluster").equals("true")) {
+                String host_nodes_str = config.getValue("host_nodes");
+                sessionPool = new SessionPool.Builder()
+                        .nodeUrls(Arrays.asList(host_nodes_str.split(",")))
+                        .user(config.getValue("user"))
+                        .password(config.getValue("password"))
+                        .maxSize(10)
+                        .build();
+            } else {
+                sessionPool = new SessionPool.Builder()
+                        .host(config.getValue("host"))
+                        .port(Integer.parseInt(config.getValue("port")))
+                        .user(config.getValue("user"))
+                        .password(config.getValue("password"))
+                        .maxSize(10)
+                        .build();
+            }
+        }
+
+        // set session fetchSize
+        sessionPool.setFetchSize(10000);
+        return sessionPool;
     }
 
     public static void main(String[] args) throws IOException, IoTDBConnectionException, StatementExecutionException {

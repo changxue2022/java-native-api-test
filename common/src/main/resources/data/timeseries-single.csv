@@ -1,6 +1,6 @@
 device,tsname,datatype,encoding,compressor,props,tags,attributes,measurementAlias,comment
 root.sg.d1.ts1,boolean,boolean,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,boolean_PLAIN_UNCOMPRESSED,boolean plain 不压缩
-root.sg.d1.ts1,_boolean2,boolean,RLE,UNCOMPRESSED,m:null,m:Tag1:2,m:Attr1:5,Contains,Boolean rle 不压缩 有int prop tag attire
+root.sg.d1.ts1,_boolean2,boolean,RLE,UNCOMPRESSED,m:null,m:Tag1:2,m:Attr1:5,`Contains`,Boolean rle 不压缩 有int prop tag attire
 root.sg.d1.ts1,_boolean21,boolean,RLE,UNCOMPRESSED,m:null,m:Tag1:2,m:Attr1:5,boolean21,Boolean rle 不压缩 有int prop tag attire
 root.sg.d1.ts1,2_boolean22,boolean,RLE,UNCOMPRESSED,m:null,m:null,m:Attr1:5,2_boolean22,Boolean rle 不压缩 有int prop tag attire
 root.sg.d1.ts1,boolean_3,boolean,PLAIN,SNAPPY,m:null,m:tag1:tagValue,m:attr1:attrValue,字符串map值,Boolean plain snappy 有 string prop tag attire
@@ -13,122 +13,122 @@ root.sg.d1.ts1,int,int,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,int_plain_UNCOMPR
 root.sg.d1.ts1,int_2,int,PLAIN,SNAPPY,m:null,m:null,m:null,int_plain_SNAPPY,int plain SNAPPY
 root.sg.d1.ts1,int3_,int,PLAIN,GZIP,m:null,m:null,m:null,int_plain_GZIP,int plain GZIP
 root.sg.d1.ts1,4int,int,PLAIN,LZ4,m:null,m:null,m:null,int_plain_LZ4,int plain LZ4
-root.sg.d1.ts1,_int5,int,PLAIN,SDT,m:null,m:null,m:null,int_plain_SDT,int plain SDT
+root.sg.d1.ts1,_int5,int,PLAIN,ZSTD,m:null,m:null,m:null,int_plain_ZSTD,int plain ZSTD
 root.sg.d1.ts1,_int6,int,RLE,UNCOMPRESSED,m:null,m:null,m:null,int_rle_UNCOMPRESSED,int rle UNCOMPRESSED
 root.sg.d1.ts1,int7,int,RLE,SNAPPY,m:null,m:null,m:null,int_rle_SNAPPY,int rle SNAPPY
 root.sg.d1.ts1,int8,int,RLE,GZIP,m:null,m:null,m:null,int_rle_GZIP,int rle GZIP
 root.sg.d1.ts1,int9,int,RLE,LZ4,m:null,m:null,m:null,int_rle_LZ4,int rle LZ4
-root.sg.d1.ts1,int10,int,RLE,SDT,m:null,m:null,m:null,int_rle_SDT,int rle SDT
+root.sg.d1.ts1,int10,int,RLE,ZSTD,m:null,m:null,m:null,int_rle_ZSTD,int rle ZSTD
 root.sg.d1.ts1,int11,int,TS_2DIFF,UNCOMPRESSED,m:null,m:null,m:null,int_ts_2diff_UNCOMPRESSED,int ts_2diff UNCOMPRESSED
 root.sg.d1.ts1,int12,int,TS_2DIFF,SNAPPY,m:null,m:null,m:null,int_ts_2diff_SNAPPY,int ts_2diff SNAPPY
 root.sg.d1.ts1,int13,int,TS_2DIFF,GZIP,m:null,m:null,m:null,int_ts_2diff_GZIP,int ts_2diff GZIP
 root.sg.d1.ts1,int14,int,TS_2DIFF,LZ4,m:null,m:null,m:null,int_ts_2diff_LZ4,int ts_2diff LZ4
-root.sg.d1.ts1,int15,int,TS_2DIFF,SDT,m:null,m:null,m:null,int_ts_2diff_SDT,int ts_2diff SDT
+root.sg.d1.ts1,int15,int,TS_2DIFF,ZSTD,m:null,m:null,m:null,int_ts_2diff_ZSTD,int ts_2diff ZSTD
 root.sg.d1.ts1,int16,int,GORILLA,UNCOMPRESSED,m:null,m:null,m:null,int_Gorilla_UNCOMPRESSED,int Gorilla UNCOMPRESSED
 root.sg.d1.ts1,int17,int,GORILLA,SNAPPY,m:null,m:null,m:null,int_Gorilla_SNAPPY,int Gorilla SNAPPY
 root.sg.d1.ts1,int18,int,GORILLA,GZIP,m:null,m:null,m:null,int_Gorilla_GZIP,int Gorilla GZIP
 root.sg.d1.ts1,int19,int,GORILLA,LZ4,m:null,m:null,m:null,int_Gorilla_LZ4,int Gorilla LZ4
-root.sg.d1.ts1,int20,int,GORILLA,SDT,m:null,m:null,m:null,int_Gorilla_SDT,int Gorilla SDT
+root.sg.d1.ts1,int20,int,GORILLA,ZSTD,m:null,m:null,m:null,int_Gorilla_ZSTD,int Gorilla ZSTD
 root.sg.d1.ts1,int21,int,FREQ,UNCOMPRESSED,m:null,m:null,m:null,int_Freq_UNCOMPRESSED,int Freq UNCOMPRESSED
 root.sg.d1.ts1,int22,int,FREQ,SNAPPY,m:null,m:null,m:null,int_Freq_SNAPPY,int Freq SNAPPY
 root.sg.d1.ts1,int23,int,FREQ,GZIP,m:null,m:null,m:null,int_Freq_GZIP,int Freq GZIP
 root.sg.d1.ts1,int24,int,FREQ,LZ4,m:null,m:null,m:null,int_Freq_LZ4,int Freq LZ4
-root.sg.d1.ts1,int25,int,FREQ,SDT,m:null,m:null,m:null,int_Freq_SDT,int Freq SDT
+root.sg.d1.ts1,int25,int,FREQ,ZSTD,m:null,m:null,m:null,int_Freq_ZSTD,int Freq ZSTD
 root.sg.d1.ts1,int26,int,ZIGZAG,UNCOMPRESSED,m:null,m:null,m:null,int_Zigzag_UNCOMPRESSED,int Zigzag UNCOMPRESSED
 root.sg.d1.ts1,int27,int,ZIGZAG,SNAPPY,m:null,m:null,m:null,int_Zigzag_SNAPPY,int Zigzag SNAPPY
 root.sg.d1.ts1,int28,int,ZIGZAG,GZIP,m:null,m:null,m:null,int_Zigzag_GZIP,int Zigzag GZIP
 root.sg.d1.ts1,int29,int,ZIGZAG,LZ4,m:null,m:null,m:null,int_Zigzag_LZ4,int Zigzag LZ4
-root.sg.d1.ts1,int30,int,ZIGZAG,SDT,m:null,m:null,m:null,int_Zigzag_SDT,int Zigzag SDT
+root.sg.d1.ts1,int30,int,ZIGZAG,ZSTD,m:null,m:null,m:null,int_Zigzag_ZSTD,int Zigzag ZSTD
 root.sg.d1.ts1,long,long,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,long_plain_UNCOMPRESSED,long plain UNCOMPRESSED
 root.sg.d1.ts1,long2,long,PLAIN,SNAPPY,m:null,m:null,m:null,long_plain_SNAPPY,long plain SNAPPY
 root.sg.d1.ts1,long3,long,PLAIN,GZIP,m:null,m:null,m:null,long_plain_GZIP,long plain GZIP
 root.sg.d1.ts1,long4,long,PLAIN,LZ4,m:null,m:null,m:null,long_plain_LZ4,long plain LZ4
-root.sg.d1.ts1,long5,long,PLAIN,SDT,m:null,m:null,m:null,long_plain_SDT,long plain SDT
+root.sg.d1.ts1,long5,long,PLAIN,ZSTD,m:null,m:null,m:null,long_plain_ZSTD,long plain ZSTD
 root.sg.d1.ts1,long6,long,RLE,UNCOMPRESSED,m:null,m:null,m:null,long_rle_UNCOMPRESSED,long rle UNCOMPRESSED
 root.sg.d1.ts1,long7,long,RLE,SNAPPY,m:null,m:null,m:null,long_rle_SNAPPY,long rle SNAPPY
 root.sg.d1.ts1,long8,long,RLE,GZIP,m:null,m:null,m:null,long_rle_GZIP,long rle GZIP
 root.sg.d1.ts1,long9,long,RLE,LZ4,m:null,m:null,m:null,long_rle_LZ4,long rle LZ4
-root.sg.d1.ts1,long10,long,RLE,SDT,m:null,m:null,m:null,long_rle_SDT,long rle SDT
+root.sg.d1.ts1,long10,long,RLE,ZSTD,m:null,m:null,m:null,long_rle_ZSTD,long rle ZSTD
 root.sg.d1.ts1,long11,long,TS_2DIFF,UNCOMPRESSED,m:null,m:null,m:null,long_ts_2diff_UNCOMPRESSED,long ts_2diff UNCOMPRESSED
 root.sg.d1.ts1,long12,long,TS_2DIFF,SNAPPY,m:null,m:null,m:null,long_ts_2diff_SNAPPY,long ts_2diff SNAPPY
 root.sg.d1.ts1,long13,long,TS_2DIFF,GZIP,m:null,m:null,m:null,long_ts_2diff_GZIP,long ts_2diff GZIP
 root.sg.d1.ts1,long14,long,TS_2DIFF,LZ4,m:null,m:null,m:null,long_ts_2diff_LZ4,long ts_2diff LZ4
-root.sg.d1.ts1,long15,long,TS_2DIFF,SDT,m:null,m:null,m:null,long_ts_2diff_SDT,long ts_2diff SDT
+root.sg.d1.ts1,long15,long,TS_2DIFF,ZSTD,m:null,m:null,m:null,long_ts_2diff_ZSTD,long ts_2diff ZSTD
 root.sg.d1.ts1,long16,long,GORILLA,UNCOMPRESSED,m:null,m:null,m:null,long_Gorilla_UNCOMPRESSED,long Gorilla UNCOMPRESSED
 root.sg.d1.ts1,long17,long,GORILLA,SNAPPY,m:null,m:null,m:null,long_Gorilla_SNAPPY,long Gorilla SNAPPY
 root.sg.d1.ts1,long18,long,GORILLA,GZIP,m:null,m:null,m:null,long_Gorilla_GZIP,long Gorilla GZIP
 root.sg.d1.ts1,long19,long,GORILLA,LZ4,m:null,m:null,m:null,long_Gorilla_LZ4,long Gorilla LZ4
-root.sg.d1.ts1,long20,long,GORILLA,SDT,m:null,m:null,m:null,long_Gorilla_SDT,long Gorilla SDT
+root.sg.d1.ts1,long20,long,GORILLA,ZSTD,m:null,m:null,m:null,long_Gorilla_ZSTD,long Gorilla ZSTD
 root.sg.d1.ts1,long21,long,FREQ,UNCOMPRESSED,m:null,m:null,m:null,long_Freq_UNCOMPRESSED,long Freq UNCOMPRESSED
 root.sg.d1.ts1,long22,long,FREQ,SNAPPY,m:null,m:null,m:null,long_Freq_SNAPPY,long Freq SNAPPY
 root.sg.d1.ts1,long23,long,FREQ,GZIP,m:null,m:null,m:null,long_Freq_GZIP,long Freq GZIP
 root.sg.d1.ts1,long24,long,FREQ,LZ4,m:null,m:null,m:null,long_Freq_LZ4,long Freq LZ4
-root.sg.d1.ts1,long25,long,FREQ,SDT,m:null,m:null,m:null,long_Freq_SDT,long Freq SDT
+root.sg.d1.ts1,long25,long,FREQ,ZSTD,m:null,m:null,m:null,long_Freq_ZSTD,long Freq ZSTD
 root.sg.d1.ts1,long26,long,ZIGZAG,UNCOMPRESSED,m:null,m:null,m:null,long_Zigzag_UNCOMPRESSED,long Zigzag UNCOMPRESSED
 root.sg.d1.ts1,long27,long,ZIGZAG,SNAPPY,m:null,m:null,m:null,long_Zigzag_SNAPPY,long Zigzag SNAPPY
 root.sg.d1.ts1,long28,long,ZIGZAG,GZIP,m:null,m:null,m:null,long_Zigzag_GZIP,long Zigzag GZIP
 root.sg.d1.ts1,long29,long,ZIGZAG,LZ4,m:null,m:null,m:null,long_Zigzag_LZ4,long Zigzag LZ4
-root.sg.d1.ts1,long30,long,ZIGZAG,SDT,m:null,m:null,m:null,long_Zigzag_SDT,long Zigzag SDT
+root.sg.d1.ts1,long30,long,ZIGZAG,ZSTD,m:null,m:null,m:null,long_Zigzag_ZSTD,long Zigzag ZSTD
 root.sg.d1.ts1,float,float,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,float_plain_UNCOMPRESSED,float plain UNCOMPRESSED
 root.sg.d1.ts1,float2,float,PLAIN,SNAPPY,m:null,m:null,m:null,float_plain_SNAPPY,float plain SNAPPY
 root.sg.d1.ts1,float3,float,PLAIN,GZIP,m:null,m:null,m:null,float_plain_GZIP,float plain GZIP
 root.sg.d1.ts1,float4,float,PLAIN,LZ4,m:null,m:null,m:null,float_plain_LZ4,float plain LZ4
-root.sg.d1.ts1,float5,float,PLAIN,SDT,m:null,m:null,m:null,float_plain_SDT,float plain SDT
+root.sg.d1.ts1,float5,float,PLAIN,ZSTD,m:null,m:null,m:null,float_plain_ZSTD,float plain ZSTD
 root.sg.d1.ts1,float6,float,RLE,UNCOMPRESSED,m:null,m:null,m:null,float_rle_UNCOMPRESSED,float rle UNCOMPRESSED
 root.sg.d1.ts1,float7,float,RLE,SNAPPY,m:null,m:null,m:null,float_rle_SNAPPY,float rle SNAPPY
 root.sg.d1.ts1,float8,float,RLE,GZIP,m:null,m:null,m:null,float_rle_GZIP,float rle GZIP
 root.sg.d1.ts1,float9,float,RLE,LZ4,m:null,m:null,m:null,float_rle_LZ4,float rle LZ4
-root.sg.d1.ts1,float10,float,RLE,SDT,m:null,m:null,m:null,float_rle_SDT,float rle SDT
+root.sg.d1.ts1,float10,float,RLE,ZSTD,m:null,m:null,m:null,float_rle_ZSTD,float rle ZSTD
 root.sg.d1.ts1,float11,float,TS_2DIFF,UNCOMPRESSED,m:null,m:null,m:null,float_ts_2diff_UNCOMPRESSED,float ts_2diff UNCOMPRESSED
 root.sg.d1.ts1,float12,float,TS_2DIFF,SNAPPY,m:null,m:null,m:null,float_ts_2diff_SNAPPY,float ts_2diff SNAPPY
 root.sg.d1.ts1,float13,float,TS_2DIFF,GZIP,m:null,m:null,m:null,float_ts_2diff_GZIP,float ts_2diff GZIP
 root.sg.d1.ts1,float14,float,TS_2DIFF,LZ4,m:null,m:null,m:null,float_ts_2diff_LZ4,float ts_2diff LZ4
-root.sg.d1.ts1,float15,float,TS_2DIFF,SDT,m:null,m:null,m:null,float_ts_2diff_SDT,float ts_2diff SDT
+root.sg.d1.ts1,float15,float,TS_2DIFF,ZSTD,m:null,m:null,m:null,float_ts_2diff_ZSTD,float ts_2diff ZSTD
 root.sg.d1.ts1,float16,float,GORILLA,UNCOMPRESSED,m:null,m:null,m:null,float_Gorilla_UNCOMPRESSED,float Gorilla UNCOMPRESSED
 root.sg.d1.ts1,float17,float,GORILLA,SNAPPY,m:null,m:null,m:null,float_Gorilla_SNAPPY,float Gorilla SNAPPY
 root.sg.d1.ts1,float18,float,GORILLA,GZIP,m:null,m:null,m:null,float_Gorilla_GZIP,float Gorilla GZIP
 root.sg.d1.ts1,float19,float,GORILLA,LZ4,m:null,m:null,m:null,float_Gorilla_LZ4,float Gorilla LZ4
-root.sg.d1.ts1,float20,float,GORILLA,SDT,m:null,m:null,m:null,float_Gorilla_SDT,float Gorilla SDT
+root.sg.d1.ts1,float20,float,GORILLA,ZSTD,m:null,m:null,m:null,float_Gorilla_ZSTD,float Gorilla ZSTD
 root.sg.d1.ts1,float21,float,FREQ,UNCOMPRESSED,m:null,m:null,m:null,float_Freq_UNCOMPRESSED,float Freq UNCOMPRESSED
 root.sg.d1.ts1,float22,float,FREQ,SNAPPY,m:null,m:null,m:null,float_Freq_SNAPPY,float Freq SNAPPY
 root.sg.d1.ts1,float23,float,FREQ,GZIP,m:null,m:null,m:null,float_Freq_GZIP,float Freq GZIP
 root.sg.d1.ts1,float24,float,FREQ,LZ4,m:null,m:null,m:null,float_Freq_LZ4,float Freq LZ4
-root.sg.d1.ts1,float25,float,FREQ,SDT,m:null,m:null,m:null,float_Freq_SDT,float Freq SDT
+root.sg.d1.ts1,float25,float,FREQ,ZSTD,m:null,m:null,m:null,float_Freq_ZSTD,float Freq ZSTD
 root.sg.d1.ts1,double,double,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,double_plain_UNCOMPRESSED,double plain UNCOMPRESSED
 root.sg.d1.ts1,double2,double,PLAIN,SNAPPY,m:null,m:null,m:null,double_plain_SNAPPY,double plain SNAPPY
 root.sg.d1.ts1,double3,double,PLAIN,GZIP,m:null,m:null,m:null,double_plain_GZIP,double plain GZIP
 root.sg.d1.ts1,double4,double,PLAIN,LZ4,m:null,m:null,m:null,double_plain_LZ4,double plain LZ4
-root.sg.d1.ts1,double5,double,PLAIN,SDT,m:null,m:null,m:null,double_plain_SDT,double plain SDT
+root.sg.d1.ts1,double5,double,PLAIN,ZSTD,m:null,m:null,m:null,double_plain_ZSTD,double plain ZSTD
 root.sg.d1.ts1,double6,double,RLE,UNCOMPRESSED,m:null,m:null,m:null,double_rle_UNCOMPRESSED,double rle UNCOMPRESSED
 root.sg.d1.ts1,double7,double,RLE,SNAPPY,m:null,m:null,m:null,double_rle_SNAPPY,double rle SNAPPY
 root.sg.d1.ts1,double8,double,RLE,GZIP,m:null,m:null,m:null,double_rle_GZIP,double rle GZIP
 root.sg.d1.ts1,double9,double,RLE,LZ4,m:null,m:null,m:null,double_rle_LZ4,double rle LZ4
-root.sg.d1.ts1,double10,double,RLE,SDT,m:null,m:null,m:null,double_rle_SDT,double rle SDT
+root.sg.d1.ts1,double10,double,RLE,ZSTD,m:null,m:null,m:null,double_rle_ZSTD,double rle ZSTD
 root.sg.d1.ts1,double11,double,TS_2DIFF,UNCOMPRESSED,m:null,m:null,m:null,double_ts_2diff_UNCOMPRESSED,double ts_2diff UNCOMPRESSED
 root.sg.d1.ts1,double12,double,TS_2DIFF,SNAPPY,m:null,m:null,m:null,double_ts_2diff_SNAPPY,double ts_2diff SNAPPY
 root.sg.d1.ts1,double13,double,TS_2DIFF,GZIP,m:null,m:null,m:null,double_ts_2diff_GZIP,double ts_2diff GZIP
 root.sg.d1.ts1,double14,double,TS_2DIFF,LZ4,m:null,m:null,m:null,double_ts_2diff_LZ4,double ts_2diff LZ4
-root.sg.d1.ts1,double15,double,TS_2DIFF,SDT,m:null,m:null,m:null,double_ts_2diff_SDT,double ts_2diff SDT
+root.sg.d1.ts1,double15,double,TS_2DIFF,ZSTD,m:null,m:null,m:null,double_ts_2diff_ZSTD,double ts_2diff ZSTD
 root.sg.d1.ts1,double16,double,GORILLA,UNCOMPRESSED,m:null,m:null,m:null,double_Gorilla_UNCOMPRESSED,double Gorilla UNCOMPRESSED
 root.sg.d1.ts1,double17,double,GORILLA,SNAPPY,m:null,m:null,m:null,double_Gorilla_SNAPPY,double Gorilla SNAPPY
 root.sg.d1.ts1,double18,double,GORILLA,GZIP,m:null,m:null,m:null,double_Gorilla_GZIP,double Gorilla GZIP
 root.sg.d1.ts1,double19,double,GORILLA,LZ4,m:null,m:null,m:null,double_Gorilla_LZ4,double Gorilla LZ4
-root.sg.d1.ts1,double20,double,GORILLA,SDT,m:null,m:null,m:null,double_Gorilla_SDT,double Gorilla SDT
+root.sg.d1.ts1,double20,double,GORILLA,ZSTD,m:null,m:null,m:null,double_Gorilla_ZSTD,double Gorilla ZSTD
 root.sg.d1.ts1,double21,double,FREQ,UNCOMPRESSED,m:null,m:null,m:null,double_Freq_UNCOMPRESSED,double Freq UNCOMPRESSED
 root.sg.d1.ts1,double22,double,FREQ,SNAPPY,m:null,m:null,m:null,double_Freq_SNAPPY,double Freq SNAPPY
 root.sg.d1.ts1,double23,double,FREQ,GZIP,m:null,m:null,m:null,double_Freq_GZIP,double Freq GZIP
 root.sg.d1.ts1,double24,double,FREQ,LZ4,m:null,m:null,m:null,double_Freq_LZ4,double Freq LZ4
-root.sg.d1.ts1,double25,double,FREQ,SDT,m:null,m:null,m:null,double_Freq_SDT,double Freq SDT
+root.sg.d1.ts1,double25,double,FREQ,ZSTD,m:null,m:null,m:null,double_Freq_ZSTD,double Freq ZSTD
 root.sg.d1.ts1,text,text,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,text_plain_UNCOMPRESSED,text plain UNCOMPRESSED
 root.sg.d1.ts1,text2,text,PLAIN,SNAPPY,m:null,m:null,m:null,text_plain_SNAPPY,text plain SNAPPY
 root.sg.d1.ts1,text3,text,PLAIN,GZIP,m:null,m:null,m:null,text_plain_GZIP,text plain GZIP
 root.sg.d1.ts1,text4,text,PLAIN,LZ4,m:null,m:null,m:null,text_plain_LZ4,text plain LZ4
-root.sg.d1.ts1,text5,text,PLAIN,SDT,m:null,m:null,m:null,text_plain_SDT,text plain SDT
+root.sg.d1.ts1,text5,text,PLAIN,ZSTD,m:null,m:null,m:null,text_plain_ZSTD,text plain ZSTD
 root.sg.d1.ts1,text27,text,dictionary,UNCOMPRESSED,m:null,m:null,m:null,text_dictionary_UNCOMPRESSED,text dictionary UNCOMPRESSED
 root.sg.d1.ts1,text28,text,dictionary,SNAPPY,m:null,m:null,m:null,text_dictionary_SNAPPY,text dictionary SNAPPY
 root.sg.d1.ts1,text29,text,dictionary,GZIP,m:null,m:null,m:null,text_dictionary_GZIP,text dictionary GZIP
 root.sg.d1.ts1,text30,text,dictionary,LZ4,m:null,m:null,m:null,text_dictionary_LZ4,text dictionary LZ4
-root.sg.d1.ts1,text31,text,dictionary,SDT,m:null,m:null,m:null,text_dictionary_SDT,text dictionary SDT
+root.sg.d1.ts1,text31,text,dictionary,ZSTD,m:null,m:null,m:null,text_dictionary_ZSTD,text dictionary ZSTD
 root.t,c,boolean,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,timeseries_name,三级最短名称
 root.t.d1,_start,int,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,_start,以_开始
 root.t.d1,_Start,long,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,_Start,Case sensiitive
@@ -147,9 +147,9 @@ root.key,group,long,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,Group,关键字:grou
 root.key,order,float,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,order,关键字:order
 root.key,by,double,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,by,关键字:by
 root.key,rom,text,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,from,关键字:from
-root.key,`and`,boolean,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,and,关键字:and
-root.key,`or`,Int,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,or,关键字:or
-root.key,`null`,long,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,key_null,关键字:null
+root.key,`and`,boolean,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,`and`,关键字:and
+root.key,`or`,Int,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,`or`,关键字:or
+root.key,`null`,long,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,`null`,关键字:null
 root.sg.d1.internationalization,中文,text,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,中文,国际化:中文
 root.sg.d1.internationalization,`française`,boolean,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,`française`,国际化:法语
 root.sg.d1.internationalization,`العربية`,Int,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,`العربية`,国际化:阿拉伯语
@@ -157,7 +157,7 @@ root.sg.d1.internationalization,`Español`,long,PLAIN,UNCOMPRESSED,m:null,m:null
 root.sg.d1.internationalization,`にほんご`,float,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,`にほんご`,国际化:日语
 root.sg.d1.internationalization,`Русский`,double,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,`Русский`,国际化:俄语
 root.sg.d1.internationalization,`한국어`,text,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,`한국어`,国际化:韩语
-root.sg.d1.max.abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUV.d,s_text1,text,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,null,64 最大长度多个层级
-root.abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234.d,s_text2,text,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,null,64 最大长度2个层级
-root.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.ll.d,s_txt3,text,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,null,64 最大层级长度
-root.sg.d1.max.`123456789123456789123456789123456789123456789123`.d,s_txt4_123456789123456789123456789123456789123456789123123456789123456789123456789123456789123456789123123456789123456789123456789123456789123456789123123456789123456789123456789123456789123456789123,text,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,null,反引号64最大长度268
+root.abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234.d,s_text2,text,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,"s_text2",64 最大长度2个层级
+root.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.ll.d,s_txt3,text,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,"s_text3",64 最大层级长度
+root.sg.d1.max.`123456789123456789123456789123456789123456789123`.d,s_txt4_123456789123456789123456789123456789123456789123123456789123456789123456789123456789123456789123123456789123456789123456789123456789123456789123123456789123456789123456789123456789123456789123,text,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,"12nullfv",反引号64最大长度268
+root.sg.d1.max.abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUV.d,s_text1,text,PLAIN,UNCOMPRESSED,null,null,null,s_text1,64 最大长度多个层级

@@ -4,7 +4,9 @@ import org.apache.iotdb.api.test.BaseTestSuite;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
+import org.apache.iotdb.tsfile.file.metadata.enums.CompressionType;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
+import org.apache.iotdb.tsfile.file.metadata.enums.TSEncoding;
 import org.apache.iotdb.tsfile.write.record.Tablet;
 import org.apache.iotdb.tsfile.write.schema.MeasurementSchema;
 import org.testng.Assert;
@@ -26,10 +28,11 @@ import static java.lang.System.out;
  * 5. 测试数值超限情况
  * 6. 测试时间戳各种格式
  */
-public class TestInsertNormal extends BaseTestSuite {
-    private static final String device = "root.algined.d1";
-    private static final String alignedDevice = "root.algined.d2";
-
+public class TestInsert extends BaseTestSuite {
+    private static final String database = "root.aligned";
+    private static final String device = database+".d1";
+    private static final String alignedDevice = database+".d2";
+    private Map<String, TSDataType> measureTSTypeInfos = new LinkedHashMap<>(6);
     private final List<String> paths = new ArrayList<>(6);
     private final List<String> measurements = new ArrayList<>(6);
     private final List<TSDataType> dataTypes = new ArrayList<>(6);
@@ -40,46 +43,41 @@ public class TestInsertNormal extends BaseTestSuite {
 
     @BeforeClass(enabled = true)
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException {
-        if (checkStroageGroupExists("")) {
-            session.deleteStorageGroup("root.**");
+        if (checkStroageGroupExists(database)) {
+            session.deleteDatabase(database);
         }
-        out.println("创建序列");
-        session.setStorageGroup(device.substring(0,device.lastIndexOf('.')));
-        session.setStorageGroup(alignedDevice.substring(0,alignedDevice.lastIndexOf('.')));
-        measurements.add("s_boolean");
-        measurements.add("s_int");
-        measurements.add("s_long");
-        measurements.add("s_float");
-        measurements.add("s_double");
-        measurements.add("s_text");
+        session.createDatabase(database);
+        measureTSTypeInfos.put("s_boolean", TSDataType.BOOLEAN);
+        measureTSTypeInfos.put("s_int", TSDataType.INT32);
+        measureTSTypeInfos.put("s_long", TSDataType.INT64);
+        measureTSTypeInfos.put("s_float", TSDataType.FLOAT);
+        measureTSTypeInfos.put("s_double", TSDataType.DOUBLE);
+        measureTSTypeInfos.put("s_text", TSDataType.TEXT);
 
-        dataTypes.add(TSDataType.BOOLEAN);
-        dataTypes.add(TSDataType.INT32);
-        dataTypes.add(TSDataType.INT64);
-        dataTypes.add(TSDataType.FLOAT);
-        dataTypes.add(TSDataType.DOUBLE);
-        dataTypes.add(TSDataType.TEXT);
+        measureTSTypeInfos.forEach((key,value) -> {
+            paths.add(device + "." + key);
+            measurements.add(key);
+            dataTypes.add(value);
+            schemaList.add(new MeasurementSchema(key, value, TSEncoding.PLAIN, CompressionType.GZIP));
+        });
 
-        paths.add(device + "s_boolean");
-        paths.add(device + "s_int");
-        paths.add(device + "s_long");
-        paths.add(device + "s_float");
-        paths.add(device + "s_double");
-        paths.add(device + "s_text");
-
-        schemaList.add(new MeasurementSchema("s_boolean", TSDataType.BOOLEAN));
-        schemaList.add(new MeasurementSchema("s_int", TSDataType.INT32));
-        schemaList.add(new MeasurementSchema("s_long", TSDataType.INT64));
-        schemaList.add(new MeasurementSchema("s_float", TSDataType.FLOAT));
-        schemaList.add(new MeasurementSchema("s_double", TSDataType.DOUBLE));
-        schemaList.add(new MeasurementSchema("s_text", TSDataType.TEXT));
+        List<TSEncoding> encodings = new ArrayList<>(6);
+        List<CompressionType> compressionTypes = new ArrayList<>(6);
+        for (int i = 0; i < 6; i++) {
+            encodings.add(TSEncoding.PLAIN);
+            compressionTypes.add(CompressionType.GZIP);
+        }
 
         session.createMultiTimeseries(paths,dataTypes,
-                new ArrayList<>(),new ArrayList<>(),
+                encodings,compressionTypes,
                 null,null,null, null);
         session.createAlignedTimeseries(alignedDevice, measurements, dataTypes,
-                null, null, null);
+                encodings, compressionTypes, null);
 
+    }
+//    @AfterClass
+    public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
+        session.deleteDatabase(database);
     }
 
     /**
@@ -112,6 +110,11 @@ public class TestInsertNormal extends BaseTestSuite {
     public Iterator<Object[]> getSingleNormal() throws IOException {
         return new CustomDataProvider().load("data/insert-records.csv").getData();
     }
+    @DataProvider(name="insertSingleError")
+    public Iterator<Object[]> getSingleError() throws IOException {
+        return new CustomDataProvider().load("data/insert-records-error.csv").getData();
+    }
+
     // @DataProvider(name="insertMultiRecords")
     public Iterator<Object[]> getMultiRecords() throws IOException {
         return new CustomDataProvider().load("data/insert-records-multi.csv").getData();
@@ -123,20 +126,68 @@ public class TestInsertNormal extends BaseTestSuite {
      */
     @Test(priority = 10)
     public void testInsertTablet() throws IOException, IoTDBConnectionException, StatementExecutionException {
-        Tablet tablet = new Tablet(device, schemaList, 100);
+        Tablet tablet = new Tablet(device, schemaList, 20);
         tablet.initBitMaps();
         int rowIndex = 0;
         for (Iterator<Object[]> it = getSingleNormal(); it.hasNext(); ) {
             Object[] line = it.next();
             tablet.addTimestamp(rowIndex++, Long.valueOf((String)line[0]));
+            out.println("########### "+rowIndex+":"+line[0]);
             for (int i = 0; i < schemaList.size(); i++) {
+                out.println("datatype="+schemaList.get(i).getType());
+                out.println("line[i+1]="+line[i+1]);
                 if (line[i+1] == null) {
+                    out.println("process null value");
                     tablet.bitMaps[i].mark((int) rowIndex);
                 }
-                tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, line[i+1]);
+                switch (schemaList.get(i).getType()) {
+                    case BOOLEAN:
+                        if (line[i+1] == null) {
+                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, false);
+                        } else {
+                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, Boolean.valueOf((String) line[i + 1]));
+                        }
+                        break;
+                    case INT32:
+                        if (line[i+1] == null) {
+                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, 1);
+                        } else {
+                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, Integer.valueOf((String) line[i + 1]));
+                        }
+                        break;
+                    case INT64:
+                        if (line[i+1] == null) {
+                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, 1L);
+                        } else {
+                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, Long.valueOf((String) line[i + 1]));
+                        }
+                        break;
+                    case FLOAT:
+                        if (line[i+1] == null) {
+                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, 1.01f);
+                        } else {
+                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, Float.valueOf((String) line[i + 1]));
+                        }
+                        break;
+                    case DOUBLE:
+                        if (line[i+1] == null) {
+                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, 1.0);
+                        } else {
+                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, Double.valueOf((String) line[i + 1]));
+                        }
+                        break;
+                    case TEXT:
+                        if (line[i+1] == null) {
+                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, "stringnull");
+                        } else {
+                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, (String) line[i + 1]);
+                        }
+                        break;
+                }
             }
         }
         session.insertTablet(tablet);
+        countLines("select * from "+device, verbose);
         // 使用对齐方式插入非对齐tablet
         Assert.assertThrows(StatementExecutionException.class, ()-> session.insertAlignedTablet(tablet));
         /**
@@ -155,7 +206,7 @@ public class TestInsertNormal extends BaseTestSuite {
      */
     @Test(priority = 20)
     public void insertTabletWithNullValues() throws IoTDBConnectionException, StatementExecutionException {
-        Tablet tablet = new Tablet(device, schemaList, 100);
+        Tablet tablet = new Tablet(device, schemaList, 10);
         // Method 1 to add tablet data
         tablet.initBitMaps();
 
@@ -476,6 +527,176 @@ public class TestInsertNormal extends BaseTestSuite {
         }
         session.insertAlignedRecords(deviceList,times,measurementsList,datatypeList,valuesList);
         checkInsertMultiDevices("insertAlignedRecords multi device");
+    }
+
+    /**
+     * 单条 insertTablet error
+     * 非对齐
+     */
+    @Test(dataProvider= "insertSingleError", expectedExceptions = StatementExecutionException.class, priority = 50)
+    public void testInsertTablet_error(String time, Object s_boolean, Object s_int, Object s_long, Object s_float, Object s_double, Object s_text) throws IoTDBConnectionException, StatementExecutionException {
+        Tablet tablet = new Tablet(device, schemaList, 1);
+        int rowIndex = 0;
+        tablet.addTimestamp(rowIndex, Long.valueOf(time));
+        tablet.addValue(schemaList.get(0).getMeasurementId(), rowIndex, s_boolean);
+        tablet.addValue(schemaList.get(1).getMeasurementId(), rowIndex, s_int);
+        tablet.addValue(schemaList.get(2).getMeasurementId(), rowIndex, s_long);
+        tablet.addValue(schemaList.get(3).getMeasurementId(), rowIndex, s_float);
+        tablet.addValue(schemaList.get(4).getMeasurementId(), rowIndex, s_double);
+        tablet.addValue(schemaList.get(5).getMeasurementId(), rowIndex, s_text);
+        session.insertTablet(tablet);
+    }
+    /**
+     * 单条 insertTablet error
+     * 对齐
+     */
+    @Test(dataProvider= "insertSingleError", expectedExceptions = StatementExecutionException.class, priority = 51)
+    public void testInsertAlignedTablet_error(String time, Object s_boolean, Object s_int, Object s_long, Object s_float, Object s_double, Object s_text) throws IoTDBConnectionException, StatementExecutionException {
+        Tablet tablet = new Tablet(alignedDevice, schemaList, 1);
+        int rowIndex = 0;
+        tablet.addTimestamp(rowIndex, Long.valueOf(time));
+        tablet.addValue(schemaList.get(0).getMeasurementId(), rowIndex, s_boolean);
+        tablet.addValue(schemaList.get(1).getMeasurementId(), rowIndex, s_int);
+        tablet.addValue(schemaList.get(2).getMeasurementId(), rowIndex, s_long);
+        tablet.addValue(schemaList.get(3).getMeasurementId(), rowIndex, s_float);
+        tablet.addValue(schemaList.get(4).getMeasurementId(), rowIndex, s_double);
+        tablet.addValue(schemaList.get(5).getMeasurementId(), rowIndex, s_text);
+        session.insertAlignedTablet(tablet);
+    }
+    @Test(priority = 52)
+    public void checkResult_insertTablet() throws IoTDBConnectionException, StatementExecutionException {
+        afterMethod(0,0,"Error insert tablet");
+    }
+    @Test
+    public void testInsertTablets_error() throws IOException, IoTDBConnectionException, StatementExecutionException {
+        Map<String, Tablet> tabletMap = new HashMap<>();
+        for (Iterator<Object[]> it = getSingleError(); it.hasNext();) {
+            Object[] line =  it.next();
+            Tablet tablet = new Tablet(alignedDevice, schemaList, 1);
+            int rowIndex = 0;
+            tablet.addTimestamp(rowIndex, Long.valueOf((String) line[0]));
+            for (int i = 0; i < schemaList.size(); i++) {
+                tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, line[i+1]);
+            }
+            tabletMap.put(alignedDevice, tablet);
+        }
+        session.insertTablets(tabletMap);
+        afterMethod(0,0,"insert tablets non aligned");
+    }
+
+    @Test
+    public void testInsertAlignedTablets_error() throws IOException, IoTDBConnectionException, StatementExecutionException {
+        Map<String, Tablet> tabletMap = new HashMap<>();
+        for (Iterator<Object[]> it = getSingleError(); it.hasNext();) {
+            Object[] line =  it.next();
+            Tablet tablet = new Tablet(alignedDevice, schemaList, 1);
+            int rowIndex = 0;
+            tablet.addTimestamp(rowIndex, Long.valueOf((String) line[0]));
+            for (int i = 0; i < schemaList.size(); i++) {
+                tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, line[i+1]);
+            }
+            tabletMap.put(alignedDevice, tablet);
+        }
+        session.insertAlignedTablets(tabletMap);
+        afterMethod(0,0,"insert tablets non aligned");
+    }
+
+    @Test(dataProvider= "getSingleError", expectedExceptions = StatementExecutionException.class, priority = 102)
+    public void testInsertRecord_error(String time, Object s_boolean, Object s_int, Object s_long, Object s_float, Object s_double, Object s_text) throws IoTDBConnectionException, StatementExecutionException {
+        List<Object> values = new ArrayList<>();
+        values.add(s_boolean);
+        values.add(s_int);
+        values.add(s_long);
+        values.add(s_float);
+        values.add(s_double);
+        values.add(s_text);
+        session.insertRecord(device, Long.valueOf(time), measurements, dataTypes, values);
+        values.clear();
+    }
+    @Test(dataProvider= "getSingleError", expectedExceptions = StatementExecutionException.class, priority = 102)
+    public void testInsertAlignedRecord_error(String time, Object s_boolean, Object s_int, Object s_long, Object s_float, Object s_double, Object s_text) throws IoTDBConnectionException, StatementExecutionException {
+        List<Object> values = new ArrayList<>();
+        values.add(s_boolean);
+        values.add(s_int);
+        values.add(s_long);
+        values.add(s_float);
+        values.add(s_double);
+        values.add(s_text);
+        session.insertAlignedRecord(alignedDevice, Long.valueOf(time), measurements, dataTypes, values);
+        values.clear();
+    }
+
+    /**
+     * 单条 insertTablet error
+     * 非对齐
+     */
+    @Test(priority = 103)
+    public void testInsertTablet_alignedDevice() throws IoTDBConnectionException, StatementExecutionException {
+        Tablet tablet = new Tablet(alignedDevice, schemaList, 1);
+        int rowIndex = 0;
+        tablet.addTimestamp(rowIndex, 1672023281895L);
+        tablet.addValue(schemaList.get(0).getMeasurementId(), rowIndex, true);
+        tablet.addValue(schemaList.get(1).getMeasurementId(), rowIndex, 33);
+        tablet.addValue(schemaList.get(2).getMeasurementId(), rowIndex, 104L);
+        tablet.addValue(schemaList.get(3).getMeasurementId(), rowIndex, 12.54f);
+        tablet.addValue(schemaList.get(4).getMeasurementId(), rowIndex, 204.39);
+        tablet.addValue(schemaList.get(5).getMeasurementId(), rowIndex, "insert aligned device with insertTablet");
+
+        Assert.assertThrows(StatementExecutionException.class, ()->{session.insertTablet(tablet);});
+    }
+    /**
+     * 单条 insertTablet error
+     * 对齐
+     */
+    @Test(priority = 104)
+    public void testInsertAlignedTablet_nonAlignedDevice() throws IoTDBConnectionException, StatementExecutionException {
+        Tablet tablet = new Tablet(device, schemaList, 1);
+        int rowIndex = 0;
+        tablet.addTimestamp(rowIndex, 1672023281895L);
+        tablet.addValue(schemaList.get(0).getMeasurementId(), rowIndex, false);
+        tablet.addValue(schemaList.get(1).getMeasurementId(), rowIndex, 11);
+        tablet.addValue(schemaList.get(2).getMeasurementId(), rowIndex, 305L);
+        tablet.addValue(schemaList.get(3).getMeasurementId(), rowIndex, 45.55f);
+        tablet.addValue(schemaList.get(4).getMeasurementId(), rowIndex, 303.78);
+        tablet.addValue(schemaList.get(5).getMeasurementId(), rowIndex, "insert non-aligned device with insertAlignedTablet");
+        Assert.assertThrows(StatementExecutionException.class, ()->{session.insertAlignedTablet(tablet);});
+    }
+    @Test(priority = 105)
+    public void checkResult_insertTablet2() throws IoTDBConnectionException, StatementExecutionException {
+        afterMethod(0,0, "aligned and non-aligned of insertTablet");
+    }
+
+    @Test(priority = 106)
+    public void testInsertRecord_alignedDevice() throws IoTDBConnectionException, StatementExecutionException {
+        List<Object> values = new ArrayList<>();
+        values.add(true);
+        values.add(20);
+        values.add(300L);
+        values.add(35.55f);
+        values.add(336.77);
+        values.add("insert non-aligned device with insertRecord");
+        Assert.assertThrows(StatementExecutionException.class, ()->{
+            session.insertRecord(alignedDevice, 1672023281895L, measurements, dataTypes, values);
+        });
+        values.clear();
+    }
+    @Test(priority = 107)
+    public void testInsertAlignedRecord_nonAlignedDevice() throws IoTDBConnectionException, StatementExecutionException {
+        List<Object> values = new ArrayList<>();
+        values.add(20);
+        values.add(300L);
+        values.add(35.55f);
+        values.add(336.77);
+        values.add("insert non-aligned device with insertAlignedRecord");
+        Assert.assertThrows(StatementExecutionException.class, ()->{
+            session.insertAlignedRecord(device, 1672023281895L, measurements, dataTypes, values);
+        });
+        values.clear();
+    }
+
+    @Test(priority = 108)
+    public void checkResult_insertRecord2() throws IoTDBConnectionException, StatementExecutionException {
+        afterMethod(0,0, "aligned and non-aligned of insertRecord");
     }
 
 }

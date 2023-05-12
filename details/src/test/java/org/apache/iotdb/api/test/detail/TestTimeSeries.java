@@ -1,6 +1,6 @@
 package org.apache.iotdb.api.test.detail;
 
-import org.apache.iotdb.api.test.BaseTestSuite;
+import org.apache.iotdb.api.test.TimeSeriesBaseTestSuite;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
@@ -15,12 +15,10 @@ import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.lang.System.out;
-import static java.lang.Thread.sleep;
 
-public class TestTimeSeries extends BaseTestSuite {
+public class TestTimeSeries extends TimeSeriesBaseTestSuite {
     private TSDataType dataType = null;
     private TSEncoding encoding = null;
     private CompressionType compressionType = null;
@@ -28,6 +26,7 @@ public class TestTimeSeries extends BaseTestSuite {
     private Map<String, String> tags = new HashMap<>();
     private Map<String, String> attrs = new HashMap<>();
     private static List<String> normalTSs = new ArrayList<>();
+    private Iterator<Object[]> lines = null;
 
 
     @BeforeClass(enabled = true)
@@ -38,93 +37,6 @@ public class TestTimeSeries extends BaseTestSuite {
     @AfterClass
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
         cleanDatabases(verbose);
-    }
-
-    private void translateString2Type(String datatypeStr, String encodingStr, String compressStr) {
-        switch (datatypeStr) {
-            case "boolean":
-                dataType = TSDataType.BOOLEAN;
-                break;
-            case "int":
-                dataType = TSDataType.INT32;
-                break;
-            case "long":
-                dataType = TSDataType.INT64;
-                break;
-            case "float":
-                dataType = TSDataType.FLOAT;
-                break;
-            case "double":
-                dataType = TSDataType.DOUBLE;
-                break;
-            case "vector":
-                dataType = TSDataType.VECTOR;
-                break;
-            case "text":
-                dataType = TSDataType.TEXT;
-                break;
-        }
-        switch (encodingStr) {
-            case "PLAIN":
-                encoding = TSEncoding.PLAIN;
-                break;
-            case "DICTIONARY":
-                encoding = TSEncoding.DICTIONARY;
-                break;
-            case "RLE":
-                encoding = TSEncoding.RLE;
-                break;
-            case "DIFF":
-                encoding = TSEncoding.DIFF;
-                break;
-            case "TS_2DIFF":
-                encoding = TSEncoding.TS_2DIFF;
-                break;
-            case "BITMAP":
-                encoding = TSEncoding.BITMAP;
-                break;
-            case "GORILLA_V1":
-                encoding = TSEncoding.GORILLA_V1;
-                break;
-            case "REGULAR":
-                encoding = TSEncoding.REGULAR;
-                break;
-            case "GORILLA":
-                encoding = TSEncoding.GORILLA;
-                break;
-            case "ZIGZAG":
-                encoding = TSEncoding.ZIGZAG;
-                break;
-            case "FREQ":
-                encoding = TSEncoding.FREQ;
-                break;
-        }
-        switch (compressStr) {
-            case "UNCOMPRESSED":
-                compressionType = CompressionType.UNCOMPRESSED;
-                break;
-            case "SNAPPY":
-                compressionType = CompressionType.SNAPPY;
-                break;
-            case "GZIP":
-                compressionType = CompressionType.GZIP;
-                break;
-//            case "LZO":
-//                compressionType = CompressionType.LZO;
-//                break;
-//            case "SDT":
-//                compressionType = CompressionType.SDT;
-//                break;
-//            case "PAA":
-//                compressionType = CompressionType.PAA;
-//                break;
-//            case "PLA":
-//                compressionType = CompressionType.PLA;
-//                break;
-            case "lz4":
-                compressionType = CompressionType.LZ4;
-                break;
-        }
     }
 
 
@@ -184,12 +96,25 @@ public class TestTimeSeries extends BaseTestSuite {
     private Iterator<Object[]> getSingleTimeSeriesNormal() throws IOException {
         return new CustomDataProvider().load("data/timeseries-single.csv").getData();
     }
+    @Test(priority = 9)
+    public void testSingle() throws IoTDBConnectionException, StatementExecutionException {
+        String database = "root.sg.d1";
+        String path = database + ".ts1.boolean";
+        session.createDatabase(database);
+        session.createTimeseries(path, TSDataType.TEXT, TSEncoding.DICTIONARY,CompressionType.GZIP);
+        insertRecordSingle(path, TSDataType.TEXT, false, null);
+        session.deleteTimeseries(path);
+        session.deleteDatabase(database);
+    }
 
     // TIMECHODB-124
     @Test(priority = 10, dataProvider = "createSingleTimeSeriesNormal")
     public void testCreateSingleTimeSeries_normal(String device, String tsName, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException {
-        translateString2Type(datatypeStr, encodingStr, compressStr);
-        session.createTimeseries(device+"."+tsName, dataType, encoding, compressionType, props, tags, attrs, alias);
+        List<Object> result = translateString2Type(datatypeStr, encodingStr, compressStr);
+//        out.println(device+"."+tsName+" datatype:"+dataType +" encoding:"+encoding+ " compress:"+compressionType +" props:"+props+" tags:"+ tags+" attrs:"+ attrs+" alias:"+ alias);
+        session.createTimeseries(device+"."+tsName, (TSDataType) result.get(0),
+                (TSEncoding)result.get(1) , (CompressionType) result.get(2), props, tags, attrs, alias);
+        insertRecordSingle(device+"."+tsName,  (TSDataType) result.get(0), false, alias);
     }
     @Test(priority = 20, dataProvider = "createSingleTimeSeriesNormal")
     public void testDeleteSingleTimeSeries_normal(String device, String tsName, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException {
@@ -203,37 +128,59 @@ public class TestTimeSeries extends BaseTestSuite {
     public void testDeleteSingleTimeSeries_error(String path, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException {
         session.deleteTimeseries(path);
     }
-
     @Test(priority = 30, dataProvider = "createSingleTimeSeriesError", expectedExceptions = StatementExecutionException.class)
     public void testCreateSingleTimeSeries_error(String path, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException {
-        translateString2Type(datatypeStr, encodingStr, compressStr);
-        session.createTimeseries(path, dataType, encoding, compressionType, props, tags, attrs, alias);
+        List<Object> result = translateString2Type(datatypeStr, encodingStr, compressStr);
+        session.createTimeseries(path, (TSDataType) result.get(0), (TSEncoding) result.get(1),
+                (CompressionType) result.get(2), props, tags, attrs, alias);
     }
-
     @Test(priority = 40, dataProvider = "createSingleTimeSeriesNormal")
-    public void testCreateSingleTimeSeriesAligned_normal(String device, String tsName, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException {
-        translateString2Type(datatypeStr, encodingStr, compressStr);
+    public void testCreateSingleTimeSeriesAligned_normal(String device, String tsName, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {
+        List<Object> result = translateString2Type(datatypeStr, encodingStr, compressStr);
         List<String> tsList = new ArrayList<>(1);
         List<String> aliasList = new ArrayList<>(1);
         List<TSDataType> tsDataTypes = new ArrayList<>(1);
         List<TSEncoding> tsEncodings = new ArrayList<>(1);
         List<CompressionType> compressionTypes = new ArrayList<>(1);
-        tsDataTypes.add(dataType);
-        tsEncodings.add(encoding);
-        compressionTypes.add(compressionType);
+        tsDataTypes.add((TSDataType) result.get(0));
+        tsEncodings.add((TSEncoding) result.get(1));
+        compressionTypes.add((CompressionType) result.get(2));
         tsList.add(tsName);
         aliasList.add(alias);
+//        out.println(device+"."+tsName+" datatype:"+tsDataTypes +" encoding:"+tsEncodings+ " compress:"+compressionTypes +" props:"+props+" tags:"+ tags+" attrs:"+ attrs+" alias:"+ aliasList);
         session.createAlignedTimeseries(device, tsList, tsDataTypes, tsEncodings, compressionTypes, aliasList);
     }
     @DataProvider(name = "deleteNormalWildcard")
     private Iterator<Object[]> deleteNormal_wildcard() throws IOException {
         return new CustomDataProvider().load("data/timeseries-delete.csv").getData();
     }
-
-    @Test(priority = 41, dataProvider = "deleteNormalWildcard")
+   @Test(priority = 41, dataProvider = "deleteNormalWildcard")
     public void testDeleteMultiTS(String path, String msg) throws IoTDBConnectionException, StatementExecutionException {
         session.deleteTimeseries(path);
     }
+
+    /**
+     * toDo
+     * @throws IoTDBConnectionException
+     * @throws StatementExecutionException
+     */
+//    @Test(priority = 42, dataProvider = "createSingleTimeSeriesError", expectedExceptions = StatementExecutionException.class)
+//    public void testCreateAlignedTimeSeries_error(String path, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException {
+//        List<Object> result = translateString2Type(datatypeStr, encodingStr, compressStr);
+//        List<String> tsList = new ArrayList<>(1);
+//        List<String> aliasList = new ArrayList<>(1);
+//        List<TSDataType> tsDataTypes = new ArrayList<>(1);
+//        List<TSEncoding> tsEncodings = new ArrayList<>(1);
+//        List<CompressionType> compressionTypes = new ArrayList<>(1);
+//        tsDataTypes.add((TSDataType) result.get(0));
+//        tsEncodings.add((TSEncoding) result.get(1));
+//        compressionTypes.add((CompressionType) result.get(2));
+//        tsList.add(tsName);
+//        aliasList.add(alias);
+//        out.println(device+"."+tsName+" datatype:"+tsDataTypes +" encoding:"+tsEncodings+ " compress:"+compressionTypes +" props:"+props+" tags:"+ tags+" attrs:"+ attrs+" alias:"+ aliasList);
+//        session.createAlignedTimeseries(device, tsList, tsDataTypes, tsEncodings, compressionTypes, aliasList);
+//    }
+
 
     @Test(priority = 50)
     public void testCreateTimeSeries_10props() throws IoTDBConnectionException, StatementExecutionException {
@@ -268,52 +215,53 @@ public class TestTimeSeries extends BaseTestSuite {
     private Iterator<Object[]> getDeleteTimeSeriesMultiError() throws IOException {
         return new CustomDataProvider().load("data/timeseries-deleteG-error.csv").getData();
     }
-    private void createTimeSeriesIgnoreError(int count) throws IoTDBConnectionException, IOException {
-        Iterator<Object[]> lines = new CustomDataProvider().load("data/timeseries-single.csv").getData();
-        for (int i=0; i <= count && lines.hasNext(); i++) {
-            Object[] line = lines.next();
-            System.out.println(line);
-            try {
-                translateString2Type((String)line[1], (String)line[2], (String)line[3]);
-                session.createTimeseries((String)line[0], dataType, encoding, compressionType, new HashMap<>(), new HashMap<>(), new HashMap<>(), (String)line[7]);
-            } catch (StatementExecutionException e) {
-            }
-        }
-    }
+
     @Test(priority = 80, dataProvider = "deleteTimeSeriesMultiError", expectedExceptions = StatementExecutionException.class)
     public void testDeleteMultiTimeSeries_error(String errTS, String total_str, String position_str, String msg) throws IoTDBConnectionException, StatementExecutionException, InterruptedException, IOException {
         int total = Integer.parseInt(total_str);
         int position = Integer.parseInt(position_str);
-        List<String> ts_list = new ArrayList<>(total);
+        List<String> tsList = new ArrayList<>(total);
+        List<String> tsExists = new ArrayList<>(total-1);
+        List<TSDataType> dataTypes = new ArrayList<>(total-1);
+        List<TSEncoding> encodings = new ArrayList<>(total-1);
+        List<CompressionType> compressionTypes = new ArrayList<>(total-1);
         if (position == 1) {
-            ts_list.add(errTS);
+            tsList.add(errTS);
             for (int i = 1; i < total; i++) {
-                ts_list.add(normalTSs.get(i-1));
+                tsList.add(normalTSs.get(i-1));
+                tsExists.add(normalTSs.get(i-1));
             }
         } else if (position == total) {
             for (int i = 0; i < total-1; i++) {
-                ts_list.add(normalTSs.get(i));
+                tsList.add(normalTSs.get(i));
+                tsExists.add(normalTSs.get(i));
             }
-            ts_list.add(errTS);
+            tsList.add(errTS);
         } else {
             int i = 0;
             for (; i < position; i++) {
-                ts_list.add(normalTSs.get(i));
+                tsList.add(normalTSs.get(i));
+                tsExists.add(normalTSs.get(i));
             }
-            ts_list.add(errTS);
+            tsList.add(errTS);
             i++;
             for (; i < total; i++) {
-                ts_list.add(normalTSs.get(i-1));
+                tsList.add(normalTSs.get(i-1));
+                tsExists.add(normalTSs.get(i-1));
             }
         }
-//        System.out.println(ts_list);
-        createTimeSeriesIgnoreError(total-1);
+        for (int i = 0; i < tsExists.size(); i++) {
+            dataTypes.add(TSDataType.FLOAT);
+            encodings.add(TSEncoding.TS_2DIFF);
+            compressionTypes.add(CompressionType.LZ4);
+        }
+        session.createMultiTimeseries(tsExists, dataTypes, encodings, compressionTypes, null, null, null, null);
         int expectCount = getTimeSeriesCount("", verbose) - total + 1 ;
-        session.deleteStorageGroups(ts_list);
-//        int actualCount = getTimeSeriesCount("", verbose);
-//        System.out.println(msg);
+        int actualCount = getTimeSeriesCount("", verbose);
+        System.out.println(msg);
+        session.deleteTimeseries(tsList);
 //        Thread.sleep(1000);
-//        assert expectCount == actualCount: "删除后 actual=:" + actualCount + ", expect=" +expectCount + ", total="+total;
+        assert expectCount == actualCount: "删除后 actual=:" + actualCount + ", expect=" +expectCount + ", total="+total;
     }
 
 }
