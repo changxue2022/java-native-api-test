@@ -100,13 +100,13 @@ public class ActiveInBatch extends BaseTestSuite {
     @Test(priority = 50)
     public void createTemplate() throws IoTDBConnectionException, StatementExecutionException, IOException {
         if (!checkTemplateExists(tName)) {
-            int templateCount = countLines("show schema templates", verbose);
+            int templateCount = getTemplateCount(verbose);
             Template template = new Template(tName, isAligned);
             MeasurementNode mNode = new MeasurementNode(tsName, TSDataType.INT32,
                     TSEncoding.PLAIN, CompressionType.UNCOMPRESSED);
             template.addToTemplate(mNode);
             session.createSchemaTemplate(template);
-            assert 1 + templateCount == countLines("show schema templates", verbose) : "创建模版成功:" + tName;
+            assert 1 + templateCount == getTemplateCount(verbose) : "创建模版成功:" + tName;
         }
         for(String database:databases) {
             if (!checkStroageGroupExists(database)) {
@@ -152,18 +152,18 @@ public class ActiveInBatch extends BaseTestSuite {
     @Test(priority = 80)
     public void testActiveDatabaseAfterTemplate() throws IoTDBConnectionException, StatementExecutionException {
         String loadNode = databases[0];
-        int expectCount = countLines("show devices "+loadNode, verbose) + 1;
+        int expectCount = getCount("count devices "+loadNode, verbose) + 1;
         paths.clear();
         paths.add(loadNode);
         assert true == checkStroageGroupExists(loadNode): "database已经存在:"+loadNode;
         session.createTimeseriesUsingSchemaTemplate(paths);
-        assert expectCount == countLines("show devices "+loadNode, verbose) : "激活和挂载都是database:"+loadNode;
+        assert expectCount == getCount("count devices "+loadNode, verbose) : "激活和挂载都是database:"+loadNode;
         insertRecordSingle(loadNode+"."+tsName, TSDataType.INT32, isAligned,null);
-        expectCount = countLines("show devices "+loadNode+".**", verbose) + 1;
+        expectCount = getCount("count devices "+loadNode+".**", verbose) + 1;
         paths.clear();
         paths.add(loadNode+".sub");
         session.createTimeseriesUsingSchemaTemplate(paths);
-        assert expectCount == countLines("show devices "+loadNode+".**", verbose) : "激活database子path:"+loadNode+".sub";
+        assert expectCount == getCount("count devices "+loadNode+".**", verbose) : "激活database子path:"+loadNode+".sub";
         insertRecordSingle(loadNode+".sub."+tsName, TSDataType.INT32, isAligned,null);
     }
     @Test(priority = 80)
@@ -171,7 +171,7 @@ public class ActiveInBatch extends BaseTestSuite {
         String database = databases[1];
         String parentPath = database+".parent";
         String childPath = parentPath + ".child";
-        int expectCount = countLines("show devices "+database+".**", verbose) + 2;
+        int expectCount = getCount("count devices "+database+".**", verbose) + 2;
         if(!checkStroageGroupExists(database)){
             session.createDatabase(database);
         }
@@ -180,7 +180,7 @@ public class ActiveInBatch extends BaseTestSuite {
         paths.add(childPath);
         assert true == checkStroageGroupExists(database);
         session.createTimeseriesUsingSchemaTemplate(paths);
-        assert expectCount == countLines("show devices "+database+".**", verbose) : "同时在parent和child路径进行激活";
+        assert expectCount == getCount("count devices "+database+".**", verbose) : "同时在parent和child路径进行激活";
         insertRecordSingle(parentPath+"."+tsName, TSDataType.INT32, isAligned,null);
         insertRecordSingle(childPath+"."+tsName, TSDataType.INT32, isAligned,null);
     }
@@ -189,22 +189,22 @@ public class ActiveInBatch extends BaseTestSuite {
     public void testDuplicatePath() throws IoTDBConnectionException, StatementExecutionException {
         String doublePath1 = databases[1]+".dDouble";
         String doublePath2 = databases[1]+".dDouble2";
-        int expectCount = countLines("show devices "+databases[1]+".**", verbose) + 1;
+        int expectCount = getCount("count devices "+databases[1]+".**", verbose) + 1;
         paths.clear();
         paths.add(doublePath1);
         session.createTimeseriesUsingSchemaTemplate(paths);
-        assert expectCount == countLines("show devices "+databases[1]+".**", verbose) : "激活："+databases[1]+"0.dDouble";
+        assert expectCount == getCount("count devices "+databases[1]+".**", verbose) : "激活："+databases[1]+"0.dDouble";
         Assert.assertThrows(StatementExecutionException.class, ()->{
             session.createTimeseriesUsingSchemaTemplate(paths);
         });
-        assert expectCount == countLines("show devices "+databases[1]+".**", verbose) : "再次激活："+doublePath2;
+        assert expectCount == getCount("count devices "+databases[1]+".**", verbose) : "再次激活："+doublePath2;
         insertRecordSingle(doublePath1+"."+tsName, TSDataType.INT32, isAligned,null);
         paths.clear();
         paths.add(doublePath2);
         paths.add(doublePath2);
         session.createTimeseriesUsingSchemaTemplate(paths);
         expectCount++;
-        assert expectCount == countLines("show devices "+databases[1]+".**", verbose) : "paths中有重复路径，激活："+doublePath2;
+        assert expectCount == getCount("count devices "+databases[1]+".**", verbose) : "paths中有重复路径，激活："+doublePath2;
         insertRecordSingle(doublePath2+"."+tsName, TSDataType.INT32, isAligned,null);
     }
     @Test(priority = 100)
@@ -221,7 +221,7 @@ public class ActiveInBatch extends BaseTestSuite {
     @Test(priority = 101)
     public void testContainErrorPath() throws IoTDBConnectionException, StatementExecutionException {
         String database = databasePrefix+"_ab";
-        int expectCount = countLines("show devices root.**", verbose);
+        int expectCount = getCount("count devices root.**", verbose);
         if(!checkStroageGroupExists(database)) {
             session.createDatabase(database);
         }
@@ -231,7 +231,7 @@ public class ActiveInBatch extends BaseTestSuite {
         Assert.assertThrows(StatementExecutionException.class, ()->{
             session.createTimeseriesUsingSchemaTemplate(paths);
         });
-        assert expectCount == countLines("show devices root.**", verbose) : "含有未挂载路径";
+        assert expectCount == getCount("count devices root.**", verbose) : "含有未挂载路径";
         paths.clear();
         paths.add(null);
         paths.add(databases[0]+".thisIsNormal");
@@ -239,12 +239,12 @@ public class ActiveInBatch extends BaseTestSuite {
         Assert.assertThrows(StatementExecutionException.class, ()->{
             session.createTimeseriesUsingSchemaTemplate(paths);
         });
-        assert expectCount == countLines("show devices root.**", verbose) : "含有null";
+        assert expectCount == getCount("count devices root.**", verbose) : "含有null";
     }
 
 //    TIMECHODB-79
     @Test(priority = 110, dataProvider = "getErrorNames", expectedExceptions = StatementExecutionException.class)
-    public void testErrorPath(String name, String comment) throws IoTDBConnectionException, StatementExecutionException {
+    public void testErrorPath(String name, String comment, String index) throws IoTDBConnectionException, StatementExecutionException {
         paths.clear();
 //        paths.add(databases[1]+".dNormal");
         paths.add(databases[1]+"."+name);
@@ -257,22 +257,22 @@ public class ActiveInBatch extends BaseTestSuite {
         for (int i = 0; i < names.size(); i++) {
             paths.add(databases[1]+"."+names.get(i));
         }
-        int expectCount = countLines("show devices "+databases[1]+".**", verbose) + paths.size();
+        int expectCount = getCount("count devices "+databases[1]+".**", verbose) + paths.size();
         session.createTimeseriesUsingSchemaTemplate(paths);
-        assert expectCount == countLines("show devices "+databases[1]+".**", verbose): "激活 validPath";
+        assert expectCount == getCount("count devices "+databases[1]+".**", verbose): "激活 validPath";
         for (int i = 0; i < paths.size() ; i++) {
             insertRecordSingle(paths.get(i)+"."+tsName, TSDataType.INT32, isAligned,null);
         }
     }
 
     @Test(priority = 120, dataProvider = "getNormalNames")
-    public void testNormalOne(String name, String comment) throws StatementExecutionException, IoTDBConnectionException, IOException {
-        String database = databasePrefix;
+    public void testNormalOne(String name, String comment, String index) throws StatementExecutionException, IoTDBConnectionException, IOException {
+        String database = databasePrefix+index;
         if (!checkStroageGroupExists(database)) {
             session.createDatabase(database);
         }
         paths.clear();
-        int templateCount = countLines("show schema templates", verbose);
+        int templateCount = getTemplateCount(verbose);
         Template template = new Template(name, isAligned);
         List<Object> struct = Tools.getRandom(structures);
         TSDataType tsDataType = (TSDataType) struct.get(0);
@@ -281,14 +281,14 @@ public class ActiveInBatch extends BaseTestSuite {
                 (TSEncoding) struct.get(1), (CompressionType) struct.get(2));
         template.addToTemplate(mNode);
         session.createSchemaTemplate(template);
-        assert 1 + templateCount == countLines("show schema templates", verbose) : "创建模版成功";
+        assert 1 + templateCount == getTemplateCount(verbose) : "创建模版成功";
         session.setSchemaTemplate(name, database);
         assert checkTemplateContainPath(name, database) : "挂载模版成功";
-        int deviceCount = countLines("show devices "+database+".**", verbose);
+        int deviceCount = getCount("count devices "+database+".**", verbose);
         paths.add(database+"."+name);
         session.createTimeseriesUsingSchemaTemplate(paths);
-        assert (paths.size() + deviceCount) == countLines("show timeseries " + database + ".**", verbose) :"批量激活模版timeseries:"+paths.size();
-        assert (paths.size() + deviceCount) == countLines("show devices "+database+".**", verbose) : "批量激活模版devices："+paths.size();
+        assert (paths.size() + deviceCount) == getTimeSeriesCount(database + ".**", verbose) :"批量激活模版timeseries:"+paths.size();
+        assert (paths.size() + deviceCount) == getCount("count devices "+database+".**", verbose) : "批量激活模版devices："+paths.size();
         insertRecordSingle(database+"."+name+"."+name, tsDataType, isAligned, null);
         session.deleteStorageGroup(database);
         session.dropSchemaTemplate(name);
@@ -299,7 +299,7 @@ public class ActiveInBatch extends BaseTestSuite {
         String templateName = templateNamePrefix;
         String database = databasePrefix;
         List<MeasurementSchema> schemaList = new ArrayList<>(structures.size());
-        int templateCount = countLines("show schema templates", verbose);
+        int templateCount = getTemplateCount(verbose);
         Template template = new Template(templateName, isAligned);
         if(!checkStroageGroupExists(database)) {
             session.createDatabase(database);
@@ -312,7 +312,7 @@ public class ActiveInBatch extends BaseTestSuite {
                     (TSEncoding) structures.get(i).get(1), (CompressionType) structures.get(i).get(2)));
         }
         session.createSchemaTemplate(template);
-        assert 1 + templateCount == countLines("show schema templates", verbose) : "创建模版成功:"+templateName;
+        assert 1 + templateCount == getTemplateCount(verbose) : "创建模版成功:"+templateName;
         session.setSchemaTemplate(templateName, database);
         assert checkTemplateContainPath(templateName, database) : "挂载模版成功:"+templateName+" - "+database;
         int i = 0;
@@ -323,9 +323,9 @@ public class ActiveInBatch extends BaseTestSuite {
             i++;
             paths.add(sj.toString());
             if (i > 547) {
-                int expectCount = countLines("show devices " + database + ".**", verbose) + paths.size();
+                int expectCount = getCount("count devices " + database + ".**", verbose) + paths.size();
                 session.createTimeseriesUsingSchemaTemplate(paths);
-                assert expectCount == countLines("show devices " + database + ".**", verbose) : "激活" + i;
+                assert expectCount == getCount("count devices " + database + ".**", verbose) : "激活" + i;
                 for (int j = 0; j < paths.size(); j++) {
                     insertTabletMulti(paths.get(j), schemaList, 10, isAligned);
                 }

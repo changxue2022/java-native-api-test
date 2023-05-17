@@ -9,6 +9,7 @@ import org.apache.iotdb.session.template.MeasurementNode;
 import org.apache.iotdb.tsfile.file.metadata.enums.CompressionType;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSEncoding;
+import org.apache.iotdb.tsfile.write.schema.MeasurementSchema;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -87,5 +88,43 @@ public class Tmp extends BaseTestSuite {
         alias.add(null);
         session.createAlignedTimeseries(device,tsList, tsDataTypes,tsEncodings,compressionTypes,alias);
     }
+    private List<MeasurementSchema> schemaList = new ArrayList<>(7);// tablet
 
+    private void createTemplate (String templateName, String loadNode, boolean isAligned) throws
+            IoTDBConnectionException, StatementExecutionException, IOException {
+//        int templateCount = countLines("show schema templates", true);
+        Template template = new Template(templateName, isAligned);
+
+        structureInfo.forEach((key, value) -> {
+            schemaList.add(new MeasurementSchema(key, (TSDataType) value[0], (TSEncoding) value[1], (CompressionType) value[2]));
+            MeasurementNode mNode =
+                    new MeasurementNode(key, (TSDataType) value[0], (TSEncoding) value[1], (CompressionType) value[2]);
+            try {
+                template.addToTemplate(mNode);
+            } catch (StatementExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        session.createSchemaTemplate(template);
+        countLines("show schema templates", verbose);
+        if (!loadNode.isEmpty()) {
+            session.setSchemaTemplate(templateName, loadNode);
+            assert checkTemplateContainPath(templateName, loadNode) : "挂载模版成功";
+            getSetPathsCount(templateName, verbose);
+            insertTabletMulti(loadNode, schemaList, 10, isAligned);
+            countLines("show timeseries "+loadNode+".**", verbose);
+            getRecordCount(loadNode, verbose);
+        }
+    }
+    @Test
+    public void test232() throws IoTDBConnectionException, IOException, StatementExecutionException {
+        cleanDatabases(verbose);
+        cleanTemplates(verbose);
+        session.createDatabase("root.template");
+//        String name = "`123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789.12345678912345678912345678912345678912345678912345678912345678912345678912345678912356`";
+        String name = "c21";
+        String loadNode = "root.template."+name;
+        createTemplate(name, loadNode, isAligned);
+    }
 }

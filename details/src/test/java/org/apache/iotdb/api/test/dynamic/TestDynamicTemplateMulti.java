@@ -10,12 +10,15 @@ import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSEncoding;
 import org.apache.iotdb.tsfile.write.schema.MeasurementSchema;
 import org.testng.annotations.*;
+import org.testng.log4testng.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TestDynamicTemplateMulti extends BaseTestSuite {
+    private Logger logger = Logger.getLogger(TestDynamicTemplateMulti.class);
+
     private List<MeasurementSchema> schemaList = new ArrayList<>();
     private List<MeasurementSchema> schemaList_clean = new ArrayList<>(1);
 

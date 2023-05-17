@@ -20,6 +20,7 @@ public class PrepareConnection {
     private static Session session = null;
     private static SessionPool sessionPool = null;
     private static ReadConfig config;
+
     static {
         try {
             config = ReadConfig.getInstance();
@@ -36,6 +37,7 @@ public class PrepareConnection {
                         .username(config.getValue("user"))
                         .password(config.getValue("password"))
                         .enableRedirection(false)
+                        .timeOut(Long.parseLong(config.getValue("session_timeout")))
                         .build();
             } else {
                 session = new Session.Builder()
@@ -44,6 +46,7 @@ public class PrepareConnection {
                         .username(config.getValue("user"))
                         .password(config.getValue("password"))
                         .enableRedirection(false)
+                        .timeOut(Long.parseLong(config.getValue("session_timeout")))
                         .build();
             }
         }
@@ -61,6 +64,7 @@ public class PrepareConnection {
                         .user(config.getValue("user"))
                         .password(config.getValue("password"))
                         .maxSize(10)
+                        .timeOut(Long.parseLong(config.getValue("session_timeout")))
                         .build();
             } else {
                 sessionPool = new SessionPool.Builder()
@@ -69,6 +73,7 @@ public class PrepareConnection {
                         .user(config.getValue("user"))
                         .password(config.getValue("password"))
                         .maxSize(10)
+                        .timeOut(Long.parseLong(config.getValue("session_timeout")))
                         .build();
             }
         }

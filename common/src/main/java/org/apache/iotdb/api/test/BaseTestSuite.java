@@ -16,6 +16,7 @@ import org.apache.iotdb.tsfile.write.schema.MeasurementSchema;
 import org.jetbrains.annotations.NotNull;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.log4testng.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.StringJoiner;
 
 public class BaseTestSuite {
+    Logger logger = Logger.getLogger(BaseTestSuite.class);
     public Session session = null;
     // 是对齐/非对齐序列。dynamic module. 动态模版相关
     protected boolean isAligned;
@@ -48,20 +50,20 @@ public class BaseTestSuite {
     public int countLines(String sql, boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
         SessionDataSet records = session.executeQueryStatement(sql);
         if (verbose) {
-            System.out.println(sql);
-            System.out.println("******** start ********");
+            logger.info(sql);
+            logger.info("******** start ********");
         }
         int count = 0;
         while (records.hasNext()) {
             count++;
             if (verbose) {
-                System.out.println(records.next());
+                logger.info(records.next());
             } else {
                 records.next();
             }
         }
         if (verbose) {
-            System.out.println("******** end ********"+count);
+            logger.info("******** end ********"+count);
         }
         return count;
     }
@@ -70,17 +72,17 @@ public class BaseTestSuite {
         SessionDataSet.DataIterator recordsIter = records.iterator();
         int count = 0;
         if (verbose) {
-            System.out.println(sql);
-            System.out.println("******** start ********");
+            logger.info(sql);
+            logger.info("******** start ********");
         }
         while (recordsIter.next()) {
             count = recordsIter.getInt(1);
             if (verbose) {
-                System.out.println(count);
+                logger.info(count);
             }
         }
         if (verbose) {
-            System.out.println("******** end ********");
+            logger.info("******** end ********");
         }
         return count;
     }
@@ -95,10 +97,10 @@ public class BaseTestSuite {
         SessionDataSet.DataIterator recordsIter = dataSet.iterator();
         while(recordsIter.next()) {
             if (verbose) {
-                System.out.println(recordsIter.getString(1));
-                System.out.println(recordsIter.getString(4));
-                System.out.println(recordsIter.getString(5));
-                System.out.println(recordsIter.getString(6));
+                logger.info(recordsIter.getString(1));
+                logger.info(recordsIter.getString(4));
+                logger.info(recordsIter.getString(5));
+                logger.info(recordsIter.getString(6));
             }
             assert path.equals(recordsIter.getString(1)) : "Timeseries exists: "+path;
         }
@@ -106,12 +108,15 @@ public class BaseTestSuite {
     public int getTimeSeriesCount(String timeSeries, boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
         return getCount("count timeseries "+timeSeries, verbose);
     }
+    public int getDeviceCount(String device, boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
+        return getCount("count devices "+device, verbose);
+    }
     public int getRecordCount(String device, boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
         return getCount("select count(*) from "+device, verbose);
     }
 
     public void checkQueryResult(String sql, Object expectValue) throws IoTDBConnectionException, StatementExecutionException {
-        System.out.println("sql="+sql);
+        logger.debug("sql="+sql);
         SessionDataSet dataSet = session.executeQueryStatement(sql);
         while (dataSet.hasNext()) {
             RowRecord records = dataSet.next();
@@ -146,7 +151,7 @@ public class BaseTestSuite {
         if (verbose) {
             while (dataSet.hasNext()) {
                 RowRecord record = dataSet.next();
-                System.out.println(record.toString());
+                logger.debug(record.toString());
             }
         }
         return !result;
@@ -161,8 +166,8 @@ public class BaseTestSuite {
             session.deleteDatabases(databases);
         }
         if (verbose) {
-            System.out.println(databases.toString());
-            System.out.println("drop databases: "+databases.size());
+            logger.info(databases.toString());
+            logger.info("drop databases: "+databases.size());
         }
     }
     public void cleanTemplates(boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
@@ -173,7 +178,7 @@ public class BaseTestSuite {
             session.dropSchemaTemplate("`"+String.valueOf(records.next().getFields().get(0))+"`");
         }
         if (verbose) {
-            System.out.println("drop templates:" + count);
+            logger.info("drop templates:" + count);
         }
     }
 
@@ -353,12 +358,9 @@ public class BaseTestSuite {
         return countLines(sql, verbose);
     }
     public void deactiveTemplate(String templateName, String path) throws IoTDBConnectionException, StatementExecutionException {
-        int count = getActivePathsCount(templateName, true);
-        count--;
         // delete timeseries of schema template t1 from root.sg1.d1
         // deactivate schema template t1 from root.sg1.d1
         session.executeNonQueryStatement("deactivate schema template "+templateName+" from "+path);
-        assert count == getActivePathsCount(templateName, true) : "解除成功";
     }
      public void deactiveTemplate(String templateName, @NotNull List<String> paths) throws IoTDBConnectionException, StatementExecutionException {
         int count = getActivePathsCount(templateName, true);

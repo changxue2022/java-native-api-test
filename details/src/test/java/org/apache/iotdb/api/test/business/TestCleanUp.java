@@ -58,9 +58,8 @@ public class TestCleanUp extends BaseTestSuite {
     }
     @AfterClass
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
-        if (checkStroageGroupExists(database)) {
-            session.deleteDatabase(database);
-        }
+        cleanDatabases(verbose);
+        cleanTemplates(verbose);
     }
     @BeforeMethod
     public void beforeMethod() throws IoTDBConnectionException, StatementExecutionException {

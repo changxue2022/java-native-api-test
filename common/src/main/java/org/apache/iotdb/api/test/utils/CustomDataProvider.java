@@ -7,7 +7,7 @@ import org.apache.iotdb.tsfile.file.metadata.enums.CompressionType;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSEncoding;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
+import org.testng.log4testng.Logger;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -15,17 +15,17 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static java.lang.System.out;
-
 /**
  * 读取csv文件，返回除第一行header外的数据，供给给测试方法使用
  * Author: xue.chang@timecho.com
  */
 public class CustomDataProvider {
+    private Logger logger = Logger.getLogger(CustomDataProvider.class);
     private List<Object[]> testCases = new ArrayList<>();
     private Reader reader;
 
     public Iterable<CSVRecord> readCSV(String filepath, char delimiter) throws IOException {
+        logger.info("read csv:"+CustomDataProvider.class.getClassLoader().getResource(filepath).getPath());
         this.reader = Files.newBufferedReader(Paths.get(CustomDataProvider.class.getClassLoader().getResource(filepath).getPath()));
         CSVFormat csvformat = CSVFormat.DEFAULT.withDelimiter(delimiter).withEscape('\\').withQuote('"').withIgnoreEmptyLines(true);
         Iterable<CSVRecord> records = csvformat.parse(reader);
@@ -194,7 +194,9 @@ public class CustomDataProvider {
                 eachLine.add(parseEncoding(recordIter.next()));
                 eachLine.add(parseCompressionType(recordIter.next()));
                 eachLine.add(recordIter.next());
+                eachLine.add(recordIter.next());
                 result.add(eachLine);
+                testCases.add(eachLine.toArray());
             }
         }
         this.reader.close();

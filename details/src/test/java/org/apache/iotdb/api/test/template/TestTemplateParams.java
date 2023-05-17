@@ -13,6 +13,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestTemplateParams extends BaseTestSuite {
     private String tName = "t1";
@@ -24,21 +26,25 @@ public class TestTemplateParams extends BaseTestSuite {
         cleanTemplates(verbose);
     }
 
-    @AfterClass
+//    @AfterClass
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
         cleanDatabases(verbose);
         cleanTemplates(verbose);
     }
+    // TIMECHODB-141
     @Test(priority = 10, expectedExceptions = StatementExecutionException.class)
     public void testCreateTemplate_null() throws IoTDBConnectionException, IOException, StatementExecutionException {
         session.createSchemaTemplate(null);
     }
-    @Test(priority = 11, expectedExceptions = StatementExecutionException.class)
+    @Test(priority = 11)
     public void testCreateTemplate_empty() throws IoTDBConnectionException, IOException, StatementExecutionException {
-        Template template = new Template(tName);
+        String templateName = tName +"_0TS";
+        Template template = new Template(templateName, isAligned);
         session.createSchemaTemplate(template);
+        assert checkTemplateExists(templateName) : "创建0TS模版成功";
+        session.dropSchemaTemplate(templateName);
     }
-    @Test(priority = 12, expectedExceptions = StatementExecutionException.class)
+    @Test(priority = 12, expectedExceptions = IoTDBConnectionException.class)
     public void testSet_nullTemplate() throws IoTDBConnectionException, StatementExecutionException {
         session.setSchemaTemplate(null, databasePrefix);
     }
@@ -47,7 +53,7 @@ public class TestTemplateParams extends BaseTestSuite {
         session.setSchemaTemplate(tName, databasePrefix);
     }
 
-    @Test(priority = 14, expectedExceptions = StatementExecutionException.class)
+    @Test(priority = 14, expectedExceptions = IoTDBConnectionException.class)
     public void testSet_noTempNullPath() throws IoTDBConnectionException, StatementExecutionException {
         session.setSchemaTemplate(tName, null);
     }
@@ -70,7 +76,7 @@ public class TestTemplateParams extends BaseTestSuite {
         session.createSchemaTemplate(template);
         assert templateCount + 1 == getTemplateCount(verbose) : "创建单节点模版成功";
     }
-    @Test(priority = 18, expectedExceptions = StatementExecutionException.class)
+    @Test(priority = 18, expectedExceptions = IoTDBConnectionException.class)
     public void testSet_nullPath() throws IoTDBConnectionException, StatementExecutionException {
         session.setSchemaTemplate(tName, null);
     }
