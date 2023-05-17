@@ -7,18 +7,31 @@ jdk: >= 1.8
 maven: >= 3.8.1
 
 ## configuration
-modify the iotdb connection:
-src/resources/config.properties
+1. The iotdb connection(default is localhost):
+```shell
+common/src/resources/config.properties
+```
+2. The iotdb-session dependency: the pom.xml of project
+3. Configure running test cases: 
+
+```shell
+details/src/resources/testng.xml
+```
 
 ## run
 ```shell
-mvn test
+# compile jar
+mvn clean package -DskipTests
+# run tests and generate html report
+mvn surefire-report:report
 ```
-
+运行时间大约1个小时
 ## report
-after running, there would be a directory named surefire-reports
-"target/surefire-reports/Default Suite/java-native-api-test.html"
+After running, here is the reports:
+```shell
+detail/target/site/surefire-report.html
+```
+![](assets/16843000786395.jpg)
 
-## option
-you could choose what test cases by modifying src/resource/testng.xml
+
 
