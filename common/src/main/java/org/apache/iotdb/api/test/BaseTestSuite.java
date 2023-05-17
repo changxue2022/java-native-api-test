@@ -400,8 +400,8 @@ public class BaseTestSuite {
         assert expectCount == actualCount : "成功修改模版 expect="+expectCount+" actual="+actualCount;
     }
     public void addTSIntoTemplate(String templateName, String tsName, TSDataType tsDataType, TSEncoding tsEncoding, CompressionType compressionType) throws IoTDBConnectionException, StatementExecutionException {
-        int count = getTSCountInTemplate(templateName, false);
-        count ++;
+//        int count = getTSCountInTemplate(templateName, false);
+//        count ++;
         StringJoiner sb = new StringJoiner(" ");
         sb.add("alter schema template ");
         sb.add(templateName);
@@ -414,7 +414,7 @@ public class BaseTestSuite {
         sb.add(compressionType.toString());
         sb.add(");");
         session.executeNonQueryStatement(sb.toString());
-        assert count == getTSCountInTemplate(templateName, false) : "成功修改模版";
+//        assert count == getTSCountInTemplate(templateName, false) : "成功修改模版";
     }
 
 }

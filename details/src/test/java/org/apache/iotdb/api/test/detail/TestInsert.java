@@ -29,7 +29,7 @@ import static java.lang.System.out;
  * 6. 测试时间戳各种格式
  */
 public class TestInsert extends BaseTestSuite {
-    private static final String database = "root.aligned";
+    private static final String database = "root.testInsert";
     private static final String device = database+".d1";
     private static final String alignedDevice = database+".d2";
     private Map<String, TSDataType> measureTSTypeInfos = new LinkedHashMap<>(6);

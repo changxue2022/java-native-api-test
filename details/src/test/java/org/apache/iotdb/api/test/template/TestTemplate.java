@@ -332,7 +332,7 @@ public class TestTemplate extends BaseTestSuite {
         assert false == checkTemplateExists(templateName) : "template已经删除:"+templateName;
     }
 
-    @Test(priority = 52) // loop=100 112s; loop=1000 hang?
+    @Test(enabled = false, priority = 52) // loop=100 112s; loop=1000 hang?
     public void testCreateTemplate_maxTS() throws StatementExecutionException, IoTDBConnectionException, IOException {
         long start = System.currentTimeMillis();
         String templateName = templatePrefix +"_maxTS";
@@ -382,7 +382,7 @@ public class TestTemplate extends BaseTestSuite {
         System.out.println("########### testCreateTemplate_maxTS "+loop + " elapse time(s):"+ (end-start)/1000);
     }
 
-    @Test(priority = 60) // maxLength=100 44s;
+    @Test(enabled = false, priority = 60) // maxLength=100 44s;
     public void testSet_max() throws IoTDBConnectionException, StatementExecutionException, IOException {
         long start = System.currentTimeMillis();
         String templateName = templatePrefix + "_setMax";

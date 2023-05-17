@@ -369,7 +369,7 @@ public class TestOrdinary extends BaseTestSuite {
             assert checkUsingTemplate(paths.get(0), verbose) : "激活成功";
 //        }
     }
-    @Test(priority = 66)
+    @Test(priority = 67)
     public void testNormalNames_resultCheck() throws IoTDBConnectionException, StatementExecutionException {
         assert schemaList.size() == getTSCountInTemplate(templateName, verbose) : "并发修改模版成功：names-normal.csv";
         for (int i = 0; i < devicePaths.size(); i++) {
@@ -469,6 +469,5 @@ public class TestOrdinary extends BaseTestSuite {
         }
         session.deleteDatabase(this.database +1);
     }
-
 
 }

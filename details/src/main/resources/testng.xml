@@ -18,22 +18,7 @@
             <class name="org.apache.iotdb.api.test.business.TestCleanUp"></class>
         </classes>
     </test>
-    <test name="DynamicTemplateTest" preserve-order="true">
-        <classes>
-            <class name="org.apache.iotdb.api.test.dynamic.TestOrdinary" />
-            <class name="org.apache.iotdb.api.test.dynamic.TestDynamicTemplateMin" />
-            <class name="org.apache.iotdb.api.test.dynamic.TestDynamicTemplateMulti" />
-        </classes>
-    </test>
 
-    <test name="ParamsTest" preserve-order="true">
-        <classes>
-            <class name="org.apache.iotdb.api.test.detail.TestDatabaseParams"></class>
-            <class name="org.apache.iotdb.api.test.detail.TestTimeSeriesParams"></class>
-<!--            <class name="org.apache.iotdb.api.test.detail.TestInsertParams"></class>-->
-            <class name="org.apache.iotdb.api.test.template.TestTemplateParams"></class>
-        </classes>
-    </test>
     <test name="TimeseriesTest" preserve-order="true">
         <classes>
             <class name="org.apache.iotdb.api.test.detail.TestDataBase"></class>
@@ -48,7 +33,24 @@
             <class name="org.apache.iotdb.api.test.template.ActiveInBatch"></class>
         </classes>
     </test>
-<!--    <listeners>-->
+    <test name="DynamicTemplateTest" preserve-order="true">
+        <classes>
+            <class name="org.apache.iotdb.api.test.dynamic.TestOrdinary" />
+            <class name="org.apache.iotdb.api.test.dynamic.TestDynamicTemplateMin" />
+            <class name="org.apache.iotdb.api.test.dynamic.TestDynamicTemplateMulti" />
+        </classes>
+    </test>
+    <test name="ParamsTest" preserve-order="true">
+        <classes>
+            <class name="org.apache.iotdb.api.test.detail.TestDatabaseParams"></class>
+            <class name="org.apache.iotdb.api.test.detail.TestTimeSeriesParams"></class>
+            <class name="org.apache.iotdb.api.test.detail.TestInsertParams"></class>
+            <class name="org.apache.iotdb.api.test.template.TestTemplateParams"></class>
+        </classes>
+    </test>
+    <listeners>
 <!--        <listener class-name="org.testng.reporters.JUnitXMLReporter"/>-->
-<!--    </listeners>-->
+        <listener class-name="org.testng.reporters.XMLReporter"/>
+        <listener class-name="org.testng.reporters.DotTestListener"/>
+    </listeners>
 </suite>
