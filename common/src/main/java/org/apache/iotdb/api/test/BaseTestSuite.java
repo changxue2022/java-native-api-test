@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.StringJoiner;
 
 public class BaseTestSuite {
-    Logger logger = Logger.getLogger(BaseTestSuite.class);
+    public Logger logger = Logger.getLogger(BaseTestSuite.class);
     public Session session = null;
     // 是对齐/非对齐序列。dynamic module. 动态模版相关
     protected boolean isAligned;
@@ -34,14 +34,20 @@ public class BaseTestSuite {
     protected boolean auto_create_schema;
     @BeforeClass
     public void beforeSuite() throws IoTDBConnectionException, IOException {
+        logger.warn("############ BaseTestSuite BeforeClass ##########" );
         session = PrepareConnection.getSession();
         verbose = Boolean.parseBoolean(ReadConfig.getInstance().getValue("verbose"));
         isAligned = Boolean.parseBoolean(ReadConfig.getInstance().getValue("isAligned"));
         auto_create_schema = Boolean.parseBoolean(ReadConfig.getInstance().getValue("auto_create_schema"));
+        logger.warn("++++++++ session="+session.toString());
     }
     @AfterClass
-    public void afterSuie() throws IoTDBConnectionException {
+    public void afterSuie() throws IoTDBConnectionException, StatementExecutionException {
+        logger.warn("############ BaseTestSuite AfterClass ##########" );
+        cleanDatabases(verbose);
+        cleanTemplates(verbose);
         session.close();
+        session = null;
     }
     public boolean checkStroageGroupExists(String storageGroupId) throws IoTDBConnectionException, StatementExecutionException {
         SessionDataSet records = session.executeQueryStatement("show storage group "+storageGroupId);
@@ -151,23 +157,18 @@ public class BaseTestSuite {
         if (verbose) {
             while (dataSet.hasNext()) {
                 RowRecord record = dataSet.next();
-                logger.debug(record.toString());
+                logger.info(record.toString());
             }
         }
         return !result;
     }
     public void cleanDatabases(boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
-        SessionDataSet records = session.executeQueryStatement("show databases");
-        List<String> databases = new ArrayList<>();
-        while (records.hasNext()) {
-            databases.add(String.valueOf(records.next().getFields().get(0)));
-        }
-        if (!databases.isEmpty()) {
-            session.deleteDatabases(databases);
-        }
+        int count = getCount("count databases", verbose);
         if (verbose) {
-            logger.info(databases.toString());
-            logger.info("drop databases: "+databases.size());
+            logger.info("drop databases: "+count);
+        }
+        if (count > 0) {
+            session.executeNonQueryStatement("drop database root.**");
         }
     }
     public void cleanTemplates(boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
@@ -324,17 +325,17 @@ public class BaseTestSuite {
             dataSet = session.executeLastDataQuery(paths);
         }
         if (verbose) {
-            System.out.println(paths +" expect="+ expectValues);
-            System.out.println(dataSet.getColumnNames());
+            logger.info(paths +" expect="+ expectValues);
+            logger.info(dataSet.getColumnNames());
         }
         int i = 0;
         SessionDataSet.DataIterator records = dataSet.iterator();
         while (records.next()) {
             if (verbose) {
                 for (int j = 1; j <= dataSet.getColumnNames().size(); j++) {
-                    System.out.print(records.getString(j)+",");
+                    logger.info(records.getString(j)+",");
                 }
-                System.out.println();
+                logger.info("");
             }
             if (expectValues != null && !expectValues.isEmpty()) {
                 assert expectValues.get(i).equals(records.getString(1)) : paths.get(i) + " :" + expectValues.get(i) + " == " + records.getString(1);
@@ -360,18 +361,22 @@ public class BaseTestSuite {
     public void deactiveTemplate(String templateName, String path) throws IoTDBConnectionException, StatementExecutionException {
         // delete timeseries of schema template t1 from root.sg1.d1
         // deactivate schema template t1 from root.sg1.d1
-        session.executeNonQueryStatement("deactivate schema template "+templateName+" from "+path);
+        String sql = "deactivate schema template "+templateName+" from "+path;
+        logger.debug(sql);
+        session.executeNonQueryStatement(sql);
     }
      public void deactiveTemplate(String templateName, @NotNull List<String> paths) throws IoTDBConnectionException, StatementExecutionException {
-        int count = getActivePathsCount(templateName, true);
+        int count = getActivePathsCount(templateName, verbose);
         count -= paths.size();
         // delete timeseries of schema template t1 from root.sg1.d1
         // deactivate schema template t1 from root.sg1.d1
          for (int i = 0; i < paths.size(); i++) {
-             System.out.println(paths.get(i));
-             session.executeNonQueryStatement("deactivate schema template "+templateName+" from "+paths.get(i));
+             checkUsingTemplate(paths.get(i), true) ;//: paths.get(i)+"使用了模版";
+             String sql = "deactivate schema template "+templateName+" from "+paths.get(i);
+             logger.debug(sql);
+             session.executeNonQueryStatement(sql);
          }
-        assert count == getActivePathsCount(templateName, true) : "解除成功";
+        assert count == getActivePathsCount(templateName, verbose) : "解除成功";
     }
 
     public void addTSIntoTemplate(String templateName, List<String> tsNameList, List<TSDataType> tsDataTypeList, List<TSEncoding> tsEncodingList, List<CompressionType> compressionTypeList) throws IoTDBConnectionException, StatementExecutionException {
@@ -399,7 +404,7 @@ public class BaseTestSuite {
         System.out.println("beforeCount="+beforeCount);
         assert expectCount == actualCount : "成功修改模版 expect="+expectCount+" actual="+actualCount;
     }
-    public void addTSIntoTemplate(String templateName, String tsName, TSDataType tsDataType, TSEncoding tsEncoding, CompressionType compressionType) throws IoTDBConnectionException, StatementExecutionException {
+    public void addTSIntoTemplate(String templateName, String tsName, TSDataType tsDataType, TSEncoding tsEncoding, CompressionType compressionType, Session conn) throws IoTDBConnectionException, StatementExecutionException {
 //        int count = getTSCountInTemplate(templateName, false);
 //        count ++;
         StringJoiner sb = new StringJoiner(" ");
@@ -413,8 +418,32 @@ public class BaseTestSuite {
         sb.add("compression=");
         sb.add(compressionType.toString());
         sb.add(");");
-        session.executeNonQueryStatement(sb.toString());
+        if (conn == null) {
+            session.executeNonQueryStatement(sb.toString());
+        } else {
+            conn.executeNonQueryStatement(sb.toString());
+            conn.close();
+        }
 //        assert count == getTSCountInTemplate(templateName, false) : "成功修改模版";
+    }
+
+    public void  cleanTemplateNodes(String templateName, String prefix) throws IoTDBConnectionException, StatementExecutionException {
+        String sql = "show paths using schema template "+templateName;
+        SessionDataSet records = session.executeQueryStatement(sql);
+        SessionDataSet.DataIterator recordsIter = records.iterator();
+        while (recordsIter.next()) {
+            if (recordsIter.getString(1).startsWith(prefix)) {
+                deactiveTemplate(templateName, recordsIter.getString(1));
+            }
+        }
+        sql = "show paths set schema template "+templateName;
+        records = session.executeQueryStatement(sql);
+        recordsIter = records.iterator();
+        while (recordsIter.next()) {
+            if (recordsIter.getString(1).startsWith(prefix)) {
+                session.unsetSchemaTemplate(recordsIter.getString(1), templateName);
+            }
+        }
     }
 
 }

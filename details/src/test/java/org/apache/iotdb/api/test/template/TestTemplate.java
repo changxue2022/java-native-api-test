@@ -2,10 +2,12 @@ package org.apache.iotdb.api.test.template;
 
 import org.apache.iotdb.api.test.BaseTestSuite;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
+import org.apache.iotdb.api.test.utils.PrepareConnection;
 import org.apache.iotdb.api.test.utils.Tools;
 import org.apache.iotdb.isession.template.Template;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
+import org.apache.iotdb.session.Session;
 import org.apache.iotdb.session.template.MeasurementNode;
 import org.apache.iotdb.tsfile.file.metadata.enums.CompressionType;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
@@ -34,8 +36,6 @@ public class TestTemplate extends BaseTestSuite {
 
     @BeforeClass
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException, IOException {
-        cleanDatabases(verbose);
-        cleanTemplates(verbose);
         session.createDatabase(database);
         structureInfo.put("s_boolean", new Object[]{TSDataType.BOOLEAN, TSEncoding.RLE, CompressionType.SNAPPY});
         structureInfo.put("s_int", new Object[]{TSDataType.INT32, TSEncoding.RLE, CompressionType.SNAPPY});
@@ -46,12 +46,6 @@ public class TestTemplate extends BaseTestSuite {
         structureInfo.forEach((key, value) -> {
             schemaList.add(new MeasurementSchema(key, (TSDataType) value[0], (TSEncoding) value[1], (CompressionType) value[2]));
         });
-    }
-
-    @AfterClass
-    public void afterClass() throws IoTDBConnectionException, StatementExecutionException, IOException {
-        cleanDatabases(verbose);
-        cleanTemplates(verbose);
     }
 
     public Iterator<Object[]> getSingleNormal() throws IOException {
@@ -68,8 +62,11 @@ public class TestTemplate extends BaseTestSuite {
         return new CustomDataProvider().load("data/names-normal.csv").getData();
     }
 
-    private void createTemplate (String templateName, String loadNode, boolean isAligned) throws
+    private void createTemplate (String templateName, String loadNode, boolean isAligned, Session session) throws
     IoTDBConnectionException, StatementExecutionException, IOException {
+        if (session == null) {
+            session = this.session;
+        }
 //        int templateCount = countLines("show schema templates", true);
         Template template = new Template(templateName, isAligned);
 
@@ -140,7 +137,9 @@ public class TestTemplate extends BaseTestSuite {
         final String tName = templatePrefix+"Err_"+index;
         Template template = new Template(tName, isAligned);
         template.addToTemplate(new MeasurementNode("err_struct_"+index, tsDataType, encoding, compressionType));
+        Session session = PrepareConnection.getSession();
         session.createSchemaTemplate(template);
+        session.close();
     }
 
     @Test(priority = 10, expectedExceptions = StatementExecutionException.class)
@@ -156,7 +155,7 @@ public class TestTemplate extends BaseTestSuite {
     }
     @Test(priority = 17)
     public void createTemplate() throws IoTDBConnectionException, StatementExecutionException, IOException {
-        createTemplate(tName, "", isAligned);
+        createTemplate(tName, "", isAligned, null);
     }
     @Test(priority = 21)
     public void testSet_database() throws IoTDBConnectionException, StatementExecutionException {
@@ -188,7 +187,7 @@ public class TestTemplate extends BaseTestSuite {
      @Test(priority = 24, expectedExceptions = StatementExecutionException.class)
      public void testSet_2template() throws IoTDBConnectionException, IOException, StatementExecutionException {
         // 同一个database挂载2个template
-        createTemplate(tName, databasePrefix, isAligned);
+        createTemplate(tName, databasePrefix, isAligned, null);
         getSetPathsCount(tName, verbose);
      }
 
@@ -198,7 +197,7 @@ public class TestTemplate extends BaseTestSuite {
         session.createDatabase(database);
         countLines("show databases", verbose);
         String loadNode = database + "." + name;
-        createTemplate(name, loadNode, isAligned);
+        createTemplate(name, loadNode, isAligned, null);
         // 解除
         assert 1 == getActivePathsCount(name, verbose) : "解除模版前："+name;
         deactiveTemplate(name, loadNode);
@@ -217,7 +216,7 @@ public class TestTemplate extends BaseTestSuite {
     // IOTDB-5233  TIMECHODB-137
     @Test(priority = 32, dataProvider = "getErrorNames", expectedExceptions = StatementExecutionException.class)
     public void testCreateTemplate_nameError(String templateName, String comment, String index) throws IoTDBConnectionException, IOException, StatementExecutionException {
-        createTemplate(templateName, "", isAligned);
+        createTemplate(templateName, "", isAligned, PrepareConnection.getSession());
     }
 
     @Test(priority = 40)
@@ -391,7 +390,7 @@ public class TestTemplate extends BaseTestSuite {
             session.deleteDatabase(database);
         }
         session.createDatabase(database);
-        createTemplate(templateName, database+".d", isAligned);
+        createTemplate(templateName, database+".d", isAligned, null);
         int maxLength = 10;
         List<String> paths = new ArrayList<>(maxLength);
         for (int i = 0; i < maxLength; i++) {

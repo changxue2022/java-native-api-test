@@ -10,7 +10,10 @@ import org.apache.iotdb.tsfile.file.metadata.enums.CompressionType;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSEncoding;
 import org.apache.iotdb.tsfile.write.schema.MeasurementSchema;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.testng.log4testng.Logger;
 
 import java.io.IOException;
 import java.util.*;
@@ -19,8 +22,10 @@ import static java.lang.System.out;
 
 public class Tmp extends BaseTestSuite {
     private Map<String, Object[]> structureInfo = new LinkedHashMap<>(6);
-//    @BeforeClass
+    Logger logger = Logger.getLogger(Tmp.class);
+    @BeforeClass
     public void BeforeClass() {
+        logger.warn("########### Tmp BeforeClass ####");
         structureInfo.put("s_boolean", new Object[]{TSDataType.BOOLEAN, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
         structureInfo.put("s_int", new Object[]{TSDataType.INT32, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
         structureInfo.put("s_long", new Object[]{TSDataType.INT64, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
@@ -28,12 +33,20 @@ public class Tmp extends BaseTestSuite {
         structureInfo.put("s_double", new Object[]{TSDataType.DOUBLE, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
         structureInfo.put("s_text", new Object[]{TSDataType.TEXT, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
     }
+    @AfterClass
+    public void afterClass () {
+        logger.warn("###### Tmp afterClass #####");
+    }
 
-//    @Test
-    public void test2() throws IoTDBConnectionException, StatementExecutionException, IOException {
+    @Test
+    public void testTimecho103() throws IoTDBConnectionException, StatementExecutionException, IOException {
         boolean isAligned = true;
         String templateName = "t1";
-        String database = "root.test";
+        String database = "root.db.factory";
+        String device = database + ".d1";
+        String subDevice = database + ".d1.subd";
+
+        session.createDatabase(database);
         Template t1 = new Template(templateName, isAligned);
         structureInfo.forEach((key, value) -> {
             MeasurementNode mNode =
@@ -45,16 +58,21 @@ public class Tmp extends BaseTestSuite {
             }
         });
         session.createSchemaTemplate(t1);
+        getTSCountInTemplate(templateName, verbose);
         session.setSchemaTemplate(templateName, database);
+        getSetPathsCount(templateName, verbose);
 
-        List<String> paths = new ArrayList<>(1);
-        paths.add(database + ".d_0");
-        session.executeQueryStatement("count timeseries " + paths.get(0)+".**");
+        List<String> paths = new ArrayList<>(2);
+        paths.add(device);
+        paths.add(subDevice);
         session.createTimeseriesUsingSchemaTemplate(paths);
-        session.executeQueryStatement("count timeseries " + paths.get(0)+".**");
+        getActivePathsCount(templateName, verbose);
+        checkUsingTemplate(device, verbose);
+        checkUsingTemplate(subDevice, verbose);
+        insertTabletSingle(device, "s_boolean", TSDataType.BOOLEAN, 10, isAligned);
+        insertTabletSingle(subDevice, "s_boolean", TSDataType.BOOLEAN, 10, isAligned);
 
-        session.deleteDatabase(database);
-        session.dropSchemaTemplate(templateName);
+        deactiveTemplate(templateName, device);
     }
     // TIMECHODB-124
 //    @Test
@@ -63,31 +81,7 @@ public class Tmp extends BaseTestSuite {
         props.put("Prop1", "3");
         session.createTimeseries("root.sg.d.s_name", TSDataType.BOOLEAN, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED, props, null, null, null);
     }
-//    @Test
-    public void test111() throws IOException {
-        Iterator<Object[]> i = new CustomDataProvider().load("data/timeseries-multi.csv").getData();
-        while (i.hasNext()) {
-            for(Object r: i.next()) {
-                out.println(r.toString());
-            }
-            out.println("--------------");
-        }
-    }
-    @Test
-    public void testAligned() throws IoTDBConnectionException, StatementExecutionException {
-        String device = "root.sg.d1.max.abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUV.d";
-        List<String> tsList = new ArrayList<>(1);
-        List<String> alias = new ArrayList<>(1);
-        List<TSDataType> tsDataTypes = new ArrayList<>(1);
-        List<TSEncoding> tsEncodings = new ArrayList<>(1);
-        List<CompressionType> compressionTypes = new ArrayList<>(1);
-        tsList.add("s_text1");
-        tsDataTypes.add(TSDataType.TEXT);
-        tsEncodings.add(TSEncoding.PLAIN);
-        compressionTypes.add(CompressionType.UNCOMPRESSED);
-        alias.add(null);
-        session.createAlignedTimeseries(device,tsList, tsDataTypes,tsEncodings,compressionTypes,alias);
-    }
+
     private List<MeasurementSchema> schemaList = new ArrayList<>(7);// tablet
 
     private void createTemplate (String templateName, String loadNode, boolean isAligned) throws
@@ -117,14 +111,5 @@ public class Tmp extends BaseTestSuite {
             getRecordCount(loadNode, verbose);
         }
     }
-    @Test
-    public void test232() throws IoTDBConnectionException, IOException, StatementExecutionException {
-        cleanDatabases(verbose);
-        cleanTemplates(verbose);
-        session.createDatabase("root.template");
-//        String name = "`123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789.12345678912345678912345678912345678912345678912345678912345678912345678912345678912356`";
-        String name = "c21";
-        String loadNode = "root.template."+name;
-        createTemplate(name, loadNode, isAligned);
-    }
+
 }

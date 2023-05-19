@@ -31,9 +31,6 @@ public class newTest extends BaseTestSuite {
 
     @BeforeClass(enabled = true)
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException, IOException {
-        cleanDatabases(verbose);
-        cleanTemplates(verbose);
-
         normalNames = new CustomDataProvider().loadString("data/names-normal.csv",',');
         normalNames_keyword = new CustomDataProvider().loadString("data/key-value.csv",',');
         structures = new CustomDataProvider().parseTSStructure("data/ts-structures.csv");
@@ -41,11 +38,6 @@ public class newTest extends BaseTestSuite {
 //        List<Map<String, String>> attributes = new CustomDataProvider().loadProps("data/props-normal.csv");
 //        List<Map<String, String>> tags = new CustomDataProvider().loadProps("data/tag-normal.csv");
 
-    }
-    @AfterClass(enabled = true)
-    public void  afterClass() throws IoTDBConnectionException, StatementExecutionException {
-        cleanDatabases(verbose);
-        cleanTemplates(verbose);
     }
     @DataProvider(name="storageGroupNormal", parallel = true)
     public Iterator<Object[]> getStorageGroupNormal() throws IOException {

@@ -2,8 +2,10 @@ package org.apache.iotdb.api.test.detail;
 
 import org.apache.iotdb.api.test.BaseTestSuite;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
+import org.apache.iotdb.api.test.utils.PrepareConnection;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
+import org.apache.iotdb.session.Session;
 import org.apache.iotdb.tsfile.file.metadata.enums.CompressionType;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSEncoding;
@@ -534,7 +536,7 @@ public class TestInsert extends BaseTestSuite {
      * 非对齐
      */
     @Test(dataProvider= "insertSingleError", expectedExceptions = StatementExecutionException.class, priority = 50)
-    public void testInsertTablet_error(String time, Object s_boolean, Object s_int, Object s_long, Object s_float, Object s_double, Object s_text) throws IoTDBConnectionException, StatementExecutionException {
+    public void testInsertTablet_error(String time, Object s_boolean, Object s_int, Object s_long, Object s_float, Object s_double, Object s_text) throws IoTDBConnectionException, StatementExecutionException, IOException {
         Tablet tablet = new Tablet(device, schemaList, 1);
         int rowIndex = 0;
         tablet.addTimestamp(rowIndex, Long.valueOf(time));
@@ -544,14 +546,19 @@ public class TestInsert extends BaseTestSuite {
         tablet.addValue(schemaList.get(3).getMeasurementId(), rowIndex, s_float);
         tablet.addValue(schemaList.get(4).getMeasurementId(), rowIndex, s_double);
         tablet.addValue(schemaList.get(5).getMeasurementId(), rowIndex, s_text);
-        session.insertTablet(tablet);
+        Session s = PrepareConnection.getSession();
+        try {
+            s.insertTablet(tablet);
+        } finally {
+            s.close();
+        }
     }
     /**
      * 单条 insertTablet error
      * 对齐
      */
     @Test(dataProvider= "insertSingleError", expectedExceptions = StatementExecutionException.class, priority = 51)
-    public void testInsertAlignedTablet_error(String time, Object s_boolean, Object s_int, Object s_long, Object s_float, Object s_double, Object s_text) throws IoTDBConnectionException, StatementExecutionException {
+    public void testInsertAlignedTablet_error(String time, Object s_boolean, Object s_int, Object s_long, Object s_float, Object s_double, Object s_text) throws IoTDBConnectionException, StatementExecutionException, IOException {
         Tablet tablet = new Tablet(alignedDevice, schemaList, 1);
         int rowIndex = 0;
         tablet.addTimestamp(rowIndex, Long.valueOf(time));
@@ -561,7 +568,13 @@ public class TestInsert extends BaseTestSuite {
         tablet.addValue(schemaList.get(3).getMeasurementId(), rowIndex, s_float);
         tablet.addValue(schemaList.get(4).getMeasurementId(), rowIndex, s_double);
         tablet.addValue(schemaList.get(5).getMeasurementId(), rowIndex, s_text);
-        session.insertAlignedTablet(tablet);
+        Session s = PrepareConnection.getSession();
+        try {
+            s.insertAlignedTablet(tablet);
+        } finally {
+            s.close();
+        }
+
     }
     @Test(priority = 52)
     public void checkResult_insertTablet() throws IoTDBConnectionException, StatementExecutionException {
@@ -610,7 +623,11 @@ public class TestInsert extends BaseTestSuite {
         values.add(s_float);
         values.add(s_double);
         values.add(s_text);
-        session.insertRecord(device, Long.valueOf(time), measurements, dataTypes, values);
+        try (Session s = PrepareConnection.getSession()) {
+            s.insertRecord(device, Long.valueOf(time), measurements, dataTypes, values);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         values.clear();
     }
     @Test(dataProvider= "getSingleError", expectedExceptions = StatementExecutionException.class, priority = 102)
@@ -622,7 +639,11 @@ public class TestInsert extends BaseTestSuite {
         values.add(s_float);
         values.add(s_double);
         values.add(s_text);
-        session.insertAlignedRecord(alignedDevice, Long.valueOf(time), measurements, dataTypes, values);
+        try (Session s = PrepareConnection.getSession()) {
+            s.insertAlignedRecord(alignedDevice, Long.valueOf(time), measurements, dataTypes, values);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         values.clear();
     }
 

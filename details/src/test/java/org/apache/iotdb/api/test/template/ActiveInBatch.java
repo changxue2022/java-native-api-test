@@ -38,16 +38,9 @@ public class ActiveInBatch extends BaseTestSuite {
 
     @BeforeClass
     public void BeforeClass() throws IOException, IoTDBConnectionException, StatementExecutionException {
-        cleanDatabases(verbose);
-        cleanTemplates(verbose);
         maxDatabaseLength = Integer.parseInt(ReadConfig.getInstance().getValue("max_database_length"));
         structures = new CustomDataProvider().parseTSStructure("data/ts-structures.csv");
         errStructures = new CustomDataProvider().parseTSStructure("data/ts-structures-error.csv");
-    }
-    @AfterClass
-    public void AfterClass() throws IoTDBConnectionException, StatementExecutionException {
-        cleanDatabases(verbose);
-        cleanTemplates(verbose);
     }
 
     @DataProvider(name="getErrorNames")
@@ -62,11 +55,11 @@ public class ActiveInBatch extends BaseTestSuite {
     //TIMECHODB-82
     @Test(priority = 10)
     public void testNullError() {
-        Assert.assertThrows(IoTDBConnectionException.class, ()->{
+        Assert.assertThrows(StatementExecutionException.class, ()->{
             session.createTimeseriesUsingSchemaTemplate(null);
         });
         paths.add(null);
-        Assert.assertThrows(IoTDBConnectionException.class, ()->{
+        Assert.assertThrows(StatementExecutionException.class, ()->{
             session.createTimeseriesUsingSchemaTemplate(paths);
         });
         paths.add(databases[0]);

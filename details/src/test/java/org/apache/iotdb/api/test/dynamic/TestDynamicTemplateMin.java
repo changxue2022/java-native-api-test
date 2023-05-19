@@ -36,7 +36,8 @@ public class TestDynamicTemplateMin extends BaseTestSuite {
 
     @BeforeClass
     public void BeforeClass() throws IOException, IoTDBConnectionException, StatementExecutionException {
-        cleanup();
+        cleanDatabases(verbose);
+        cleanTemplates(verbose);
         structures = new CustomDataProvider().parseTSStructure("data/ts-structures.csv");
         structureInfo.put("s_boolean", new Object[]{TSDataType.BOOLEAN, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
         structureInfo.put("s_int", new Object[]{TSDataType.INT32, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
@@ -54,30 +55,22 @@ public class TestDynamicTemplateMin extends BaseTestSuite {
         }
         schemaList_err.add(new MeasurementSchema("s_boolean", TSDataType.INT32, TSEncoding.PLAIN, CompressionType.SNAPPY));
     }
-    private void cleanup() throws IoTDBConnectionException, StatementExecutionException {
-        for (int i = 0; i < databases.size(); i++) {
-            if (checkStroageGroupExists(databasePrefix)) {
-                session.deleteDatabase(databasePrefix);
-            }
-        }
-        if (checkTemplateExists(templateName)) {
-            session.dropSchemaTemplate(templateName);
-        }
-    }
+
     @AfterMethod
     public void afterMethod() throws IoTDBConnectionException, StatementExecutionException {
-        cleanup();
+       cleanDatabases(verbose);
+       cleanTemplates(verbose);
     }
 
     private void business(List<Object> ... structs) throws IoTDBConnectionException, IOException, StatementExecutionException {
+        // 初始化（准备）
+        List<String> paths = new ArrayList<>(3);
         for (int i = 0; i < schemaList_org.size(); i++) {
             schemaList_more.add(schemaList_org.get(i));
         }
         schemaList_more.add(new MeasurementSchema("s_append"+0,
                 (TSDataType) structs[0].get(0), (TSEncoding) structs[0].get(1),
                 (CompressionType) structs[0].get(2)));
-        // 创建template
-        int templateCount = getTemplateCount(verbose);
 
         // database0 用于主要业务，database1用于清理，database2用于普通序列的测试
         for (int i = 0; i < 3; i++) {
@@ -89,6 +82,8 @@ public class TestDynamicTemplateMin extends BaseTestSuite {
         String database = databases.get(0);
         String device = "";
         int expectTSCountEach = 0;
+        int activeDeviceCount = 0;
+        // 创建template
         Template template = new Template(templateName, isAligned);
         structureInfo.forEach((key, value) -> {
             MeasurementNode mNode =
@@ -101,93 +96,140 @@ public class TestDynamicTemplateMin extends BaseTestSuite {
         });
 
         session.createSchemaTemplate(template);
-        assert (templateCount+1) == getTemplateCount(verbose) : "创建模版成功";
+        assert checkTemplateExists(templateName) : "创建模版成功";
         assert 0 == getSetPathsCount(templateName, verbose) : "未挂载，未激活";
 
+        // 1. 未使用模版，普通序列
+        device = database + ".d0.group0";
+        devicePaths.add(device);
         if (auto_create_schema) { // 打开自动创建
-            device = database + ".d0.group0";
-            devicePaths.add(device);
             // 写入数据 root.db.factory1.d0.group0, 成功，未使用模版
             insertTabletMulti(device, schemaList_org, 10, isAligned);
             assert false == checkUsingTemplate(device, verbose) : "没有使用模版:"+device;
             assert schemaList_org.size() == getTimeSeriesCount(device + ".**", verbose) : "TS数量："+schemaList_org.size();
         } else { // 关闭自动创建
-            for (int i = 0; i < 2; i++) {
-                if (!checkStroageGroupExists(databases.get(i))) {
-                    session.createDatabase(databases.get(i));
-                }
-                assert checkStroageGroupExists(databases.get(i)) : "创建database成功:"+databases.get(i);
-            }
             // 写入数据 root.db.factory1.d0.group0
             Assert.assertThrows(StatementExecutionException.class, () -> {
-                insertTabletMulti(database + ".d0.group0", schemaList_org, 10, isAligned);
+                insertTabletMulti(database + ".d0.group0", schemaList_org, 1, isAligned);
             });
-        }
-        expectTSCountEach = schemaList_org.size();
-        if (auto_create_schema){
-            getTimeSeriesCount(devicePaths.get(0) + ".**", verbose);
-            Assert.assertThrows(StatementExecutionException.class, ()-> {
-                session.setSchemaTemplate(templateName, devicePaths.get(0));
-            });
-            Assert.assertThrows(StatementExecutionException.class, ()-> {
-                session.createTimeseriesUsingSchemaTemplate(devicePaths);
-            });
-            // 写入成功，使用了模版
-            device = database+".d1.group1";
-            devicePaths.add(device);
-            session.setSchemaTemplate(templateName, device);
-            assert checkTemplateContainPath(templateName, device) : "挂载模版成功:"+device;
+            if (isAligned) {
+                List<TSDataType> dataTypes = new ArrayList<>(structureInfo.size());
+                List<TSEncoding> encodings = new ArrayList<>(structureInfo.size());
+                List<CompressionType> compressionTypes = new ArrayList<>(structureInfo.size());
+                List<String> tsNames = new ArrayList<>(structureInfo.size());
+                structureInfo.forEach((key,value)->{
+                    dataTypes.add((TSDataType)value[0]);
+                    encodings.add((TSEncoding) value[1]);
+                    compressionTypes.add((CompressionType) value[2]);
+                    tsNames.add(key);
+                });
+                session.createAlignedTimeseries(device, tsNames, dataTypes, encodings,compressionTypes,tsNames);
+            } else {
+                List<TSDataType> dataTypes = new ArrayList<>(structureInfo.size());
+                List<TSEncoding> encodings = new ArrayList<>(structureInfo.size());
+                List<CompressionType> compressionTypes = new ArrayList<>(structureInfo.size());
+                List<String> tsNames = new ArrayList<>(structureInfo.size());
+                structureInfo.forEach((key,value)->{
+                    dataTypes.add((TSDataType)value[0]);
+                    encodings.add((TSEncoding) value[1]);
+                    compressionTypes.add((CompressionType) value[2]);
+                    tsNames.add(database + ".d0.group0"+"."+key);
+                });
+                session.createMultiTimeseries(tsNames, dataTypes, encodings, compressionTypes, null, null, null, null);
+            }
+            assert false == checkUsingTemplate(device, verbose) : "没有使用模版:"+device;
+            assert schemaList_org.size() == getTimeSeriesCount(device + ".**", verbose) : "TS数量："+schemaList_org.size();
             insertTabletMulti(device, schemaList_org, 10, isAligned);
-            assert checkUsingTemplate(device, verbose) : "使用了模版:"+device;
-            assert getTSCountInTemplate(templateName, verbose) == expectTSCountEach : "Template内TS数量:"+expectTSCountEach;
-            assert getTimeSeriesCount(device+".*", verbose) == expectTSCountEach : "TS数量:"+expectTSCountEach;
-            assert schemaList_org.size() == getTimeSeriesCount(device+".*", verbose) : "确定模版内TS数量:"+schemaList_org.size();
-            Assert.assertThrows(StatementExecutionException.class, ()->{
-                insertTabletMulti(database+".d1.group1", schemaList_org, 10, !isAligned);
-            });
-            // 写入少于模版的列的数据
-            device = database+".d1.group1.subGroup";
-            devicePaths.add(device);
-            insertTabletMulti(device, schemaList_less, 10, isAligned);
-            assert checkUsingTemplate(device, verbose) : "使用了模版:"+device;
-            assert getTSCountInTemplate(templateName, verbose) == expectTSCountEach : "Template内TS数量:"+expectTSCountEach;
-            assert getTimeSeriesCount(device+".*", verbose) == expectTSCountEach : "TS数量:"+expectTSCountEach;
-            assert schemaList_org.size() == getTimeSeriesCount(device+".*", verbose) : "确定模版内TS数量:"+schemaList_org.size();
+        }
+        // 在已经创建普通序列的节点上，挂载模版，期望失败
+        Assert.assertThrows(StatementExecutionException.class, ()-> {
+            session.setSchemaTemplate(templateName, devicePaths.get(0));
+        });
+        // 在已经创建普通序列的节点上，激活模版，期望失败
+        Assert.assertThrows(StatementExecutionException.class, ()-> {
+            session.createTimeseriesUsingSchemaTemplate(devicePaths);
+        });
 
-            // 写入多于模版列的数据
-            expectTSCountEach++;
-            device = database+".d2.group1";
-            session.setSchemaTemplate(templateName, device);
-            assert checkTemplateContainPath(templateName, device) : "挂载模版成功:"+device;
-            insertTabletMulti(device, schemaList_more, 10, isAligned);
-            assert getTSCountInTemplate(templateName, verbose) == expectTSCountEach : "Template内TS数量:"+expectTSCountEach;
-
-            assert getTimeSeriesCount(device+".*", verbose) == expectTSCountEach : "TS数量:"+expectTSCountEach;
-            assert checkUsingTemplate(device, verbose) : "使用了模版:"+device;
-            assert schemaList_more.size() == getTimeSeriesCount(device+".*", verbose) : "确定模版内TS数量:"+schemaList_more.size();
-            devicePaths.add(device);
-            // 写入同名不同类型列的数据
-            Assert.assertThrows(StatementExecutionException.class, ()->{
-                insertTabletMulti(database+".d2.group1", schemaList_err, 10, isAligned);
-            });
-        } else {
+        // 2. 使用模版: 在设备上挂载和激活, 嵌套设备
+        expectTSCountEach = schemaList_org.size();
+        // 写入成功，使用了模版
+        device = database+".d1.group1";
+        devicePaths.add(device);
+        session.setSchemaTemplate(templateName, device);
+        assert checkTemplateContainPath(templateName, device) : "挂载模版成功:"+device;
+        assert activeDeviceCount == getActivePathsCount(templateName, verbose) : "在模版上未做任何激活";
+        activeDeviceCount++;
+        if (auto_create_schema){
+            insertTabletMulti(device, schemaList_org, 10, isAligned);
+            assert activeDeviceCount == getActivePathsCount(templateName, verbose) : "自动激活+1";
+        } else { // 关闭自动创建schema
             // 不挂载/激活，直接写入
             Assert.assertThrows(StatementExecutionException.class, () -> {
                 insertTabletMulti(database + ".d1.group1", schemaList_org, 10, isAligned);
             });
+            paths.add(device);
+            session.createTimeseriesUsingSchemaTemplate(paths);
+            assert activeDeviceCount == getActivePathsCount(templateName, verbose) : "激活成功+1";
         }
-        // 激活
-        List<String> paths = new ArrayList<>(2);
-        paths.add(databasePrefix+"1" + ".d1.group3");
+        assert checkUsingTemplate(device, verbose) : "使用了模版:"+device;
+        assert expectTSCountEach == getTSCountInTemplate(templateName, verbose) : "Template内TS数量:"+expectTSCountEach;
+        assert expectTSCountEach == getTimeSeriesCount(device+".**", verbose) : "确定设备上TS数量:"+expectTSCountEach;
+
+        // 对齐非对齐错位插入数据
+        Assert.assertThrows(StatementExecutionException.class, ()->{
+            insertTabletMulti(database+".d1.group1", schemaList_org, 10, !isAligned);
+        });
+        // 激活子节点(嵌套设备)
+        device = database + ".d1.group1.subGroup";
+        devicePaths.add(device);
+        activeDeviceCount++;
+        if (!auto_create_schema) {
+            paths.clear();
+            paths.add(device);
+            session.createTimeseriesUsingSchemaTemplate(paths);
+        }
+        // 写入少于模版的列的数据
+        insertTabletMulti(device, schemaList_less, 10, isAligned);
+        assert checkUsingTemplate(device, verbose) : "使用了模版:" + device;
+        assert getTSCountInTemplate(templateName, verbose) == expectTSCountEach : "Template内TS数量:" + expectTSCountEach;
+        assert getTimeSeriesCount(device + ".*", verbose) == expectTSCountEach : "TS数量:" + expectTSCountEach;
+        assert schemaList_org.size() == getTimeSeriesCount(device + ".*", verbose) : "确定模版内TS数量:" + schemaList_org.size();
+        // 写入多于模版列的数据
+        device = database + ".d2.group1";
+        if (auto_create_schema) {
+            activeDeviceCount++;
+            expectTSCountEach++;
+            session.setSchemaTemplate(templateName, device);
+            assert checkTemplateContainPath(templateName, device) : "挂载模版成功:" + device;
+            insertTabletMulti(device, schemaList_more, 10, isAligned);
+            assert getTSCountInTemplate(templateName, verbose) == expectTSCountEach : "Template内TS数量:" + expectTSCountEach;
+
+            assert getTimeSeriesCount(device + ".*", verbose) == expectTSCountEach : "TS数量:" + expectTSCountEach;
+            assert checkUsingTemplate(device, verbose) : "使用了模版:" + device;
+            assert schemaList_more.size() == getTimeSeriesCount(device + ".*", verbose) : "确定模版内TS数量:" + schemaList_more.size();
+            devicePaths.add(device);
+        } else {
+            Assert.assertThrows(StatementExecutionException.class, ()->{
+                insertTabletMulti(database + ".d2.group1", schemaList_more, 1, isAligned);
+            });
+        }
+        // 写入同名不同类型列的数据
+        Assert.assertThrows(StatementExecutionException.class, ()->{
+            insertTabletMulti(database+".d2.group1", schemaList_err, 2, isAligned);
+        });
+
+        // 3. 使用模版：在其他 database 上挂载， 显示激活
+        paths.clear();
         for (int i = 0; i < 2; i++) {
             paths.add(databasePrefix+i + ".d1.group3");
-            session.setSchemaTemplate(templateName, paths.get(i));
         }
-        int tsCount = getTimeSeriesCount(paths.get(0)+".**", verbose);
-        tsCount += 2 * expectTSCountEach;
-
-        // 激活
+        session.setSchemaTemplate(templateName,paths.get(0));
+        // 在database上挂载
+        session.setSchemaTemplate(templateName,databasePrefix+1);
+        activeDeviceCount += paths.size();
+        // 显示激活
         session.createTimeseriesUsingSchemaTemplate(paths);
+        assert activeDeviceCount == getActivePathsCount(templateName, verbose) : "激活成功:"+paths;
         device = paths.get(0);
         devicePaths.add(device);
         assert checkUsingTemplate(device, verbose) : "激活后，使用了模版:"+device;
@@ -195,8 +237,6 @@ public class TestDynamicTemplateMin extends BaseTestSuite {
         assert expectTSCountEach == getTimeSeriesCount(device+".*", verbose) : "激活后，确定模版内TS数量:"+expectTSCountEach;
         // 写入数据
         insertTabletMulti(device, schemaList_org, 10, isAligned);
-        // 写入少列数据
-        insertTabletMulti(device, schemaList_less, 10, isAligned);
 
         device = paths.get(1);
         devicePaths.add(device);
@@ -204,33 +244,33 @@ public class TestDynamicTemplateMin extends BaseTestSuite {
         assert expectTSCountEach == getTimeSeriesCount(device+".*", verbose) : "激活后，确定模版内TS数量:"+expectTSCountEach;
         // 写入少列数据
         insertTabletMulti(device, schemaList_less, 10, isAligned);
-        // 写入数据
-        insertTabletMulti(device, schemaList_org, 10, isAligned);
-        // 写入多列不同类型数据
+
+        // 写入同名不同类型数据
         Assert.assertThrows(StatementExecutionException.class, ()->{
             insertTabletMulti(paths.get(0), schemaList_err, 10, isAligned);
         });
-//        Assert.assertThrows(StatementExecutionException.class, ()->{
-//            insertTabletMulti(paths.get(0), schemaList_more, 10, isAligned);
-//        });
+
+        assert expectTSCountEach == getTSCountInTemplate(templateName, verbose) : "Template内TS数量:"+expectTSCountEach;
         for (int i = 0; i < paths.size(); i++) {
             assert expectTSCountEach == getTimeSeriesCount(paths.get(i)+".*", verbose) : "激活后，确定模版内TS数量:"+expectTSCountEach;
-            assert getTSCountInTemplate(templateName, verbose) == expectTSCountEach : "Template内TS数量:"+expectTSCountEach;
-        }
-        paths.clear();
-        paths.add(database + ".d1.group2");
-        paths.add(database + ".d3.group3");
-        for (int i = 0; i < paths.size(); i++) {
-            session.setSchemaTemplate(templateName, paths.get(i));
-            devicePaths.add(paths.get(i));
         }
 
-        // explicit追加TS
+        // 4. 显示追加TS到模版
+        paths.clear();
+        paths.add(databasePrefix + "1.d1.group1.subGroup");
+        paths.add(database + ".d3.group3");
+        paths.add(databasePrefix+1 + ".d3.group3");
+        for (int i = 0; i < paths.size(); i++) {
+            devicePaths.add(paths.get(i));
+        }
+        session.setSchemaTemplate(templateName, paths.get(1));
+
+        // 修改模版: explicit追加TS
         if (structs.length == 1) {
             expectTSCountEach++;
             addTSIntoTemplate(templateName, "s_append_explicit",
                     (TSDataType) structs[0].get(0), (TSEncoding) structs[0].get(1),
-                    (CompressionType) structs[0].get(2));
+                    (CompressionType) structs[0].get(2), null);
             schemaList_more.add(new MeasurementSchema("s_append_explicit",(TSDataType) structs[0].get(0),
                     (TSEncoding) structs[0].get(1), (CompressionType) structs[0].get(2) ));
         } else {
@@ -250,58 +290,45 @@ public class TestDynamicTemplateMin extends BaseTestSuite {
             addTSIntoTemplate(templateName, tsNames, tsDatatypes, tsEncodings, compressions);
         }
 
-        if (auto_create_schema) {
-            insertTabletMulti(device, schemaList_more, 10, isAligned);
-            assert expectTSCountEach == getTimeSeriesCount(device+".*", verbose) : "激活后，确定模版内TS数量:"+expectTSCountEach;
-            insertTabletMulti(device, schemaList_org, 10, isAligned);
-            insertTabletMulti(device, schemaList_less, 10, isAligned);
-            for (int i = 0; i < 2; i++) {
-                device = paths.get(i);
+        // 修改后，使用新的template结构数据插入之前的设备
+        insertTabletMulti(device, schemaList_more, 10, isAligned);
+        assert expectTSCountEach == getTimeSeriesCount(device+".*", verbose) : "激活后，确定模版内TS数量:"+expectTSCountEach;
+
+        session.createTimeseriesUsingSchemaTemplate(paths);
+        activeDeviceCount += paths.size();
+        assert activeDeviceCount == getActivePathsCount(templateName, verbose) : "激活成功:"+paths;
+        for (int i = 0; i < paths.size(); i++) {
+            device = paths.get(i);
 //                assert expectTSCountEach == getTimeSeriesCount(device+".*", verbose) : "激活后，确定模版内TS数量:"+expectTSCountEach;
-                insertTabletMulti(device, schemaList_more, 10, isAligned);
-                insertTabletMulti(device, schemaList_org, 10, isAligned);
-                insertTabletMulti(device, schemaList_less, 10, isAligned);
-                assert expectTSCountEach == getTimeSeriesCount(device+".*", verbose) : "插入后，确定模版内TS数量:"+expectTSCountEach;
-                assert getTSCountInTemplate(templateName, verbose) == expectTSCountEach : "Template内TS数量:"+expectTSCountEach;
-            }
-        } else {
-            schemaList_more.remove(schemaList_org.size()-1);
-            // 未激活
-            Assert.assertThrows(StatementExecutionException.class, ()->{
-                insertTabletMulti(paths.get(0), schemaList_less, 10, isAligned);
-            });
-            Assert.assertThrows(StatementExecutionException.class, ()->{
-                insertTabletMulti(paths.get(1), schemaList_less, 10, isAligned);
-            });
-            session.createTimeseriesUsingSchemaTemplate(paths);
-            Assert.assertThrows(StatementExecutionException.class, ()->{
-                System.out.println("device="+paths.get(1));
-                insertTabletMulti(paths.get(1), schemaList_more, 10, isAligned);
-            });
-            assert expectTSCountEach == getTimeSeriesCount(device+".*", verbose) : "激活后，确定模版内TS数量:"+expectTSCountEach;
+            insertTabletMulti(device, schemaList_more, 10, isAligned);
             insertTabletMulti(device, schemaList_org, 10, isAligned);
             insertTabletMulti(device, schemaList_less, 10, isAligned);
-       }
+            assert expectTSCountEach == getTimeSeriesCount(device+".*", verbose) : "插入后，确定模版内TS数量:"+expectTSCountEach;
+            assert expectTSCountEach == getTSCountInTemplate(templateName, verbose)  : "Template内TS数量:"+expectTSCountEach;
+        }
+
+        // 对所有激活设备插入修改后的数据
         assert getTSCountInTemplate(templateName, verbose) == expectTSCountEach : "对已经激活模版序列影响:Template内TS数量:"+expectTSCountEach;
         for (int i = 1; i < devicePaths.size(); i++) {
-            System.out.println(devicePaths.get(i));
-            insertTabletMulti(devicePaths.get(i), schemaList_org, 20, isAligned);
+            insertTabletMulti(devicePaths.get(i), schemaList_more, 20, isAligned);
             assert expectTSCountEach == getTimeSeriesCount(devicePaths.get(i)+".*", verbose) : "对已经激活模版序列影响：确定模版内TS数量:"+expectTSCountEach;
         }
+
         // 删除部分数据 TIMECHODB-104
-//        for (int i = 0; i < devicePaths.size(); i++) {
-//            System.out.println(devicePaths.get(i));
-//            session.deleteData(devicePaths.get(i)+".*", 3);
-//        }
-        if (auto_create_schema) {
-            device = database + ".d0.group0";
-            tsCount = getTimeSeriesCount("root.**", verbose);
-            countLines("show devices ", verbose);
-            session.executeNonQueryStatement("delete timeseries " + device + ".**");
-            assert getTimeSeriesCount(device + ".**", verbose) == 0 : "删除成功";
-            assert tsCount - 6 == getTimeSeriesCount("root.**", verbose) : "删除成功,其他不影响";
-            insertTabletMulti(devicePaths.get(1), schemaList_org, 20, isAligned);
+        for (int i = 0; i < devicePaths.size(); i++) {
+            int recordCount = getCount("select count(*) from "+devicePaths.get(i), verbose);
+            session.deleteData(devicePaths.get(i)+".*", 3);
+            assert recordCount > getCount("select count(*) from "+devicePaths.get(i), verbose) : "删除部分数据成功";
         }
+        // 删除普通序列
+        device = devicePaths.get(0);
+        int tsCount = getTimeSeriesCount(database+".**", verbose);
+        session.executeNonQueryStatement("delete timeseries " + device + ".**");
+        assert getTimeSeriesCount(device + ".**", verbose) == 0 : "删除成功";
+        assert tsCount - 6 == getTimeSeriesCount(database+".**", verbose) : "删除成功,其他不影响";
+        insertTabletMulti(devicePaths.get(1), schemaList_org, 20, isAligned);
+        devicePaths.remove(0);
+
         // 有引用，卸载
         Assert.assertThrows(StatementExecutionException.class, ()->{
             session.unsetSchemaTemplate(database, templateName);
@@ -314,37 +341,57 @@ public class TestDynamicTemplateMin extends BaseTestSuite {
         Assert.assertThrows(StatementExecutionException.class, ()->{
             deactiveTemplate(templateName, database + ".d0.group0");
         });
-        // 解除某节点
-        device = devicePaths.get(1);
+
+        // 解除单个节点:最后一个
+        device = devicePaths.get(devicePaths.size()-1);
         int count = getActivePathsCount(templateName, verbose);
         count--;
         deactiveTemplate(templateName, device);
         assert 0 == getTimeSeriesCount(device+ ".*", verbose) : "解除模版会删除序列";
         assert count == getActivePathsCount(templateName, verbose) : "模版引用数目-1";
+        // 再次解除模版失败
+        Assert.assertThrows(StatementExecutionException.class, ()->{
+            deactiveTemplate(templateName, devicePaths.get(devicePaths.size()-1));
+        });
+        devicePaths.remove(devicePaths.size() - 1);
 
-        // 解除所有节点
-        devicePaths.remove(0);
-        devicePaths.remove(1);
-        // TIMECHODB-103
-//        deactiveTemplate(templateName, devicePaths);
+        // 卸载有激活的节点
+        Assert.assertThrows(StatementExecutionException.class, ()->{
+            session.unsetSchemaTemplate(databases.get(1), templateName);
+        });
+
+        // 解除第二个database的所有激活节点
+        for (int i = 0; i < devicePaths.size(); i++) {
+            if (devicePaths.get(i).startsWith(databases.get(1))) {
+                deactiveTemplate(templateName, devicePaths.get(i));
+            }
+        }
+        logger.info("database="+databases.get(1));
+        session.unsetSchemaTemplate(databases.get(1), templateName);
+        for (int i = 0; i < devicePaths.size(); i++) {
+            if (devicePaths.get(i).startsWith(databases.get(0))) {
+                deactiveTemplate(templateName, devicePaths.get(i));
+            }
+        }
+        cleanTemplateNodes(templateName, databases.get(0));
+
         // TIMECHODB-102
 //        deactiveTemplate(templateName, "root.db.**");
-//        assert 0 == getSetPathsCount(templateName, verbose) : "模版引用数目 == 0";
-//        session.unsetSchemaTemplate(database, templateName);
-//        session.deleteDatabase(database);
-//        session.createDatabase(database);
-//        session.dropSchemaTemplate(templateName);
-//        Assert.assertThrows(StatementExecutionException.class, ()->{
-//            session.unsetSchemaTemplate(database, templateName);
-//        });
-//        countLines("show databases;", verbose);
-        for (int i = 0; i <databases.size(); i++) {
-            session.deleteDatabase(databases.get(i));
-        }
+        // 卸载模版
+        assert 0 == getActivePathsCount(templateName, verbose) : "模版引用数目 == 0";
+        assert 0 == getSetPathsCount(templateName, verbose) : "模版挂载数目 == 0";
+        // 删除database再创建，查看与模版关联是否清除
+        session.deleteDatabase(database);
+        session.createDatabase(database);
+        session.setSchemaTemplate(templateName, devicePaths.get(0));
+        session.unsetSchemaTemplate( devicePaths.get(0), templateName);
+        // 删除模版
         session.dropSchemaTemplate(templateName);
-        getTemplateCount(verbose);
-        getTimeSeriesCount("", verbose);
-
+        assert false == checkTemplateExists(templateName): "删除模版成功";
+        // 卸载不存在的模版
+        Assert.assertThrows(StatementExecutionException.class, ()->{
+            session.unsetSchemaTemplate(database, templateName);
+        });
         schemaList_more.clear();
         devicePaths.clear();
         databases.clear();

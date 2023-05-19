@@ -35,8 +35,6 @@ public class TestCleanUp extends BaseTestSuite {
 
     @BeforeClass
     public void BeforeClass() throws IoTDBConnectionException, StatementExecutionException {
-        cleanDatabases(verbose);
-        cleanTemplates(verbose);
         measureTSTypeInfos.put("s_boolean", TSDataType.BOOLEAN);
         measureTSTypeInfos.put("s_int", TSDataType.INT32);
         measureTSTypeInfos.put("s_long", TSDataType.INT64);
@@ -55,11 +53,6 @@ public class TestCleanUp extends BaseTestSuite {
             encodings.add(TSEncoding.PLAIN);
             compressionTypes.add(CompressionType.UNCOMPRESSED);
         }
-    }
-    @AfterClass
-    public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
-        cleanDatabases(verbose);
-        cleanTemplates(verbose);
     }
     @BeforeMethod
     public void beforeMethod() throws IoTDBConnectionException, StatementExecutionException {

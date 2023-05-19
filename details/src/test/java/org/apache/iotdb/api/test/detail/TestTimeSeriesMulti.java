@@ -2,13 +2,13 @@ package org.apache.iotdb.api.test.detail;
 
 import org.apache.iotdb.api.test.TimeSeriesBaseTestSuite;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
+import org.apache.iotdb.api.test.utils.PrepareConnection;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
+import org.apache.iotdb.session.Session;
 import org.apache.iotdb.tsfile.file.metadata.enums.CompressionType;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSEncoding;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -16,16 +16,6 @@ import java.io.IOException;
 import java.util.*;
 
 public class TestTimeSeriesMulti extends TimeSeriesBaseTestSuite {
-
-    @BeforeClass(enabled = true)
-    public void beforeClass() throws IoTDBConnectionException, StatementExecutionException, IOException {
-        cleanDatabases(verbose);
-    }
-    @AfterClass
-    public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
-        cleanDatabases(verbose);
-    }
-
     @DataProvider(name = "createSingleTimeSeriesNormal", parallel = true)
     private Iterator<Object[]> getSingleTimeSeriesNormal() throws IOException {
         return new CustomDataProvider().load("data/timeseries-single.csv").getData();
@@ -162,7 +152,7 @@ public class TestTimeSeriesMulti extends TimeSeriesBaseTestSuite {
     }
 
     @Test(priority = 25, dataProvider = "createSingleTimeSeriesError", expectedExceptions = StatementExecutionException.class)
-    public void testCreateTimeSeriesMulti_single_error(String path, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException {
+    public void testCreateTimeSeriesMulti_single_error(String path, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {
         List<String> paths = new ArrayList<>();
         List<TSDataType> tsDataTypes = new ArrayList<>();
         List<TSEncoding> tsEncodings = new ArrayList<>();
@@ -179,11 +169,17 @@ public class TestTimeSeriesMulti extends TimeSeriesBaseTestSuite {
         attrList.add(attrs);
         tagList.add(tags);
         aliasList.add(alias);
-        session.createMultiTimeseries(
-                paths, tsDataTypes, tsEncodings, compressionTypes, null, tagList, attrList, aliasList);
+        Session s = PrepareConnection.getSession();
+        try {
+            s.createMultiTimeseries(
+                    paths, tsDataTypes, tsEncodings, compressionTypes, null, tagList, attrList, aliasList);
+        } finally {
+            s.close();
+        }
+
     }
     @Test(priority = 26, dataProvider = "createTimeSeriesMultiError", expectedExceptions = StatementExecutionException.class)
-    public void testCreateTimeSeriesMulti_error(List<String> paths, List<String> tsDataTypeLists, List<String> tsEncodingLists, List<String> compressionTypeLists, List<Map<String,String>> props, List<Map<String,String>> tags, List<Map<String,String>> attrs, List<String> alias) throws IoTDBConnectionException, StatementExecutionException {
+    public void testCreateTimeSeriesMulti_error(List<String> paths, List<String> tsDataTypeLists, List<String> tsEncodingLists, List<String> compressionTypeLists, List<Map<String,String>> props, List<Map<String,String>> tags, List<Map<String,String>> attrs, List<String> alias) throws IoTDBConnectionException, StatementExecutionException, IOException {
         List<TSDataType> tsDataTypes = new ArrayList<>();
         List<TSEncoding> tsEncodings = new ArrayList<>();
         List<CompressionType> compressionTypes = new ArrayList<>();
@@ -193,8 +189,13 @@ public class TestTimeSeriesMulti extends TimeSeriesBaseTestSuite {
             tsEncodings.add((TSEncoding) result.get(1));
             compressionTypes.add((CompressionType) result.get(2));
         }
-        session.createMultiTimeseries(
-                paths, tsDataTypes, tsEncodings, compressionTypes, null, tags, attrs, alias);
+        Session s = PrepareConnection.getSession();
+        try {
+            s.createMultiTimeseries(
+                    paths, tsDataTypes, tsEncodings, compressionTypes, null, tags, attrs, alias);
+        } finally {
+            s.close();
+        }
     }
 
 

@@ -16,16 +16,14 @@ import java.util.List;
 import java.util.Map;
 
 public class TestTimeSeriesParams extends BaseTestSuite {
-    private String database = "root.ts";
+    private String database = "root.params.ts";
     @BeforeClass
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException {
-        if(!checkStroageGroupExists(database)) {
-            session.createDatabase(database);
-        }
+        session.createDatabase(database);
     }
     @AfterClass
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
-        session.deleteDatabase("root.ts");
+        session.deleteDatabase(database);
     }
     private void testCreateTS_null(String name) throws IoTDBConnectionException, StatementExecutionException {
         String path = database+".testNull." + name;
@@ -119,12 +117,12 @@ public class TestTimeSeriesParams extends BaseTestSuite {
         List<Map<String, String>> attrs = new ArrayList<>();
         List<String> alias = new ArrayList<>();
 
-        String device = database+".testMultiCreateNull_true";
+        String device = database+".testMultiCreateNull_true_"+nullInList;
         String path = "";
         if (isAligned) {
             path = name;
         } else {
-            path = database+".testMultiCreateNull_false." + name;
+            path = database+".testMultiCreateNull_false_"+nullInList +"_" + name;
         }
         TSDataType dataType = TSDataType.BOOLEAN;
         TSEncoding encoding = TSEncoding.PLAIN;
@@ -133,7 +131,7 @@ public class TestTimeSeriesParams extends BaseTestSuite {
         Map<String, String> prop = new HashMap<>();
         Map<String, String> tag = new HashMap<>();
         Map<String, String> attr = new HashMap<>();
-        String alias_single = "test_multiCreateNull_"+isAligned+"_" + name;
+        String alias_single = "test_multiCreateNull_"+isAligned+"_" + nullInList +"_"+ name;
 
         paths.add(path);
         dataTypes.add(dataType);
@@ -232,7 +230,7 @@ public class TestTimeSeriesParams extends BaseTestSuite {
         }
     }
     // TIMECHODB-127
-    @Test(expectedExceptions = StatementExecutionException.class, priority = 50)
+    @Test(expectedExceptions = IoTDBConnectionException.class, priority = 50)
     public void testCreateAligned_nullPaths() throws IoTDBConnectionException, StatementExecutionException {
         testCreateMultiTS_null("path", true, false);
     }
@@ -264,7 +262,7 @@ public class TestTimeSeriesParams extends BaseTestSuite {
     public void testCreateAligned_nullAlias() throws IoTDBConnectionException, StatementExecutionException {
         testCreateMultiTS_null("alias", true, false);
     }
-    @Test(expectedExceptions = StatementExecutionException.class, priority = 30)
+    @Test(expectedExceptions = IoTDBConnectionException.class, priority = 30)
     public void testCreateMulti_nullPaths() throws IoTDBConnectionException, StatementExecutionException {
         testCreateMultiTS_null("path", false, false);
     }
@@ -296,7 +294,7 @@ public class TestTimeSeriesParams extends BaseTestSuite {
     public void testCreateMulti_nullAlias() throws IoTDBConnectionException, StatementExecutionException {
         testCreateMultiTS_null("alias", false, false);
     }
-   @Test(expectedExceptions = StatementExecutionException.class, priority = 60)
+   @Test(expectedExceptions = IoTDBConnectionException.class, priority = 60)
     public void testCreateAligned_pathsNullInList() throws IoTDBConnectionException, StatementExecutionException {
         testCreateMultiTS_null("path", true, true);
     }
@@ -328,7 +326,7 @@ public class TestTimeSeriesParams extends BaseTestSuite {
     public void testCreateAligned_AliasNullInList() throws IoTDBConnectionException, StatementExecutionException {
         testCreateMultiTS_null("alias", true, true);
     }
-    @Test(expectedExceptions = StatementExecutionException.class, priority = 70)
+    @Test(expectedExceptions = IoTDBConnectionException.class, priority = 70)
     public void testCreateMulti_PathsNullInList() throws IoTDBConnectionException, StatementExecutionException {
         testCreateMultiTS_null("path", false, true);
     }

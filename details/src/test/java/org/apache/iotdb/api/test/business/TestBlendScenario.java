@@ -55,17 +55,6 @@ public class TestBlendScenario extends BaseTestSuite {
 
     }
 
-    @AfterClass(enabled = true)
-    public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
-        if (checkStroageGroupExists(database)) {
-            session.deleteStorageGroup(database);
-        }
-        for(String templateName: templateNames) {
-            if (checkTemplateExists(templateName)) {
-                session.dropSchemaTemplate(templateName);
-            }
-        }
-    }
     public Iterator<Object[]> getSingleNormal() throws IOException {
         return new CustomDataProvider().load("data/business-insert-records.csv").getData();
     }

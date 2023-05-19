@@ -2,9 +2,12 @@ package org.apache.iotdb.api.test.detail;
 
 import org.apache.iotdb.api.test.BaseTestSuite;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
+import org.apache.iotdb.api.test.utils.PrepareConnection;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
 
+import org.apache.iotdb.session.Session;
+import org.testng.Reporter;
 import org.testng.annotations.*;
 
 import java.io.IOException;
@@ -18,12 +21,8 @@ public class TestDataBase extends BaseTestSuite {
 
     @BeforeClass(enabled = true)
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException, IOException {
-        cleanDatabases(verbose);
         normalSGs = new CustomDataProvider().getFirstColumns("data/storage-group.csv");
         deleteSGs = new CustomDataProvider().getFirstColumns("data/storage-group-data-for-delete.csv");
-        if (checkStroageGroupExists("")) {
-            session.executeNonQueryStatement("drop database root.**");
-        }
     }
 
     @DataProvider(name="deleteStorageGroupNormalMatch")
@@ -60,10 +59,14 @@ public class TestDataBase extends BaseTestSuite {
 
     // TIMECHODB-84  TIMECHODB-123
     @Test(priority=20, dataProvider = "storageGroupError", expectedExceptions = StatementExecutionException.class)
-    public void testSetStorageGroup_error(String storageGroupId, String msg) throws IoTDBConnectionException, StatementExecutionException {
-        session.setStorageGroup(storageGroupId);
-        // 失败了打印
-        System.out.println(storageGroupId + "," + msg);
+    public void testSetStorageGroup_error(String storageGroupId, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {
+        Session s = PrepareConnection.getSession();
+        try {
+            s.setStorageGroup(storageGroupId);
+        } finally {
+            s.close();
+        }
+        Reporter.log(storageGroupId);
     }
 
     @Test(priority=30, dataProvider = "deleteStorageGroupNormalExact")
@@ -81,8 +84,13 @@ public class TestDataBase extends BaseTestSuite {
         assert expect_count == getStorageGroupCount("") : storageGroupId+ ", " + msg ;
     }
     @Test(priority=50,dataProvider = "deleteStorageGroupError", expectedExceptions = StatementExecutionException.class)
-    public void testDeleteStorageGroup_error(String storageGroupId, String msg) throws IoTDBConnectionException, StatementExecutionException {
-        session.deleteStorageGroup(storageGroupId);
+    public void testDeleteStorageGroup_error(String storageGroupId, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {
+        Session s = PrepareConnection.getSession();
+        try {
+            s.deleteStorageGroup(storageGroupId);
+        } finally {
+            s.close();
+        }
         //失败打印
         System.out.println(storageGroupId + " ," + msg);
     }
@@ -143,12 +151,10 @@ public class TestDataBase extends BaseTestSuite {
                 sgsExists.add(normalSGs.get(i-1));
             }
         }
-        System.out.println(sgs);
         int expectCount = getStorageGroupCount("", verbose) - total + 1 ;
         session.deleteStorageGroups(sgs);
         int actualCount = getStorageGroupCount("", verbose);
-        System.out.println(msg);
-        Thread.sleep(1000);
+        Thread.sleep(100);
         assert expectCount == actualCount: "删除后 actual=:" + actualCount + ", expect=" +expectCount + ", total="+total;
     }
     @Test(priority=100,enabled = false) // OOM in my computer

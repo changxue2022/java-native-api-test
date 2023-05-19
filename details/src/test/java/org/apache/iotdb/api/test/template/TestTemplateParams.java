@@ -13,23 +13,19 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TestTemplateParams extends BaseTestSuite {
     private String tName = "t1";
-    private String databasePrefix = "root.template";
+    private String database = "root.template";
 
     @BeforeClass
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException {
-        cleanDatabases(verbose);
-        cleanTemplates(verbose);
+        session.createDatabase(database);
     }
-
-//    @AfterClass
+    @AfterClass
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
-        cleanDatabases(verbose);
-        cleanTemplates(verbose);
+        session.deleteDatabase(database);
+        session.dropSchemaTemplate(tName);
     }
     // TIMECHODB-141
     @Test(priority = 10, expectedExceptions = StatementExecutionException.class)
@@ -46,11 +42,11 @@ public class TestTemplateParams extends BaseTestSuite {
     }
     @Test(priority = 12, expectedExceptions = IoTDBConnectionException.class)
     public void testSet_nullTemplate() throws IoTDBConnectionException, StatementExecutionException {
-        session.setSchemaTemplate(null, databasePrefix);
+        session.setSchemaTemplate(null, database);
     }
     @Test(priority = 13, expectedExceptions = StatementExecutionException.class)
     public void testSet_noTemp() throws IoTDBConnectionException, StatementExecutionException {
-        session.setSchemaTemplate(tName, databasePrefix);
+        session.setSchemaTemplate(tName, database);
     }
 
     @Test(priority = 14, expectedExceptions = IoTDBConnectionException.class)
@@ -87,7 +83,7 @@ public class TestTemplateParams extends BaseTestSuite {
     @Test(priority = 20, expectedExceptions = StatementExecutionException.class)
     public void testSet_noPath() throws IoTDBConnectionException, StatementExecutionException {
         // database 不存在
-        session.setSchemaTemplate(tName, databasePrefix);
+        session.setSchemaTemplate(tName, database+"_nonExist");
     }
 
 }

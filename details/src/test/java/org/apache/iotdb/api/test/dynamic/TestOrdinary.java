@@ -2,6 +2,7 @@ package org.apache.iotdb.api.test.dynamic;
 
 import org.apache.iotdb.api.test.BaseTestSuite;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
+import org.apache.iotdb.api.test.utils.PrepareConnection;
 import org.apache.iotdb.isession.template.Template;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
@@ -76,7 +77,7 @@ public class TestOrdinary extends BaseTestSuite {
                 insertRecordSingle(path + ".ts_append", tsDataType, isAligned, null);
             });
         }
-        addTSIntoTemplate(tName, "ts_append", tsDataType, encoding, compressionType);
+        addTSIntoTemplate(tName, "ts_append", tsDataType, encoding, compressionType, null);
         assert 2 == getTSCountInTemplate(tName, verbose) : "修改前模版ts数量2";
         insertRecordSingle(path+".ts_append", tsDataType, isAligned, null);
         if (auto_create_schema) {
@@ -116,68 +117,68 @@ public class TestOrdinary extends BaseTestSuite {
         insertTabletMulti(d, schemaList, 1, isAligned);
         assert checkUsingTemplate(d, verbose) : d+"使用了模版";
     }
-//    @Test(priority = 20)
-//    // TIMECHODB-105
-//    public void testReAdd() throws IoTDBConnectionException, IOException, StatementExecutionException {
-//        expectCount = getTSCountInTemplate(templateName, verbose);
-//        expectCount++;
-//        addTSIntoTemplate(templateName, tsName, TSDataType.INT32, TSEncoding.PLAIN, CompressionType.SNAPPY);
-//        assert expectCount == getTSCountInTemplate(templateName, verbose) : "增加模版列成功";
-//        schemaList.add(new MeasurementSchema(tsName, TSDataType.INT32, TSEncoding.PLAIN, CompressionType.SNAPPY));
-//        // 再次增加
-//        Assert.assertThrows(StatementExecutionException.class, ()->{
-//            addTSIntoTemplate(templateName, tsName, TSDataType.INT32, TSEncoding.PLAIN, CompressionType.SNAPPY);
-//        });
-//        assert expectCount == getTSCountInTemplate(templateName, verbose) : "增加模版列：再次增加同名失败";
-//        Assert.assertThrows(StatementExecutionException.class, ()->{
-//            int i=0;
-//            addTSIntoTemplate(templateName, tsPrefix+i, (TSDataType) structures.get(i).get(0),
-//                    (TSEncoding) structures.get(i).get(1), (CompressionType) structures.get(i).get(2));
-//        });
-//        assert expectCount == getTSCountInTemplate(templateName, verbose) : "增加不同类型同名模版列：失败";
-//    }
-////    @Test(priority = 21)
-//    public void testReAdd_auto() throws IoTDBConnectionException, StatementExecutionException {
-//        if (!checkStroageGroupExists(databasePrefix)) {
-//            session.createDatabase(databasePrefix);
-//            session.setSchemaTemplate(templateName, databasePrefix);
-//        }
-//        List<String> paths = new ArrayList<>(1);
-//        paths.add(databasePrefix+".d_0");
-//        insertTabletMulti(paths.get(0), schemaList, 10, isAligned);
-//        schemaList.add(schemaList.get(schemaList.size()-1));
-//        insertTabletMulti(paths.get(0), schemaList, 10, isAligned);
-//        // 写入两列同样的失败
-//        Assert.assertThrows(StatementExecutionException.class, ()->{
-//            insertTabletMulti(paths.get(0), schemaList, 10, isAligned);
-//        });
-//        schemaList.remove(schemaList.size() - 1);
-//    }
-//    @Test(priority = 22)
-//    public void testReAdd_otherType() {
-//        Assert.assertThrows(StatementExecutionException.class, ()->{
-//            addTSIntoTemplate(templateName, tsName, TSDataType.INT32, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED);
-//        });
-//    }
-//    @Test(priority = 23)
-//    public void testReAdd_inBatchDuplicate() throws IoTDBConnectionException, StatementExecutionException {
-//        expectCount = getTSCountInTemplate(templateName, verbose);
-//        List<String> names = new ArrayList<>(2);
-//        List<TSDataType> tsDataTypeList = new ArrayList<>(2);
-//        List<TSEncoding> tsEncodingList = new ArrayList<>(2);
-//        List<CompressionType> compressionTypeList = new ArrayList<>(2);
-//
-//        for (int i = 0; i < 2; i++) {
-//            names.add("newOne");
-//            tsDataTypeList.add(TSDataType.BOOLEAN);
-//            tsEncodingList.add(TSEncoding.PLAIN);
-//            compressionTypeList.add(CompressionType.UNCOMPRESSED);
-//        }
-//        Assert.assertThrows(StatementExecutionException.class, ()->{
-//            addTSIntoTemplate(templateName, names, tsDataTypeList, tsEncodingList, compressionTypeList);
-//        });
-//        assert expectCount == getTSCountInTemplate(templateName, verbose) : "增加模版列：批量增加2列同名失败";
-//    }
+    @Test(priority = 20)
+    // TIMECHODB-105
+    public void testReAdd() throws IoTDBConnectionException, IOException, StatementExecutionException {
+        expectCount = getTSCountInTemplate(templateName, verbose);
+        expectCount++;
+        addTSIntoTemplate(templateName, tsName, TSDataType.INT32, TSEncoding.PLAIN, CompressionType.SNAPPY, null);
+        assert expectCount == getTSCountInTemplate(templateName, verbose) : "增加模版列成功";
+        schemaList.add(new MeasurementSchema(tsName, TSDataType.INT32, TSEncoding.PLAIN, CompressionType.SNAPPY, null));
+        // 再次增加
+        Assert.assertThrows(StatementExecutionException.class, ()->{
+            addTSIntoTemplate(templateName, tsName, TSDataType.INT32, TSEncoding.PLAIN, CompressionType.SNAPPY, null);
+        });
+        assert expectCount == getTSCountInTemplate(templateName, verbose) : "增加模版列：再次增加同名失败";
+        Assert.assertThrows(StatementExecutionException.class, ()->{
+            int i=0;
+            addTSIntoTemplate(templateName, tsPrefix+i, (TSDataType) structures.get(i).get(0),
+                    (TSEncoding) structures.get(i).get(1), (CompressionType) structures.get(i).get(2), null);
+        });
+        assert expectCount == getTSCountInTemplate(templateName, verbose) : "增加不同类型同名模版列：失败";
+    }
+    @Test(priority = 21)
+    public void testReAdd_auto() throws IoTDBConnectionException, StatementExecutionException {
+        if (!checkStroageGroupExists(database)) {
+            session.createDatabase(database);
+            session.setSchemaTemplate(templateName, database);
+        }
+        List<String> paths = new ArrayList<>(1);
+        paths.add(database+".d_0");
+        insertTabletMulti(paths.get(0), schemaList, 10, isAligned);
+        schemaList.add(schemaList.get(schemaList.size()-1));
+        insertTabletMulti(paths.get(0), schemaList, 10, isAligned);
+        // 写入两列同样的失败
+        Assert.assertThrows(StatementExecutionException.class, ()->{
+            insertTabletMulti(paths.get(0), schemaList, 10, isAligned);
+        });
+        schemaList.remove(schemaList.size() - 1);
+    }
+    @Test(priority = 22)
+    public void testReAdd_otherType() {
+        Assert.assertThrows(StatementExecutionException.class, ()->{
+            addTSIntoTemplate(templateName, tsName, TSDataType.INT32, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED, null);
+        });
+    }
+    @Test(priority = 23)
+    public void testReAdd_inBatchDuplicate() throws IoTDBConnectionException, StatementExecutionException {
+        expectCount = getTSCountInTemplate(templateName, verbose);
+        List<String> names = new ArrayList<>(2);
+        List<TSDataType> tsDataTypeList = new ArrayList<>(2);
+        List<TSEncoding> tsEncodingList = new ArrayList<>(2);
+        List<CompressionType> compressionTypeList = new ArrayList<>(2);
+
+        for (int i = 0; i < 2; i++) {
+            names.add("newOne");
+            tsDataTypeList.add(TSDataType.BOOLEAN);
+            tsEncodingList.add(TSEncoding.PLAIN);
+            compressionTypeList.add(CompressionType.UNCOMPRESSED);
+        }
+        Assert.assertThrows(StatementExecutionException.class, ()->{
+            addTSIntoTemplate(templateName, names, tsDataTypeList, tsEncodingList, compressionTypeList);
+        });
+        assert expectCount == getTSCountInTemplate(templateName, verbose) : "增加模版列：批量增加2列同名失败";
+    }
 
 //    @Test(priority = 30) //目前接口未实现，不测试
 //    public void testNullParams_templateName() throws IoTDBConnectionException, StatementExecutionException {
@@ -341,7 +342,7 @@ public class TestOrdinary extends BaseTestSuite {
     }
 
     @Test(priority = 60)
-    public void testAdd0() throws IoTDBConnectionException, IOException, StatementExecutionException {
+    public void testAdd0() throws IoTDBConnectionException, StatementExecutionException {
         expectCount = getTSCountInTemplate(templateName, verbose);
         List<String> paths = new ArrayList<>(0);
         List<TSDataType> tsDataTypes = new ArrayList<>(0);
@@ -364,7 +365,7 @@ public class TestOrdinary extends BaseTestSuite {
         paths.add(database + "." + name);
         devicePaths.add(database + "." + name);
 //        if (!auto_create_schema) {
-            addTSIntoTemplate(templateName, name, TSDataType.FLOAT, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED);
+            addTSIntoTemplate(templateName, name, TSDataType.FLOAT, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED, null);
             session.createTimeseriesUsingSchemaTemplate(paths);
             assert checkUsingTemplate(paths.get(0), verbose) : "激活成功";
 //        }
@@ -383,7 +384,7 @@ public class TestOrdinary extends BaseTestSuite {
     @Test(priority = 71, dataProvider = "getErrorNames", expectedExceptions = StatementExecutionException.class)
     public void testErrorNames(String name, String comment, String index) throws IoTDBConnectionException, StatementExecutionException, IOException {
         if (!auto_create_schema) {
-            addTSIntoTemplate(templateName, name, TSDataType.FLOAT, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED);
+            addTSIntoTemplate(templateName, name, TSDataType.FLOAT, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED, PrepareConnection.getSession());
         } else {
             insertTabletSingle(database +".d_"+index, name, TSDataType.FLOAT, 1, isAligned);
         }
@@ -395,8 +396,8 @@ public class TestOrdinary extends BaseTestSuite {
         return provider.getData();
     }
     @Test(priority = 80, dataProvider = "getErrorStructures", expectedExceptions = StatementExecutionException.class)
-    public void testErrorStructures(TSDataType tsDataType, TSEncoding encoding, CompressionType compressionType,String comment, String index) throws IoTDBConnectionException, StatementExecutionException {
-        addTSIntoTemplate(templateName, "ts_error" + index, tsDataType, encoding, compressionType);
+    public void testErrorStructures(TSDataType tsDataType, TSEncoding encoding, CompressionType compressionType,String comment, String index) throws IoTDBConnectionException, StatementExecutionException, IOException {
+        addTSIntoTemplate(templateName, "ts_error" + index, tsDataType, encoding, compressionType, PrepareConnection.getSession());
     }
 
 

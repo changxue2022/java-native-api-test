@@ -27,6 +27,12 @@ public class TestDynamicTemplateMulti extends BaseTestSuite {
     private String tsPrefix = "sensors_";
     private String templateName_clean = templatePrefix + 2;
 
+    @BeforeClass
+    public void BeforeClass() throws IOException, IoTDBConnectionException, StatementExecutionException {
+        cleanDatabases(verbose);
+        cleanTemplates(verbose);
+    }
+
     private void createTemplate(int databaseCount, int deviceCount, String templateName, String suffix) throws StatementExecutionException, IoTDBConnectionException, IOException {
         int templateNodeCount = 10;
         List<MeasurementSchema> schemaList = new ArrayList<>(templateNodeCount);

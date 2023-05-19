@@ -2,21 +2,20 @@ package org.apache.iotdb.api.test.detail;
 
 import org.apache.iotdb.api.test.TimeSeriesBaseTestSuite;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
+import org.apache.iotdb.api.test.utils.PrepareConnection;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
+import org.apache.iotdb.session.Session;
 import org.apache.iotdb.tsfile.file.metadata.enums.CompressionType;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSEncoding;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.util.*;
-
-import static java.lang.System.out;
 
 public class TestTimeSeries extends TimeSeriesBaseTestSuite {
     private TSDataType dataType = null;
@@ -28,17 +27,10 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
     private static List<String> normalTSs = new ArrayList<>();
     private Iterator<Object[]> lines = null;
 
-
     @BeforeClass(enabled = true)
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException, IOException {
         normalTSs = new CustomDataProvider().getDeviceAndTs("data/timeseries-single.csv");
-        cleanDatabases(verbose);
     }
-    @AfterClass
-    public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
-        cleanDatabases(verbose);
-    }
-
 
     /**
      * 工具类，测试props,tags,attrs个数
@@ -125,14 +117,24 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
         return new CustomDataProvider().load("data/timeseries-single-error.csv").getData();
     }
     @Test(priority = 21, dataProvider = "createSingleTimeSeriesError", expectedExceptions = StatementExecutionException.class)
-    public void testDeleteSingleTimeSeries_error(String path, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException {
-        session.deleteTimeseries(path);
+    public void testDeleteSingleTimeSeries_error(String path, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {
+        Session s = PrepareConnection.getSession();
+        try {
+            s.deleteTimeseries(path);
+        } finally {
+            s.close();
+        }
     }
     @Test(priority = 30, dataProvider = "createSingleTimeSeriesError", expectedExceptions = StatementExecutionException.class)
-    public void testCreateSingleTimeSeries_error(String path, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException {
+    public void testCreateSingleTimeSeries_error(String path, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {
         List<Object> result = translateString2Type(datatypeStr, encodingStr, compressStr);
-        session.createTimeseries(path, (TSDataType) result.get(0), (TSEncoding) result.get(1),
-                (CompressionType) result.get(2), props, tags, attrs, alias);
+        Session s = PrepareConnection.getSession();
+        try {
+            s.createTimeseries(path, (TSDataType) result.get(0), (TSEncoding) result.get(1),
+                    (CompressionType) result.get(2), props, tags, attrs, alias);
+        } finally {
+            s.close();
+        }
     }
     @Test(priority = 40, dataProvider = "createSingleTimeSeriesNormal")
     public void testCreateSingleTimeSeriesAligned_normal(String device, String tsName, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {
@@ -207,8 +209,13 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
         return new CustomDataProvider().load("data/timeseries-delete-error.csv").getData();
     }
     @Test(priority = 60, dataProvider = "deleteTimeSeriesError", expectedExceptions = StatementExecutionException.class)
-    public void testDeleteError(String path, String msg) throws IoTDBConnectionException, StatementExecutionException {
-        session.deleteTimeseries(path);
+    public void testDeleteError(String path, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {
+        Session s = PrepareConnection.getSession();
+        try {
+            s.deleteTimeseries(path);
+        } finally {
+            s.close();
+        }
     }
 
     @DataProvider(name = "deleteTimeSeriesMultiError")
@@ -258,7 +265,6 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
         session.createMultiTimeseries(tsExists, dataTypes, encodings, compressionTypes, null, null, null, null);
         int expectCount = getTimeSeriesCount("", verbose) - total + 1 ;
         int actualCount = getTimeSeriesCount("", verbose);
-        System.out.println(msg);
         session.deleteTimeseries(tsList);
 //        Thread.sleep(1000);
         assert expectCount == actualCount: "删除后 actual=:" + actualCount + ", expect=" +expectCount + ", total="+total;
