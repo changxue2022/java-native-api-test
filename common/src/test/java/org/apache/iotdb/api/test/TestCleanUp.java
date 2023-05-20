@@ -10,6 +10,7 @@ import org.apache.iotdb.tsfile.write.schema.MeasurementSchema;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -35,7 +36,7 @@ public class TestCleanUp extends BaseTestSuite {
                 targetIP+"',   'lo' = '10',   'hi' = '15.5' )";
         session.executeNonQueryStatement(sql);
     }
-    private void testRunSingle(String device, String tsName, TSDataType tsDataType, int insertCount, boolean isAligned) throws IoTDBConnectionException, StatementExecutionException {
+    private void testRunSingle(String device, String tsName, TSDataType tsDataType, int insertCount, boolean isAligned) throws IoTDBConnectionException, StatementExecutionException, IOException {
         String database = device.substring(0, device.lastIndexOf("."));
         if (!checkStroageGroupExists(database)) {
             session.setStorageGroup(database);
@@ -49,7 +50,7 @@ public class TestCleanUp extends BaseTestSuite {
         countLines("show regions", true);
 //        session.deleteTimeseries(path);
     }
-    private void testRunMulti(String device, int columns, int lines, boolean isAligned) throws IoTDBConnectionException, StatementExecutionException {
+    private void testRunMulti(String device, int columns, int lines, boolean isAligned) throws IoTDBConnectionException, StatementExecutionException, IOException {
         String database = device.substring(0, device.lastIndexOf("."));
         List< MeasurementSchema > schemaList = new ArrayList<>(columns);
         if (!checkStroageGroupExists(database)) {
@@ -63,7 +64,7 @@ public class TestCleanUp extends BaseTestSuite {
     }
 
     @Test
-    public void testSameNameTS_diffType() throws IoTDBConnectionException, StatementExecutionException {
+    public void testSameNameTS_diffType() throws IoTDBConnectionException, StatementExecutionException, IOException {
         if (!checkStroageGroupExists(basepath)) {
             session.createDatabase(basepath);
         }
@@ -76,7 +77,7 @@ public class TestCleanUp extends BaseTestSuite {
         session.deleteStorageGroup(basepath);
     }
     @Test
-    public void testChildDatabase() throws IoTDBConnectionException, StatementExecutionException {
+    public void testChildDatabase() throws IoTDBConnectionException, StatementExecutionException, IOException {
         String database = basepath + ".child";
         String device = database + ".d1";
         String tsName = "s_1";
@@ -90,7 +91,7 @@ public class TestCleanUp extends BaseTestSuite {
         session.deleteStorageGroup(database);
     }
     @Test
-    public void testMulti() throws IoTDBConnectionException, StatementExecutionException {
+    public void testMulti() throws IoTDBConnectionException, StatementExecutionException, IOException {
         String device = basepath + ".d1.d1";
         testRunMulti(device, 5, 10, false);
         session.deleteStorageGroup(basepath+".d1");
@@ -101,7 +102,7 @@ public class TestCleanUp extends BaseTestSuite {
 
     }
     @Test
-    public void testSameNameSG() throws IoTDBConnectionException, StatementExecutionException {
+    public void testSameNameSG() throws IoTDBConnectionException, StatementExecutionException, IOException {
         if (!checkStroageGroupExists(basepath)) {
             session.setStorageGroup(basepath);
         }

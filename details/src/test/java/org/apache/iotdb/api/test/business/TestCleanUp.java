@@ -139,7 +139,7 @@ public class TestCleanUp extends BaseTestSuite {
     }
 
     @Test(priority = 30)
-    public void createAlignedTS() throws IoTDBConnectionException, StatementExecutionException {
+    public void createAlignedTS() throws IoTDBConnectionException, StatementExecutionException, IOException {
         session.createAlignedTimeseries(device, measurements, dataTypes, encodings, compressionTypes, null);
         assert  schemaList.size() == getTimeSeriesCount(device+".*", false) : "创建TS数目";
         insertTabletMulti(device, schemaList, insertCount, true);
@@ -147,7 +147,7 @@ public class TestCleanUp extends BaseTestSuite {
         session.deleteDatabase(database);
     }
     @Test(priority = 40)
-    public void createNonAlignedTS() throws IoTDBConnectionException, StatementExecutionException {
+    public void createNonAlignedTS() throws IoTDBConnectionException, StatementExecutionException, IOException {
         session.createMultiTimeseries(paths, dataTypes, encodings, compressionTypes, null, null, null, null);
         assert  schemaList.size() == getTimeSeriesCount(device+".*", false) : "创建TS数目";
         insertTabletMulti(device, schemaList, insertCount, false);

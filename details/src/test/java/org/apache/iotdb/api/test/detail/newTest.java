@@ -45,7 +45,7 @@ public class newTest extends BaseTestSuite {
     }
 
     @Test(enabled = true, priority = 10, dataProvider = "storageGroupNormal")
-    public void testNormalTS_nonAligned(String databaseName, String comment) throws IoTDBConnectionException, StatementExecutionException {
+    public void testNormalTS_nonAligned(String databaseName, String comment) throws IoTDBConnectionException, StatementExecutionException, IOException {
         session.createDatabase(databaseName);
         int count = normalNames.size()+normalNames_keyword.size();
         System.out.println(normalNames.size());
@@ -77,7 +77,7 @@ public class newTest extends BaseTestSuite {
         session.deleteTimeseries(paths);
     }
     @Test(enabled = true, priority = 20)
-    public void testNormalTS_aligned() throws IoTDBConnectionException, StatementExecutionException {
+    public void testNormalTS_aligned() throws IoTDBConnectionException, StatementExecutionException, IOException {
         session.createDatabase(database);
         int count = normalNames.size()+normalNames_keyword.size();
         List<String> paths = new ArrayList<>(count);
@@ -114,7 +114,7 @@ public class newTest extends BaseTestSuite {
      * @throws StatementExecutionException
      */
     @Test(enabled = false, priority = 100)
-    public void testLevel() throws IoTDBConnectionException, StatementExecutionException {
+    public void testLevel() throws IoTDBConnectionException, StatementExecutionException, IOException {
         TSDataType tsDataType = TSDataType.FLOAT;
         TSEncoding tsEncoding = TSEncoding.GORILLA;
         CompressionType compressionType = CompressionType.SNAPPY;

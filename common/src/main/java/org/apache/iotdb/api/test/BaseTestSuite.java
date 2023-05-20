@@ -261,12 +261,16 @@ public class BaseTestSuite {
         }
     }
 
-    public void insertTabletSingle(String device, String tsName, TSDataType tsDataType, int insertCount, boolean isAligned) throws IoTDBConnectionException, StatementExecutionException {
+    public void insertTabletSingle(String device, String tsName, TSDataType tsDataType, int insertCount, boolean isAligned) throws IoTDBConnectionException, StatementExecutionException, IOException {
         List<MeasurementSchema> schemaList = new ArrayList<>();
         schemaList.add(new MeasurementSchema(tsName, tsDataType));
         insertTabletMulti(device, schemaList, insertCount, isAligned);
     }
-    public void insertTabletMulti(String device, List<MeasurementSchema> schemaList, int insertCount, boolean isAligned) throws IoTDBConnectionException, StatementExecutionException {
+    public void insertTabletMulti(String device, List<MeasurementSchema> schemaList, int insertCount, boolean isAligned) throws IoTDBConnectionException, StatementExecutionException, IOException {
+        Session session = this.session;
+        if (insertCount == 0) {
+            session = PrepareConnection.getSession();
+        }
         Tablet tablet = new Tablet(device, schemaList, insertCount);
         int rowIndex = 0;
         for (int row = 0; row < insertCount; row++) {

@@ -125,7 +125,7 @@ public class ActiveInBatch extends BaseTestSuite {
 
     @Test(priority = 60,expectedExceptions = IoTDBConnectionException.class)
     public void testNullAfterTemplate() throws IoTDBConnectionException, StatementExecutionException {
-        Assert.assertThrows(IoTDBConnectionException.class, ()->{
+        Assert.assertThrows(StatementExecutionException.class, ()->{
             session.createTimeseriesUsingSchemaTemplate(null);
         });
         paths.add(null);

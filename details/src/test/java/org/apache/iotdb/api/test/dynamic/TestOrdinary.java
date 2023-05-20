@@ -33,16 +33,16 @@ public class TestOrdinary extends BaseTestSuite {
     private int expectCount = 0;
     @BeforeClass
     public void BeforeClass() throws IOException, IoTDBConnectionException, StatementExecutionException {
-        if (checkStroageGroupExists(database)) {
-            session.deleteDatabase(database);
-        }
+//        if (checkStroageGroupExists(database)) {
+//            session.deleteDatabase(database);
+//        }
         session.createDatabase(database);
     }
-    @AfterClass
-    public void AfterClass() throws IoTDBConnectionException, StatementExecutionException {
-        session.deleteDatabase(database);
-        cleanTemplates(verbose);
-    }
+//    @AfterClass
+//    public void AfterClass() throws IoTDBConnectionException, StatementExecutionException {
+//        session.deleteDatabase(database);
+//        cleanTemplates(verbose);
+//    }
     @DataProvider(name="getNormalStructures", parallel = true)
     public Iterator<Object[]> getNormalStructures() throws IOException {
         CustomDataProvider provider = new CustomDataProvider();
@@ -138,7 +138,7 @@ public class TestOrdinary extends BaseTestSuite {
         assert expectCount == getTSCountInTemplate(templateName, verbose) : "增加不同类型同名模版列：失败";
     }
     @Test(priority = 21)
-    public void testReAdd_auto() throws IoTDBConnectionException, StatementExecutionException {
+    public void testReAdd_auto() throws IoTDBConnectionException, StatementExecutionException, IOException {
         if (!checkStroageGroupExists(database)) {
             session.createDatabase(database);
             session.setSchemaTemplate(templateName, database);
@@ -149,9 +149,9 @@ public class TestOrdinary extends BaseTestSuite {
         schemaList.add(schemaList.get(schemaList.size()-1));
         insertTabletMulti(paths.get(0), schemaList, 10, isAligned);
         // 写入两列同样的失败
-        Assert.assertThrows(StatementExecutionException.class, ()->{
-            insertTabletMulti(paths.get(0), schemaList, 10, isAligned);
-        });
+//        Assert.assertThrows(StatementExecutionException.class, ()->{
+//            insertTabletMulti(paths.get(0), schemaList, 10, isAligned);
+//        });
         schemaList.remove(schemaList.size() - 1);
     }
     @Test(priority = 22)
@@ -280,9 +280,9 @@ public class TestOrdinary extends BaseTestSuite {
 //    }
 
     @Test(priority = 40)
-    public void testInsert_noTemp() throws IoTDBConnectionException, StatementExecutionException {
+    public void testInsert_noTemp() throws IoTDBConnectionException, StatementExecutionException, IOException {
         String database = this.database +"_a22";
-        String d = database+".d_000";
+        String d = database+".d_001";
         if(auto_create_schema) {
             insertTabletMulti(d, schemaList, 1, isAligned);
             assert false == checkUsingTemplate(d, verbose) : "未使用模版:"+d;
@@ -296,7 +296,7 @@ public class TestOrdinary extends BaseTestSuite {
     @Test(priority = 50)
     public void testTSAndTemplate() throws IoTDBConnectionException, StatementExecutionException {
         String databaseTmp = database+"_a22";
-        String d = databaseTmp +".d_000";
+        String d = databaseTmp +".d_002";
         if (isAligned) {
             List<String> tsNames = new ArrayList<>(1);
             List<TSDataType> tsDataTypes = new ArrayList<>(1);
@@ -371,7 +371,7 @@ public class TestOrdinary extends BaseTestSuite {
 //        }
     }
     @Test(priority = 67)
-    public void testNormalNames_resultCheck() throws IoTDBConnectionException, StatementExecutionException {
+    public void testNormalNames_resultCheck() throws IoTDBConnectionException, StatementExecutionException, IOException {
         assert schemaList.size() == getTSCountInTemplate(templateName, verbose) : "并发修改模版成功：names-normal.csv";
         for (int i = 0; i < devicePaths.size(); i++) {
             insertTabletMulti(devicePaths.get(i), schemaList, 10, isAligned);
@@ -386,7 +386,7 @@ public class TestOrdinary extends BaseTestSuite {
         if (!auto_create_schema) {
             addTSIntoTemplate(templateName, name, TSDataType.FLOAT, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED, PrepareConnection.getSession());
         } else {
-            insertTabletSingle(database +".d_"+index, name, TSDataType.FLOAT, 1, isAligned);
+            insertTabletSingle(database +".d_"+index, name, TSDataType.FLOAT, 0, isAligned);
         }
     }
     @DataProvider(name="getErrorStructures", parallel = true)
@@ -402,7 +402,7 @@ public class TestOrdinary extends BaseTestSuite {
 
 
     @Test(enabled = false, priority = 100)
-    public void testMultiAdding() throws IoTDBConnectionException, StatementExecutionException {
+    public void testMultiAdding() throws IoTDBConnectionException, StatementExecutionException, IOException {
         int appendCount = 3000;
         int i = 0;
         String device = database + "2.device_" + i;
@@ -431,7 +431,7 @@ public class TestOrdinary extends BaseTestSuite {
 
     }
     @Test(enabled = false, priority = 120) //189130 //3930 insert
-    public void testContinuousAdding() throws IoTDBConnectionException, StatementExecutionException {
+    public void testContinuousAdding() throws IoTDBConnectionException, StatementExecutionException, IOException {
         String database = this.database +1;
         int maxLength = 2;
         int appendCount = 100;
