@@ -373,12 +373,12 @@ public class TestDynamicTemplateMin extends BaseTestSuite {
                 deactiveTemplate(templateName, devicePaths.get(i));
             }
         }
-        cleanTemplateNodes(templateName, databases.get(0));
 
         // TIMECHODB-102
-//        deactiveTemplate(templateName, "root.db.**");
+        deactiveTemplate(templateName, "root.db.**");
         // 卸载模版
         assert 0 == getActivePathsCount(templateName, verbose) : "模版引用数目 == 0";
+        cleanTemplateNodes(templateName, databases.get(0));
         assert 0 == getSetPathsCount(templateName, verbose) : "模版挂载数目 == 0";
         // 删除database再创建，查看与模版关联是否清除
         session.deleteDatabase(database);

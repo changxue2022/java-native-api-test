@@ -72,7 +72,7 @@ public class TestTimeSeriesParams extends BaseTestSuite {
                 alias
         );
     }
-    @Test(priority = 20, expectedExceptions = IoTDBConnectionException.class)
+    @Test(priority = 20, expectedExceptions = StatementExecutionException.class)
     public void testCreateTimeSeries_nullPath_error() throws IoTDBConnectionException, StatementExecutionException {
         testCreateTS_null("path");
     }
@@ -230,7 +230,7 @@ public class TestTimeSeriesParams extends BaseTestSuite {
         }
     }
     // TIMECHODB-127
-    @Test(expectedExceptions = IoTDBConnectionException.class, priority = 50)
+    @Test(expectedExceptions = StatementExecutionException.class, priority = 50)
     public void testCreateAligned_nullPaths() throws IoTDBConnectionException, StatementExecutionException {
         testCreateMultiTS_null("path", true, false);
     }
@@ -262,7 +262,7 @@ public class TestTimeSeriesParams extends BaseTestSuite {
     public void testCreateAligned_nullAlias() throws IoTDBConnectionException, StatementExecutionException {
         testCreateMultiTS_null("alias", true, false);
     }
-    @Test(expectedExceptions = IoTDBConnectionException.class, priority = 30)
+    @Test(expectedExceptions = StatementExecutionException.class, priority = 30)
     public void testCreateMulti_nullPaths() throws IoTDBConnectionException, StatementExecutionException {
         testCreateMultiTS_null("path", false, false);
     }
@@ -294,7 +294,7 @@ public class TestTimeSeriesParams extends BaseTestSuite {
     public void testCreateMulti_nullAlias() throws IoTDBConnectionException, StatementExecutionException {
         testCreateMultiTS_null("alias", false, false);
     }
-   @Test(expectedExceptions = IoTDBConnectionException.class, priority = 60)
+   @Test(expectedExceptions = StatementExecutionException.class, priority = 60)
     public void testCreateAligned_pathsNullInList() throws IoTDBConnectionException, StatementExecutionException {
         testCreateMultiTS_null("path", true, true);
     }
@@ -326,7 +326,7 @@ public class TestTimeSeriesParams extends BaseTestSuite {
     public void testCreateAligned_AliasNullInList() throws IoTDBConnectionException, StatementExecutionException {
         testCreateMultiTS_null("alias", true, true);
     }
-    @Test(expectedExceptions = IoTDBConnectionException.class, priority = 70)
+    @Test(expectedExceptions = StatementExecutionException.class, priority = 70)
     public void testCreateMulti_PathsNullInList() throws IoTDBConnectionException, StatementExecutionException {
         testCreateMultiTS_null("path", false, true);
     }
@@ -360,7 +360,7 @@ public class TestTimeSeriesParams extends BaseTestSuite {
     }
 
     // TIMECHODB-128
-    @Test(priority = 40, expectedExceptions = IoTDBConnectionException.class)
+    @Test(priority = 40, expectedExceptions = StatementExecutionException.class)
     public void testDeleteTS_null() throws IoTDBConnectionException, StatementExecutionException {
         session.deleteTimeseries((String) null);
     }

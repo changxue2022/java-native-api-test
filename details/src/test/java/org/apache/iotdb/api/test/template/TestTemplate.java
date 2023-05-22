@@ -81,7 +81,6 @@ public class TestTemplate extends BaseTestSuite {
         });
 
         session.createSchemaTemplate(template);
-        countLines("show schema templates", verbose);
         //  IOTDB-5437 StatementExecutionException: 300: COUNT_MEASUREMENTShas not been supported.
 //        assert 6 == session.countMeasurementsInTemplate(templateName) : "查看模版中sensor数目";
 //        assert 1 + templateCount == countLines("show schema templates", true) : "创建模版成功";
@@ -90,7 +89,6 @@ public class TestTemplate extends BaseTestSuite {
             assert checkTemplateContainPath(templateName, loadNode) : "挂载模版成功";
             getSetPathsCount(templateName, verbose);
             insertTabletMulti(loadNode, schemaList, 10, isAligned);
-            countLines("show timeseries "+loadNode+".**", verbose);
             getRecordCount(loadNode, verbose);
         }
     }
@@ -159,8 +157,6 @@ public class TestTemplate extends BaseTestSuite {
     }
     @Test(priority = 21)
     public void testSet_database() throws IoTDBConnectionException, StatementExecutionException {
-        countLines("show databases", verbose);
-        countLines("show schema templates", verbose);
         session.createDatabase(databasePrefix);
         getSetPathsCount(tName, verbose);
         session.setSchemaTemplate(tName, databasePrefix);
@@ -195,7 +191,6 @@ public class TestTemplate extends BaseTestSuite {
     public void testCreateTemplate_nameNormal (String name, String comment, String index) throws IoTDBConnectionException, IOException, StatementExecutionException {
         String database = databasePrefix+index;
         session.createDatabase(database);
-        countLines("show databases", verbose);
         String loadNode = database + "." + name;
         createTemplate(name, loadNode, isAligned, null);
         // 解除
@@ -227,7 +222,7 @@ public class TestTemplate extends BaseTestSuite {
         }
         String templateName = templatePrefix+"_struct";
         List<MeasurementSchema> schemaList = new ArrayList<>(structures.size());
-        int templateCount = countLines("show schema templates", verbose);
+        int templateCount = getTemplateCount(verbose);
         Template template = new Template(templateName, isAligned);
         for (int i = 0; i < structures.size() ; i++) {
 
@@ -237,7 +232,7 @@ public class TestTemplate extends BaseTestSuite {
                     (TSEncoding) structures.get(i).get(1), (CompressionType) structures.get(i).get(2)));
         }
         session.createSchemaTemplate(template);
-        assert 1 + templateCount == countLines("show schema templates", verbose) : "创建模版成功:"+templateName;
+        assert 1 + templateCount == getTemplateCount(verbose) : "创建模版成功:"+templateName;
         session.setSchemaTemplate(templateName, databaseStr);
         assert checkTemplateContainPath(templateName, databaseStr) : "挂载模版成功:"+templateName+" - "+databaseStr;
         List<String> paths = new ArrayList<>(1);
@@ -249,7 +244,7 @@ public class TestTemplate extends BaseTestSuite {
     @Test(priority = 42)
     public void testCreateTemplate_structError() throws StatementExecutionException, IoTDBConnectionException {
         String templateName = templatePrefix +"_err";
-        int expectCount = countLines("show schema templates", verbose);
+        int expectCount = getTemplateCount(verbose);
         for (int i = 0; i < errStructures.size(); i++) {
             Template template = new Template(templateName, isAligned);
             MeasurementNode mNode = new MeasurementNode("s_err", (TSDataType) errStructures.get(i).get(0),
@@ -306,10 +301,10 @@ public class TestTemplate extends BaseTestSuite {
         }
         template.addToTemplate(new MeasurementNode("s_0", (TSDataType) struct.get(0),
                 (TSEncoding) struct.get(1), (CompressionType) struct.get(2)));
-        int templateCount = countLines("show schema templates", verbose);
-        int deviceCount = countLines("show devices "+database+".**", verbose);
+        int templateCount = getTemplateCount(verbose);
+        int deviceCount = getDeviceCount(database+".**", verbose);
         session.createSchemaTemplate(template);
-        assert 1 + templateCount == countLines("show schema templates", verbose) : "创建模版成功:"+templateName;
+        assert 1 + templateCount == getTemplateCount(verbose) : "创建模版成功:"+templateName;
         session.setSchemaTemplate(templateName, database);
         assert checkTemplateContainPath(templateName, database) : "挂载模版成功:"+templateName+" - "+database;
         List<String> paths = new ArrayList<>(2);
@@ -349,7 +344,7 @@ public class TestTemplate extends BaseTestSuite {
             }
         }
         int templateCount = getTemplateCount(verbose);
-        int deviceCount = getCount("count devices "+database+".**", verbose);
+        int deviceCount = getDeviceCount(database+".**", verbose);
         session.createSchemaTemplate(template);
         assert 1 + templateCount == getTemplateCount(verbose) : "创建模版成功:"+templateName;
         session.setSchemaTemplate(templateName, database);
@@ -360,7 +355,7 @@ public class TestTemplate extends BaseTestSuite {
         }
         session.createTimeseriesUsingSchemaTemplate(paths);
 //        assert maxLength == getActivePathsCount(templateName, verbose) : "激活成功：查询template绑定path数量";
-        assert deviceCount+maxLength == getCount("count devices "+database+".**", verbose): "激活成功check devices："+database;
+        assert deviceCount+maxLength == getDeviceCount(database+".**", verbose): "激活成功check devices："+database;
         assert maxLength*maxLength == getTimeSeriesCount(database+".**", verbose): "激活成功check timeseries："+database;
         insertTabletMulti(paths.get(0), schemaList, 10, isAligned);
         insertTabletMulti(paths.get(1), schemaList, 10, isAligned);
@@ -401,11 +396,12 @@ public class TestTemplate extends BaseTestSuite {
 
         session.createTimeseriesUsingSchemaTemplate(paths);
         assert maxLength+1 == getActivePathsCount(templateName, verbose) : "激活成功：查询template绑定path数量";
-        assert maxLength+1 == getCount("count devices " + database + ".**", verbose) : "激活成功check devices：" + database;
-        assert (maxLength+1) * 6 == getCount("count timeseries " + database + ".**", verbose) : "激活成功check timeseries：" + database;
+        assert maxLength+1 == getDeviceCount( database + ".**", verbose) : "激活成功check devices：" + database;
+        assert (maxLength+1) * 6 == getTimeSeriesCount( database + ".**", verbose) : "激活成功check timeseries：" + database;
         for (int i = 0; i < maxLength; i++) {
             insertTabletMulti(paths.get(i), schemaList, 10, isAligned);
         }
+        deactiveTemplate(templateName, database+".**");
         session.deleteDatabase(database);
         session.dropSchemaTemplate(templateName);
         long end = System.currentTimeMillis();

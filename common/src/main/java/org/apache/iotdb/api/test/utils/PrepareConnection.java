@@ -29,8 +29,8 @@ public class PrepareConnection {
         }
     }
     public static Session getSession() throws IoTDBConnectionException, IOException {
-        Session session = null;
-//        if ( session == null) {
+//        Session session = null;
+        if ( session == null) {
             if (config.getValue("is_cluster").equals("true")) {
                 String host_nodes_str = config.getValue("host_nodes");
                 session = new Session.Builder()
@@ -50,7 +50,7 @@ public class PrepareConnection {
                         .timeOut(Long.parseLong(config.getValue("session_timeout")))
                         .build();
             }
-//        }
+        }
         session.open(false);
         // set session fetchSize
         session.setFetchSize(10000);

@@ -69,7 +69,8 @@ public class TestInsertParams extends BaseTestSuite {
     public void testInsertTablet_null() throws IoTDBConnectionException, StatementExecutionException {
         session.insertTablet(null);
     }
-    @Test(priority = 20, expectedExceptions = IoTDBConnectionException.class)
+    // TIMECHODB-149
+    @Test(priority = 20, expectedExceptions = StatementExecutionException.class)
     public void testInsertTablet_deviceNull() throws IoTDBConnectionException, StatementExecutionException {
         Tablet tablet = new Tablet(null, schemaList);
         session.insertTablet(tablet);
@@ -224,7 +225,7 @@ public class TestInsertParams extends BaseTestSuite {
         checkResult(4068921600000L,-1.8f);
     }
 
-    @Test(priority = 30, expectedExceptions = IoTDBConnectionException.class)
+    @Test(priority = 30, expectedExceptions = StatementExecutionException.class)
     public void testInsertRecord_nullDevice() throws IoTDBConnectionException, StatementExecutionException {
         session.insertRecord(null, 100L, measurements, dataTypes, values.get(0));
     }
@@ -238,11 +239,13 @@ public class TestInsertParams extends BaseTestSuite {
         session.insertRecord(device, 4068921600000L, measurements, dataTypes, values.get(0));
         checkResult(4068921600000L, values.get(0));
     }
-    @Test(priority = 30, expectedExceptions = IoTDBConnectionException.class)
+    // TIMECHODB-149
+    @Test(priority = 30, expectedExceptions = StatementExecutionException.class)
     public void testInsertRecord_tsNameNull() throws IoTDBConnectionException, StatementExecutionException {
         session.insertRecord(device, 100L, null, dataTypes, values.get(0));
     }
-    @Test(priority = 30, expectedExceptions = IoTDBConnectionException.class)
+    // TIMECHODB-149
+    @Test(priority = 30, expectedExceptions = StatementExecutionException.class)
     public void testInsertRecord_tsNameNullIn() throws IoTDBConnectionException, StatementExecutionException {
         List<String> tsNames = new ArrayList<>(1);
         tsNames.add(null);
