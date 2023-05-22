@@ -47,7 +47,7 @@ public class ActiveInBatch extends BaseTestSuite {
     public Iterator<Object[]> getErrorNames() throws IOException {
         return new CustomDataProvider().load("data/names-error.csv").getData();
     }
-    @DataProvider(name="getNormalNames")
+    @DataProvider(name="getNormalNames", parallel = true)
     public Iterator<Object[]> getNormalNames() throws IOException {
         return new CustomDataProvider().load("data/names-normal.csv").getData();
     }
@@ -123,19 +123,19 @@ public class ActiveInBatch extends BaseTestSuite {
         });
     }
 
-    @Test(priority = 60,expectedExceptions = IoTDBConnectionException.class)
-    public void testNullAfterTemplate() throws IoTDBConnectionException, StatementExecutionException {
+    @Test(priority = 60)
+    public void testNullAfterTemplate() {
         Assert.assertThrows(StatementExecutionException.class, ()->{
             session.createTimeseriesUsingSchemaTemplate(null);
         });
         paths.add(null);
-        Assert.assertThrows(IoTDBConnectionException.class, ()->{
+        Assert.assertThrows(StatementExecutionException.class, ()->{
             session.createTimeseriesUsingSchemaTemplate(paths);
         });
         paths.add(databases[0]);
         Assert.assertThrows(StatementExecutionException.class, ()->{
-        session.createTimeseriesUsingSchemaTemplate(paths);
-    });
+            session.createTimeseriesUsingSchemaTemplate(paths);
+        });
     }
     @Test(priority = 70, expectedExceptions=StatementExecutionException.class)
     public void testEmptyAfterTemplate() throws IoTDBConnectionException, StatementExecutionException {

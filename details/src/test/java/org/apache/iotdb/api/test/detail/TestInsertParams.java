@@ -39,9 +39,9 @@ public class TestInsertParams extends BaseTestSuite {
 
     @BeforeClass
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException {
-        if (checkStroageGroupExists(database)) {
-            session.deleteDatabase(database);
-        }
+//        if (checkStroageGroupExists(database)) {
+//            session.deleteDatabase(database);
+//        }
         session.createDatabase(database);
         paths.add(device + "." + tsName);
         measurements.add(tsName);
