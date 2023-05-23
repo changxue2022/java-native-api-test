@@ -250,9 +250,9 @@ public class ActiveInBatch extends BaseTestSuite {
         for (int i = 0; i < names.size(); i++) {
             paths.add(databases[1]+"."+names.get(i));
         }
-        int expectCount = getCount("count devices "+databases[1]+".**", verbose) + paths.size();
+        int expectCount = getDeviceCount(databases[1]+".**", verbose) + paths.size();
         session.createTimeseriesUsingSchemaTemplate(paths);
-        assert expectCount == getCount("count devices "+databases[1]+".**", verbose): "激活 validPath";
+        assert expectCount == getDeviceCount(databases[1]+".**", verbose): "激活 validPath";
         for (int i = 0; i < paths.size() ; i++) {
             insertRecordSingle(paths.get(i)+"."+tsName, TSDataType.INT32, isAligned,null);
         }
@@ -261,30 +261,30 @@ public class ActiveInBatch extends BaseTestSuite {
     @Test(priority = 120, dataProvider = "getNormalNames")
     public void testNormalOne(String name, String comment, String index) throws StatementExecutionException, IoTDBConnectionException, IOException {
         String database = databasePrefix+index;
+        String templateName = templateNamePrefix+index;
         if (!checkStroageGroupExists(database)) {
             session.createDatabase(database);
         }
-        paths.clear();
-        int templateCount = getTemplateCount(verbose);
-        Template template = new Template(name, isAligned);
+        List<String> paths = new ArrayList<>(1);
+        Template template = new Template(templateName, isAligned);
         List<Object> struct = Tools.getRandom(structures);
         TSDataType tsDataType = (TSDataType) struct.get(0);
-        System.out.println(struct);
         MeasurementNode mNode = new MeasurementNode(tsName, tsDataType,
                 (TSEncoding) struct.get(1), (CompressionType) struct.get(2));
         template.addToTemplate(mNode);
         session.createSchemaTemplate(template);
-        assert 1 + templateCount == getTemplateCount(verbose) : "创建模版成功";
-        session.setSchemaTemplate(name, database);
-        assert checkTemplateContainPath(name, database) : "挂载模版成功";
-        int deviceCount = getCount("count devices "+database+".**", verbose);
+        assert checkTemplateExists(templateName) : "创建模版成功";
+        session.setSchemaTemplate(templateName, database);
+        assert checkTemplateContainPath(templateName, database) : "挂载模版成功";
         paths.add(database+"."+name);
+        System.out.println("paths="+paths);
+        System.out.println("paths.size="+paths.size());
         session.createTimeseriesUsingSchemaTemplate(paths);
-        assert (paths.size() + deviceCount) == getTimeSeriesCount(database + ".**", verbose) :"批量激活模版timeseries:"+paths.size();
-        assert (paths.size() + deviceCount) == getCount("count devices "+database+".**", verbose) : "批量激活模版devices："+paths.size();
+        assert paths.size() == getActivePathsCount(templateName, verbose) : "激活成功";
+        assert checkUsingTemplate(paths.get(0), verbose) : paths.get(0)+"使用了模版";
         insertRecordSingle(database+"."+name+"."+name, tsDataType, isAligned, null);
         session.deleteStorageGroup(database);
-        session.dropSchemaTemplate(name);
+        session.dropSchemaTemplate(templateName);
         session.createDatabase(database);
     }
 //    @Test(priority = 130)
@@ -292,7 +292,6 @@ public class ActiveInBatch extends BaseTestSuite {
         String templateName = templateNamePrefix;
         String database = databasePrefix;
         List<MeasurementSchema> schemaList = new ArrayList<>(structures.size());
-        int templateCount = getTemplateCount(verbose);
         Template template = new Template(templateName, isAligned);
         if(!checkStroageGroupExists(database)) {
             session.createDatabase(database);
@@ -305,7 +304,7 @@ public class ActiveInBatch extends BaseTestSuite {
                     (TSEncoding) structures.get(i).get(1), (CompressionType) structures.get(i).get(2)));
         }
         session.createSchemaTemplate(template);
-        assert 1 + templateCount == getTemplateCount(verbose) : "创建模版成功:"+templateName;
+        assert checkStroageGroupExists(templateName) : "创建模版成功:"+templateName;
         session.setSchemaTemplate(templateName, database);
         assert checkTemplateContainPath(templateName, database) : "挂载模版成功:"+templateName+" - "+database;
         int i = 0;

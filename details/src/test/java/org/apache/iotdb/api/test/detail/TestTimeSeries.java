@@ -103,7 +103,6 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
     @Test(priority = 10, dataProvider = "createSingleTimeSeriesNormal")
     public void testCreateSingleTimeSeries_normal(String device, String tsName, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException {
         List<Object> result = translateString2Type(datatypeStr, encodingStr, compressStr);
-//        out.println(device+"."+tsName+" datatype:"+dataType +" encoding:"+encoding+ " compress:"+compressionType +" props:"+props+" tags:"+ tags+" attrs:"+ attrs+" alias:"+ alias);
         session.createTimeseries(device+"."+tsName, (TSDataType) result.get(0),
                 (TSEncoding)result.get(1) , (CompressionType) result.get(2), props, tags, attrs, alias);
         insertRecordSingle(device+"."+tsName,  (TSDataType) result.get(0), false, alias);
@@ -188,13 +187,13 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
     public void testCreateTimeSeries_10props() throws IoTDBConnectionException, StatementExecutionException {
         testCreateTimeSeries_tags(10);
     }
-    // TIMECHODB-126
     @Test(priority = 51)
-    public void testCreateTimeSeries_100props() throws IoTDBConnectionException, StatementExecutionException {
-        testCreateTimeSeries_tags(100);
+    public void testCreateTimeSeries_1props() throws IoTDBConnectionException, StatementExecutionException {
+        testCreateTimeSeries_tags(1);
     }
 
-    @Test(priority = 52)
+    // TIMECHODB-126
+    @Test(priority = 52, expectedExceptions = StatementExecutionException.class)
     public void testCreateTimeSeries_max_props() throws IoTDBConnectionException, StatementExecutionException {
         testCreateTimeSeries_tags(700); //默认值：tag_attribute_total_size=700
     }

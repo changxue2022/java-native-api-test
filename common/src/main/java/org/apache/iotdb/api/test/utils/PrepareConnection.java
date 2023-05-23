@@ -17,8 +17,6 @@ import java.util.Random;
 import static java.lang.System.out;
 
 public class PrepareConnection {
-    private static Session session = null;
-    private static SessionPool sessionPool = null;
     private static ReadConfig config;
 
     static {
@@ -29,27 +27,25 @@ public class PrepareConnection {
         }
     }
     public static Session getSession() throws IoTDBConnectionException, IOException {
-//        Session session = null;
-        if ( session == null) {
-            if (config.getValue("is_cluster").equals("true")) {
-                String host_nodes_str = config.getValue("host_nodes");
-                session = new Session.Builder()
-                        .nodeUrls(Arrays.asList(host_nodes_str.split(",")))
-                        .username(config.getValue("user"))
-                        .password(config.getValue("password"))
-                        .enableRedirection(false)
-                        .timeOut(Long.parseLong(config.getValue("session_timeout")))
-                        .build();
-            } else {
-                session = new Session.Builder()
-                        .host(config.getValue("host"))
-                        .port(Integer.parseInt(config.getValue("port")))
-                        .username(config.getValue("user"))
-                        .password(config.getValue("password"))
-                        .enableRedirection(false)
-                        .timeOut(Long.parseLong(config.getValue("session_timeout")))
-                        .build();
-            }
+        Session session = null;
+        if (config.getValue("is_cluster").equals("true")) {
+            String host_nodes_str = config.getValue("host_nodes");
+            session = new Session.Builder()
+                    .nodeUrls(Arrays.asList(host_nodes_str.split(",")))
+                    .username(config.getValue("user"))
+                    .password(config.getValue("password"))
+                    .enableRedirection(false)
+                    .timeOut(Long.parseLong(config.getValue("session_timeout")))
+                    .build();
+        } else {
+            session = new Session.Builder()
+                    .host(config.getValue("host"))
+                    .port(Integer.parseInt(config.getValue("port")))
+                    .username(config.getValue("user"))
+                    .password(config.getValue("password"))
+                    .enableRedirection(false)
+                    .timeOut(Long.parseLong(config.getValue("session_timeout")))
+                    .build();
         }
         session.open(false);
         // set session fetchSize
@@ -57,26 +53,25 @@ public class PrepareConnection {
         return session;
     }
     public static SessionPool getSessionPool() {
-        if (sessionPool == null) {
-            if (config.getValue("is_cluster").equals("true")) {
-                String host_nodes_str = config.getValue("host_nodes");
-                sessionPool = new SessionPool.Builder()
-                        .nodeUrls(Arrays.asList(host_nodes_str.split(",")))
-                        .user(config.getValue("user"))
-                        .password(config.getValue("password"))
-                        .maxSize(10)
-                        .timeOut(Long.parseLong(config.getValue("session_timeout")))
-                        .build();
-            } else {
-                sessionPool = new SessionPool.Builder()
-                        .host(config.getValue("host"))
-                        .port(Integer.parseInt(config.getValue("port")))
-                        .user(config.getValue("user"))
-                        .password(config.getValue("password"))
-                        .maxSize(10)
-                        .timeOut(Long.parseLong(config.getValue("session_timeout")))
-                        .build();
-            }
+        SessionPool sessionPool = null;
+        if (config.getValue("is_cluster").equals("true")) {
+            String host_nodes_str = config.getValue("host_nodes");
+            sessionPool = new SessionPool.Builder()
+                    .nodeUrls(Arrays.asList(host_nodes_str.split(",")))
+                    .user(config.getValue("user"))
+                    .password(config.getValue("password"))
+                    .maxSize(10)
+                    .timeOut(Long.parseLong(config.getValue("session_timeout")))
+                    .build();
+        } else {
+            sessionPool = new SessionPool.Builder()
+                    .host(config.getValue("host"))
+                    .port(Integer.parseInt(config.getValue("port")))
+                    .user(config.getValue("user"))
+                    .password(config.getValue("password"))
+                    .maxSize(10)
+                    .timeOut(Long.parseLong(config.getValue("session_timeout")))
+                    .build();
         }
 
         // set session fetchSize

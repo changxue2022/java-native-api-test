@@ -29,7 +29,7 @@ mvn surefire-report:report
 ## report
 After running, here is the reports:
 ```shell
-detail/target/site/surefire-report.html
+details/target/site/surefire-report.html
 ```
 ![](assets/16843000786395.jpg)
 

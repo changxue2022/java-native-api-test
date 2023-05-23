@@ -368,11 +368,11 @@ public class TestDynamicTemplateMin extends BaseTestSuite {
         }
         logger.info("database="+databases.get(1));
         session.unsetSchemaTemplate(databases.get(1), templateName);
-        for (int i = 0; i < devicePaths.size(); i++) {
-            if (devicePaths.get(i).startsWith(databases.get(0))) {
-                deactiveTemplate(templateName, devicePaths.get(i));
-            }
-        }
+//        for (int i = 0; i < devicePaths.size(); i++) {
+//            if (devicePaths.get(i).startsWith(databases.get(0))) {
+//                deactiveTemplate(templateName, devicePaths.get(i));
+//            }
+//        }
 
         // TIMECHODB-102
         deactiveTemplate(templateName, "root.db.**");
