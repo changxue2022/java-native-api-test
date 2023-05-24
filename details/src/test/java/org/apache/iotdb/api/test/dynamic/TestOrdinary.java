@@ -34,15 +34,13 @@ public class TestOrdinary extends BaseTestSuite {
     private int expectCount = 0;
     @BeforeClass
     public void BeforeClass() throws IOException, IoTDBConnectionException, StatementExecutionException {
-cleanDatabases(false);
-        cleanTemplates(false);
         session.createDatabase(database);
     }
 //    @AfterClass
-//    public void AfterClass() throws IoTDBConnectionException, StatementExecutionException {
-//        session.deleteDatabase(database);
-//        cleanTemplates(verbose);
-//    }
+    public void AfterClass() throws IoTDBConnectionException, StatementExecutionException {
+        session.deleteDatabase(database);
+        cleanTemplates(verbose);
+    }
     @DataProvider(name="getNormalStructures", parallel = true)
     public Iterator<Object[]> getNormalStructures() throws IOException {
         CustomDataProvider provider = new CustomDataProvider();
