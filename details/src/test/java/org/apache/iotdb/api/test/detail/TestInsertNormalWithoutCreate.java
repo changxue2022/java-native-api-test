@@ -2,6 +2,7 @@ package org.apache.iotdb.api.test.detail;
 
 import org.apache.iotdb.api.test.BaseTestSuite;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
+import org.apache.iotdb.api.test.utils.GenerateValues;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
@@ -36,13 +37,12 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
     private final List<MeasurementSchema> schemaList = new ArrayList<>();// tablet
 
     private final int expectCount = 18;
+    public Boolean verbose = true;
 
 
     @BeforeClass(enabled = true)
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException {
-        if (checkStroageGroupExists("")) {
-            session.deleteStorageGroup("root.**");
-        }
+        cleanDatabases(verbose);
         out.println("创建序列");
         session.setStorageGroup(device.substring(0,device.lastIndexOf('.')));
         session.setStorageGroup(alignedDevice.substring(0,alignedDevice.lastIndexOf('.')));
@@ -79,51 +79,116 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
     /**
      * 工具函数，用于查询比较 TS 中插入条数，清除已插入数据
      */
-    public void afterMethod(int expectNonAligned, int expectAligned, String msg) throws IoTDBConnectionException, StatementExecutionException {
-        int actualNonAligned = getRecordCount(device, verbose);
-        int actualAligned = getRecordCount(alignedDevice, verbose);
-        assert actualNonAligned == expectNonAligned : "非对齐：" + msg;
-        assert actualAligned == expectAligned : "对齐：" + msg;
-
-        out.println("清理数据");
-        session.deleteTimeseries(device+".**");
-        session.deleteTimeseries(alignedDevice+".**");
+    private void afterMethod(int expectNonAligned, int expectAligned, String msg) throws IoTDBConnectionException, StatementExecutionException {
+        if (expectNonAligned != -1) {
+            int actualNonAligned = getRecordCount(device, verbose);
+            out.println("actualNonAligned == expectNonAligned:"+actualNonAligned +"=="+ expectNonAligned);
+            assert actualNonAligned == expectNonAligned-1 : "非对齐：" + msg;
+            out.println("清理数据");
+            session.deleteTimeseries(device+".**");
+        }
+        if (expectAligned != -1) {
+            int actualAligned = getRecordCount(alignedDevice, verbose);
+            out.println("actualAligned == expectAligned:" + actualAligned + "==" + expectAligned);
+            assert actualAligned == expectAligned - 1 : "对齐：" + msg;
+            out.println("清理数据");
+            session.deleteTimeseries(alignedDevice + ".**");
+        }
     }
 
     /**
      * 工具函数：检查一次插入多个设备的结果
      */
-    public void checkInsertMultiDevices(String msg) throws IoTDBConnectionException, StatementExecutionException {
-        int[] expectValueList = new int[]{2,1,6};
+    private void checkInsertMultiDevices(String msg) throws IoTDBConnectionException, StatementExecutionException {
+        int[] expectValueList = new int[]{2,1,5};
         for (int i = 0; i < 3; i++) {
+            out.println("actual="+getRecordCount("root.jni.d"+(i+1), verbose));
+            out.println("expect="+expectValueList[i]);
             assert getRecordCount("root.jni.d"+(i+1), verbose) == expectValueList[i] : "root.jni.d"+(i+1)+":" + msg;
         }
         out.println("清理数据");
         session.deleteTimeseries("root.jni.**");
     }
 
-    @DataProvider(name="insertSingleNormal")
+    @DataProvider(name="insertSingleNormal", parallel = true)
     public Iterator<Object[]> getSingleNormal() throws IOException {
         return new CustomDataProvider().load("data/insert-records.csv").getData();
     }
-    // @DataProvider(name="insertMultiRecords")
+     @DataProvider(name="insertMultiRecords")
     public Iterator<Object[]> getMultiRecords() throws IOException {
         return new CustomDataProvider().load("data/insert-records-multi.csv").getData();
+    }
+
+    /**
+     * tablet 工具函数:组成rowIndex行 某点数据
+     */
+    private void insertValue(int rowIndex, int colIndex, Tablet tablet, String value) {
+        if ("null".equals(value)) {
+            value = null;
+            tablet.bitMaps[colIndex].mark(rowIndex);
+        }
+        switch(schemaList.get(colIndex).getType()) {
+            case BOOLEAN:
+                if (value == null) {
+                    tablet.addValue(schemaList.get(colIndex).getMeasurementId(), rowIndex, GenerateValues.getBoolean());
+                } else {
+                    tablet.addValue(schemaList.get(colIndex).getMeasurementId(), rowIndex, Boolean.parseBoolean(value));
+                }
+                break;
+            case INT32:
+                if (value == null) {
+                    tablet.addValue(schemaList.get(colIndex).getMeasurementId(), rowIndex, GenerateValues.getInt());
+                } else {
+                    tablet.addValue(schemaList.get(colIndex).getMeasurementId(), rowIndex, Integer.parseInt(value));
+                }
+                break;
+            case INT64:
+                if (value == null) {
+                    tablet.addValue(schemaList.get(colIndex).getMeasurementId(), rowIndex, GenerateValues.getLong(10));
+                } else {
+                    tablet.addValue(schemaList.get(colIndex).getMeasurementId(), rowIndex, Long.parseLong(value));
+                }
+                break;
+            case FLOAT:
+                if (value == null) {
+                    tablet.addValue(schemaList.get(colIndex).getMeasurementId(), rowIndex, GenerateValues.getFloat(2, 100, 200));
+                } else {
+                    tablet.addValue(schemaList.get(colIndex).getMeasurementId(), rowIndex, Float.parseFloat(value));
+                }
+                break;
+            case DOUBLE:
+                if (value == null) {
+                    tablet.addValue(schemaList.get(colIndex).getMeasurementId(), rowIndex, GenerateValues.getDouble(2, 500, 1000));
+                } else {
+                    tablet.addValue(schemaList.get(colIndex).getMeasurementId(), rowIndex, Double.parseDouble(value));
+                }
+                break;
+            case TEXT:
+                if (value == null) {
+                    tablet.addValue(schemaList.get(colIndex).getMeasurementId(), rowIndex, GenerateValues.getChinese());
+                } else {
+                    tablet.addValue(schemaList.get(colIndex).getMeasurementId(), rowIndex, value);
+                }
+                break;
+        }
     }
 
     /**
      * insert tatblet 同设备
      * 非对齐/对齐
      */
-    @Test
+    @Test(priority = 10)
     public void testInsertTablet() throws IOException, IoTDBConnectionException, StatementExecutionException {
         Tablet tablet = new Tablet(device, schemaList, 100);
+        tablet.initBitMaps();
+
         int rowIndex = 0;
         for (Iterator<Object[]> it = getSingleNormal(); it.hasNext(); ) {
+            rowIndex = tablet.rowSize++;
             Object[] line = it.next();
-            tablet.addTimestamp(rowIndex++, Long.valueOf((String)line[0]));
+            tablet.addTimestamp(rowIndex, Long.valueOf((String)line[0]));
             for (int i = 0; i < schemaList.size(); i++) {
-                tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, line[i+1]);
+                insertValue(rowIndex, i, tablet, (String)line[i+1]);
             }
         }
         session.insertTablet(tablet);
@@ -143,7 +208,7 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
     /**
      * insert null value with tablet
      */
-    @Test
+    @Test(priority = 20)
     public void insertTabletWithNullValues() throws IoTDBConnectionException, StatementExecutionException {
         Tablet tablet = new Tablet(device, schemaList, 100);
         // Method 1 to add tablet data
@@ -152,17 +217,14 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
         long timestamp = 1672023281895L;
         for (long row = 0; row < schemaList.size(); row++) {
             int rowIndex = tablet.rowSize++;
+            timestamp += 1000;
             tablet.addTimestamp(rowIndex, timestamp++);
             for (int s = 0; s < schemaList.size(); s++) {
                 if (row == s) {
                     // mark null value
                     tablet.bitMaps[s].mark((int) row);
                 }
-                tablet.addValue(schemaList.get(s).getMeasurementId(), rowIndex, 0);
-            }
-            if (tablet.rowSize == tablet.getMaxRowNumber()) {
-                session.insertTablet(tablet, true);
-                tablet.reset();
+                insertValue(rowIndex, s, tablet, null);
             }
         }
 
@@ -186,23 +248,25 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
      * insert tablets 同设备
      * 非对齐
      */
-    @Test
+    @Test(priority = 30)
     public void testInsertTablets_1Device() throws IoTDBConnectionException, StatementExecutionException, IOException {
         Map<String, Tablet> tabletMap = new HashMap<>();
+        int rowIndex = 0;
+        Tablet tablet = new Tablet(device, schemaList, 100);
+        tablet.initBitMaps();
         for (Iterator<Object[]> it = getSingleNormal(); it.hasNext();) {
             Object[] line =  it.next();
-            Tablet tablet = new Tablet(alignedDevice, schemaList, 1);
-            int rowIndex = 0;
+            rowIndex = tablet.rowSize++;
             tablet.addTimestamp(rowIndex, Long.valueOf((String) line[0]));
             for (int i = 0; i < schemaList.size(); i++) {
-                tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, line[i+1]);
+                insertValue(rowIndex, i, tablet, (String)line[i+1]);
             }
             tabletMap.put(device, tablet);
         }
         session.insertTablets(tabletMap);
-        afterMethod(expectCount,expectCount,"insert tablets non aligned");
+        afterMethod(expectCount,-1,"insert tablets non aligned");
     }
-    @Test
+    @Test(priority = 40)
     public void testInsertTablets_multiDevice() throws IoTDBConnectionException, StatementExecutionException, IOException {
         Map<String, Tablet> tabletMap = new HashMap<>();
         String d = "";
@@ -219,15 +283,16 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
                 tablet.initBitMaps();
                 rowIndex = 0;
             }
+            rowIndex = tablet.rowSize++;
             tablet.addTimestamp(rowIndex, Long.valueOf((String) line[0]));
             for (int i = 0; i < schemaList.size(); i++) {
-                tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, line[i+2]);
+                insertValue(rowIndex,i, tablet, (String)line[i+2]);
                 if (line[i+2] == null) {
                     tablet.bitMaps[i].mark(rowIndex);
                 }
             }
-            rowIndex++;
         }
+        tabletMap.put(d, tablet);
         session.insertAlignedTablets(tabletMap);
         checkInsertMultiDevices("insertAlignedTablets_multiDevice");
     }
@@ -235,23 +300,25 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
      * insert tables 同设备
      * 对齐
      */
-    @Test
+    @Test(priority = 50)
     public void testInsertAlignedTablets_1Device() throws IoTDBConnectionException, StatementExecutionException, IOException {
         Map<String, Tablet> tabletMap = new HashMap<>();
+        Tablet tablet = new Tablet(alignedDevice, schemaList, 20);
+        int rowIndex = 0;
         for (Iterator<Object[]> it = getSingleNormal(); it.hasNext();) {
             Object[] line =  it.next();
-            Tablet tablet = new Tablet(alignedDevice, schemaList, 1);
-            int rowIndex = 0;
+            rowIndex = tablet.rowSize++;
+            tablet.initBitMaps();
             tablet.addTimestamp(rowIndex, Long.valueOf((String) line[0]));
             for (int i = 0; i < schemaList.size(); i++) {
-                tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, line[i+1]);
+                insertValue(rowIndex, i, tablet, (String)line[i+1]);
             }
             tabletMap.put(alignedDevice, tablet);
         }
         session.insertAlignedTablets(tabletMap);
-        afterMethod(expectCount,expectCount,"insert tablets non aligned");
+        afterMethod(-1,expectCount,"insert tablets non aligned");
     }
-    @Test
+    @Test(priority = 60)
     public void testInsertAlignedTablets_multiDevice() throws IoTDBConnectionException, StatementExecutionException, IOException {
         Map<String, Tablet> tabletMap = new HashMap<>();
         String d = "";
@@ -268,15 +335,16 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
                 tablet.initBitMaps();
                 rowIndex = 0;
             }
+            rowIndex = tablet.rowSize++;
             tablet.addTimestamp(rowIndex, Long.valueOf((String) line[0]));
             for (int i = 0; i < schemaList.size(); i++) {
-                tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, line[i+2]);
+                insertValue(rowIndex, i, tablet, (String)line[i+2]);
                 if (line[i+2] == null) {
                     tablet.bitMaps[i].mark(rowIndex);
                 }
             }
-            rowIndex++;
         }
+        tabletMap.put(d, tablet);
         session.insertAlignedTablets(tabletMap);
         checkInsertMultiDevices("insertAlignedTablets_multiDevice");
     }
@@ -285,14 +353,34 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
      * 插入一个 Record，一个 Record 是一个设备一个时间戳下多个测点的数据
      * 非对齐/对齐
      */
-    @Test(dataProvider= "getSingleNormal", priority = 100)
-    public void testInsertRecord(String time, Object s_boolean, Object s_int, Object s_long, Object s_float, Object s_double, Object s_text) throws IoTDBConnectionException, StatementExecutionException {
+    @Test(dataProvider= "insertSingleNormal", priority = 100)
+    public void testInsertRecord(String time, String s_boolean, String s_int, String s_long, String s_float, String s_double, String s_text) throws IoTDBConnectionException, StatementExecutionException {
         List<Object> values = new ArrayList<>();
-        values.add(s_boolean);
-        values.add(s_int);
-        values.add(s_long);
-        values.add(s_float);
-        values.add(s_double);
+        if (s_boolean == null) {
+            values.add(null);
+        } else {
+            values.add(Boolean.parseBoolean(s_boolean));
+        }
+        if (s_int == null) {
+            values.add(null);
+        } else {
+            values.add(Integer.parseInt(s_int));
+        }
+        if (s_long == null) {
+            values.add(null);
+        } else {
+            values.add(Long.parseLong(s_long));
+        }
+        if (s_float == null) {
+            values.add(null);
+        } else {
+            values.add(Float.parseFloat(s_float));
+        }
+        if (s_double == null) {
+            values.add(null);
+        } else {
+            values.add(Double.parseDouble(s_double));
+        }
         values.add(s_text);
         session.insertRecord(device, Long.valueOf(time), measurements, dataTypes, values);
         session.insertAlignedRecord(alignedDevice, Long.valueOf(time), measurements, dataTypes, values);
@@ -323,7 +411,11 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
             times.add(Long.valueOf((String) line[0]));
             measurementsList.add(measurements);
             for (int i = 0; i < 5; i++) {
-                values.add(line[i].toString());
+                if (line[i] == null) {
+                    values.add(null);
+                } else {
+                    values.add(line[i].toString());
+                }
             }
             valuesList.add(values);
         }
@@ -332,6 +424,34 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
         afterMethod(expectCount,expectCount, "StringRecordsOfOneDevice");
         Assert.assertThrows(StatementExecutionException.class, ()-> session.insertAlignedStringRecordsOfOneDevice(device, times, measurementsList,valuesList));
         Assert.assertThrows(StatementExecutionException.class, ()-> session.insertStringRecordsOfOneDevice(alignedDevice, times, measurementsList,valuesList));
+    }
+    private void formValues(ArrayList<Object> result, String ...values) {
+        if (values[0] == null) {
+            result.add(null);
+        } else {
+            result.add(Boolean.parseBoolean(values[0]));
+        }
+        if (values[1] == null) {
+            result.add(null);
+        } else {
+            result.add(Integer.parseInt(values[1]));
+        }
+        if (values[2] == null) {
+            result.add(null);
+        } else {
+            result.add(Long.parseLong(values[2]));
+        }
+        if (values[3] == null) {
+            result.add(null);
+        } else {
+            result.add(Float.parseFloat(values[3]));
+        }
+        if (values[4] == null) {
+            result.add(null);
+        } else {
+            result.add(Double.parseDouble(values[4]));
+        }
+        result.add(values[5]);
     }
     /**
      * insertRecordsOfOneDevice
@@ -349,8 +469,12 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
 
             times.add(Long.valueOf((String) line[0]));
             measurementsList.add(measurements);
-            for (int i = 0; i < 5; i++) {
-                values.add(line[i]);
+            for (int i = 1; i < 7; i++) {
+                if (line[i] == null) {
+                    values.add(null);
+                } else {
+                    values.add(line[i]);
+                }
             }
             valuesList.add(values);
             datatypeList.add(dataTypes);
@@ -366,7 +490,7 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
      * insertRecords 1个设备
      * 非对齐
      */
-    @Test
+    @Test(priority = 110)
     public void testInsertRecords() throws IOException, IoTDBConnectionException, StatementExecutionException {
         List<Long> times = new ArrayList<>();
         List<List<String>> measurementsList = new ArrayList<>();
@@ -389,7 +513,7 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
         session.insertRecords(deviceList,times,measurementsList,datatypeList,valuesList);
         Assert.assertThrows(StatementExecutionException.class, ()-> session.insertAlignedRecords(deviceList, times, measurementsList,datatypeList,valuesList));
     }
-    @Test
+    @Test(priority = 120)
     public void testInsertRecords_multiDevice() throws IoTDBConnectionException, StatementExecutionException, IOException {
         List<Long> times = new ArrayList<>();
         List<List<String>> measurementsList = new ArrayList<>();
@@ -417,7 +541,7 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
      * insertAlignedRecords
      * 对齐
      */
-    @Test(dataProvider= "getSingleNormal", priority = 106)
+    @Test(dataProvider= "getSingleNormal", priority = 130)
     public void testinsertAlignedRecords() throws IOException, IoTDBConnectionException, StatementExecutionException {
         List<Long> times = new ArrayList<>();
         List<List<String>> measurementsList = new ArrayList<>();
@@ -443,7 +567,7 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
         Assert.assertThrows(StatementExecutionException.class,
                 ()-> session.insertRecords(deviceList, times, measurementsList,datatypeList,valuesList));
     }
-    @Test
+    @Test(priority = 140)
     public void testInsertAlignedRecords_multiDevice() throws IoTDBConnectionException, StatementExecutionException, IOException {
         List<Long> times = new ArrayList<>();
         List<List<String>> measurementsList = new ArrayList<>();

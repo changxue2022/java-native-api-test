@@ -39,6 +39,13 @@ public class Tmp extends BaseTestSuite {
     }
 
     @Test
+    public void test82() throws IoTDBConnectionException, StatementExecutionException {
+        List<String> paths=new ArrayList<>();
+
+        paths.add("root.test.single");
+        session.createTimeseriesUsingSchemaTemplate(paths);
+    }
+//    @Test
     public void testTimecho103() throws IoTDBConnectionException, StatementExecutionException, IOException {
         boolean isAligned = true;
         String templateName = "t1";

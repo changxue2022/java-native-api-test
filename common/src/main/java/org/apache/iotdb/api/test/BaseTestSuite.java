@@ -34,16 +34,15 @@ public class BaseTestSuite {
     protected boolean auto_create_schema;
     @BeforeClass
     public void beforeSuite() throws IoTDBConnectionException, IOException {
-        logger.warn("############ BaseTestSuite BeforeClass ##########" );
+//        logger.warn("############ BaseTestSuite BeforeClass ##########" );
         session = PrepareConnection.getSession();
         verbose = Boolean.parseBoolean(ReadConfig.getInstance().getValue("verbose"));
         isAligned = Boolean.parseBoolean(ReadConfig.getInstance().getValue("isAligned"));
         auto_create_schema = Boolean.parseBoolean(ReadConfig.getInstance().getValue("auto_create_schema"));
-        logger.warn("++++++++ session="+session.toString());
     }
     @AfterClass
     public void afterSuie() throws IoTDBConnectionException, StatementExecutionException {
-        logger.warn("############ BaseTestSuite AfterClass ##########" );
+//        logger.warn("############ BaseTestSuite AfterClass ##########" );
         cleanDatabases(verbose);
         cleanTemplates(verbose);
         session.close();

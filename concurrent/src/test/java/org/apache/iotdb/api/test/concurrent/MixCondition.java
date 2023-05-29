@@ -22,6 +22,8 @@ import java.util.StringJoiner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static java.lang.System.out;
+
 public class MixCondition {
     private static List<MeasurementSchema> schemaList;
     private static List<String> hostList = new ArrayList<>(3);
@@ -37,12 +39,14 @@ public class MixCondition {
 
 
     static {
-//        hostList.add("127.0.0.1:6667");
-        hostList.add("iotdb-44:6667");
-        hostList.add("iotdb-45:6667");
-        hostList.add("iotdb-46:6667");
+        hostList.add("127.0.0.1:6667");
+//        hostList.add("iotdb-44:6667");
+//        hostList.add("iotdb-45:6667");
+//        hostList.add("iotdb-46:6667");
     }
     public static void main(String[] args) throws IOException, IoTDBConnectionException, StatementExecutionException {
+        out.println("################");
+        out.println(hostList);
         session = new SessionPool.Builder()
                 .nodeUrls(hostList)
                 .user("root")
@@ -59,14 +63,14 @@ public class MixCondition {
         for (int i = 0; i < 2; i++) {
             paths.add(database + ".device_" + i + ".group");
         }
-        System.out.println(paths);
+        out.println(paths);
         schemaList = createTemplate(session, templateName, 30, isAligned, paths);
         insertData(paths);
         for (int i = 0; i < paths.size(); i++) {
             query(paths.get(i));
         }
-//        testConcurrent_sameNameDiffType();
-        testConcurrent_diffNameDiffType();
+        testConcurrent_sameNameDiffType();
+//        testConcurrent_diffNameDiffType();
         insertData(paths);
         for (int i = 0; i < paths.size(); i++) {
             query(paths.get(i));
@@ -96,8 +100,8 @@ public class MixCondition {
             session.deleteDatabases(databases);
         }
         if (verbose) {
-            System.out.println(databases.toString());
-            System.out.println("drop databases: "+databases.size());
+            out.println(databases.toString());
+            out.println("drop databases: "+databases.size());
         }
     }
     public static void cleanTemplates(boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
@@ -108,7 +112,7 @@ public class MixCondition {
             session.dropSchemaTemplate("`"+String.valueOf(records.next().getFields().get(0))+"`");
         }
         if (verbose) {
-            System.out.println("drop templates:" + count);
+            out.println("drop templates:" + count);
         }
     }
     public static List<MeasurementSchema> createTemplate(SessionPool session, String templateName,
@@ -125,12 +129,12 @@ public class MixCondition {
         }
         session.createSchemaTemplate(template);
         session.setSchemaTemplate(templateName, database);
-        System.out.println(paths);
+        out.println(paths);
         session.createTimeseriesUsingSchemaTemplate(paths);
         SessionDataSetWrapper dataSet = session.executeQueryStatement("show paths using schema template " + templateName);
         SessionDataSet.DataIterator records = dataSet.iterator();
         while(records.next()) {
-            System.out.println(records.getString(1));
+            out.println(records.getString(1));
         }
         return schemaList;
     }
@@ -144,7 +148,7 @@ public class MixCondition {
         pool.shutdown();
         while (true) {//等待所有任务都执行结束
             if (pool.isTerminated()) {//所有的子线程都结束了
-                System.out.printf("创建, 共耗时: %f s ", (System.currentTimeMillis() - startTime) / 1000.0);
+                out.printf("创建, 共耗时: %f s ", (System.currentTimeMillis() - startTime) / 1000.0);
                 break;
             }
         }
@@ -158,7 +162,7 @@ public class MixCondition {
         pool.shutdown();
         while (true) {//等待所有任务都执行结束
             if (pool.isTerminated()) {//所有的子线程都结束了
-                System.out.printf("创建, 共耗时: %f s ", (System.currentTimeMillis() - startTime) / 1000.0);
+                out.printf("创建, 共耗时: %f s ", (System.currentTimeMillis() - startTime) / 1000.0);
                 break;
             }
         }
@@ -173,7 +177,7 @@ public class MixCondition {
         pool.shutdown();
         while (true) {//等待所有任务都执行结束
             if (pool.isTerminated()) {//所有的子线程都结束了
-                System.out.printf("创建, 共耗时: %f s ", (System.currentTimeMillis() - startTime) / 1000.0);
+                out.printf("创建, 共耗时: %f s ", (System.currentTimeMillis() - startTime) / 1000.0);
                 break;
             }
         }
@@ -191,7 +195,7 @@ public class MixCondition {
         pool.shutdown();
         while (true) {//等待所有任务都执行结束
             if (pool.isTerminated()) {//所有的子线程都结束了
-                System.out.printf("创建, 共耗时: %f s ", (System.currentTimeMillis() - startTime) / 1000.0);
+                out.printf("创建, 共耗时: %f s ", (System.currentTimeMillis() - startTime) / 1000.0);
                 break;
             }
         }
@@ -247,7 +251,7 @@ class InsertData implements Runnable {
                 session.insertTablet(tablet);
             }
         } catch (Exception e) {
-            System.out.println(e);
+            out.println(e);
         }
     }
 }
@@ -318,16 +322,16 @@ class QueryClient implements Runnable {
             try {
                 SessionDataSetWrapper dataset = session.executeQueryStatement(sqlList.get(i));
                 SessionDataSet.DataIterator records = dataset.iterator();
-                System.out.println("###############");
-                System.out.println(sqlList.get(i));
-                System.out.println(dataset.getColumnNames());
+                out.println("###############");
+                out.println(sqlList.get(i));
+                out.println(dataset.getColumnNames());
                 while(records.next()) {
                     for (int j = 1; j <= dataset.getColumnNames().size(); j++) {
-                        System.out.printf(records.getString(j)+",");
+                        out.printf(records.getString(j)+",");
                     }
-                    System.out.println();
+                    out.println();
                 }
-                System.out.println("###############");
+                out.println("###############");
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
