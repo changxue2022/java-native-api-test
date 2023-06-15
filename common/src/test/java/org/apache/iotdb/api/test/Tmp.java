@@ -2,6 +2,7 @@ package org.apache.iotdb.api.test;
 
 import org.apache.iotdb.api.test.BaseTestSuite;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
+import org.apache.iotdb.api.test.utils.ReadConfig;
 import org.apache.iotdb.isession.template.Template;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
@@ -16,6 +17,8 @@ import org.testng.annotations.Test;
 import org.testng.log4testng.Logger;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static java.lang.System.out;
@@ -23,8 +26,9 @@ import static java.lang.System.out;
 public class Tmp extends BaseTestSuite {
     private Map<String, Object[]> structureInfo = new LinkedHashMap<>(6);
     Logger logger = Logger.getLogger(Tmp.class);
+
     @BeforeClass
-    public void BeforeClass() {
+    public void BeforeClass() throws IoTDBConnectionException, StatementExecutionException {
         logger.warn("########### Tmp BeforeClass ####");
         structureInfo.put("s_boolean", new Object[]{TSDataType.BOOLEAN, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
         structureInfo.put("s_int", new Object[]{TSDataType.INT32, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
@@ -32,55 +36,22 @@ public class Tmp extends BaseTestSuite {
         structureInfo.put("s_float", new Object[]{TSDataType.FLOAT, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
         structureInfo.put("s_double", new Object[]{TSDataType.DOUBLE, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
         structureInfo.put("s_text", new Object[]{TSDataType.TEXT, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
+
+
     }
     @AfterClass
     public void afterClass () {
         logger.warn("###### Tmp afterClass #####");
     }
 
-    @Test
+//    @Test
     public void test82() throws IoTDBConnectionException, StatementExecutionException {
         List<String> paths=new ArrayList<>();
 
         paths.add("root.test.single");
         session.createTimeseriesUsingSchemaTemplate(paths);
     }
-//    @Test
-    public void testTimecho103() throws IoTDBConnectionException, StatementExecutionException, IOException {
-        boolean isAligned = true;
-        String templateName = "t1";
-        String database = "root.db.factory";
-        String device = database + ".d1";
-        String subDevice = database + ".d1.subd";
 
-        session.createDatabase(database);
-        Template t1 = new Template(templateName, isAligned);
-        structureInfo.forEach((key, value) -> {
-            MeasurementNode mNode =
-                    new MeasurementNode(key, (TSDataType) value[0], (TSEncoding) value[1], (CompressionType) value[2]);
-            try {
-                t1.addToTemplate(mNode);
-            } catch (StatementExecutionException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        session.createSchemaTemplate(t1);
-        getTSCountInTemplate(templateName, verbose);
-        session.setSchemaTemplate(templateName, database);
-        getSetPathsCount(templateName, verbose);
-
-        List<String> paths = new ArrayList<>(2);
-        paths.add(device);
-        paths.add(subDevice);
-        session.createTimeseriesUsingSchemaTemplate(paths);
-        getActivePathsCount(templateName, verbose);
-        checkUsingTemplate(device, verbose);
-        checkUsingTemplate(subDevice, verbose);
-        insertTabletSingle(device, "s_boolean", TSDataType.BOOLEAN, 10, isAligned);
-        insertTabletSingle(subDevice, "s_boolean", TSDataType.BOOLEAN, 10, isAligned);
-
-        deactiveTemplate(templateName, device);
-    }
     // TIMECHODB-124
 //    @Test
     public void test() throws IoTDBConnectionException, StatementExecutionException {
@@ -118,5 +89,13 @@ public class Tmp extends BaseTestSuite {
             getRecordCount(loadNode, verbose);
         }
     }
+
+    @Test
+    public void test3() throws IOException, ParseException {
+        String mydate = "2022-12-31 23:59:56";
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        System.out.println(format.parse(mydate).getTime());
+    }
+
 
 }

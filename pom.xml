@@ -45,6 +45,12 @@
             <version>23.0.0</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.iotdb.api.test</groupId>
+            <artifactId>common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <pluginManagement>
@@ -65,7 +71,7 @@
 <!--                            <suiteXmlFile>${project.build.directory}/src/main/resources/testng.xml</suiteXmlFile>-->
                             <suiteXmlFile>src/main/resources/testng.xml</suiteXmlFile>
                         </suiteXmlFiles>
-                        <parallel>false</parallel>
+                        <parallel>none</parallel>
                         <threadCount>1</threadCount>
                         <testFailureIgnore>true</testFailureIgnore>
                     </configuration>
@@ -76,18 +82,6 @@
                     <artifactId>maven-surefire-report-plugin</artifactId>
                     <version>3.0.0</version>
                 </plugin>
-<!--                <plugin>-->
-<!--                    <groupId>org.apache.maven.plugins</groupId>-->
-<!--                    <artifactId>maven-jar-plugin</artifactId>-->
-<!--                    <version>3.2.2</version>-->
-<!--                    <executions>-->
-<!--                        <execution>-->
-<!--                            <goals>-->
-<!--                                <goal>test-jar</goal>-->
-<!--                            </goals>-->
-<!--                        </execution>-->
-<!--                    </executions>-->
-<!--                </plugin>-->
             </plugins>
         </pluginManagement>
     </build>

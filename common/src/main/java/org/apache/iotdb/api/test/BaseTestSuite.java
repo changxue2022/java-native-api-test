@@ -19,6 +19,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.log4testng.Logger;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
@@ -32,21 +34,27 @@ public class BaseTestSuite {
     protected boolean verbose;
     // 自动创建元数据开关。 dynamic module. 动态模版相关
     protected boolean auto_create_schema;
+    private long baseTime;
     @BeforeClass
-    public void beforeSuite() throws IoTDBConnectionException, IOException {
+    public void beforeSuite() throws IoTDBConnectionException, IOException, ParseException {
 //        logger.warn("############ BaseTestSuite BeforeClass ##########" );
         session = PrepareConnection.getSession();
         verbose = Boolean.parseBoolean(ReadConfig.getInstance().getValue("verbose"));
         isAligned = Boolean.parseBoolean(ReadConfig.getInstance().getValue("isAligned"));
         auto_create_schema = Boolean.parseBoolean(ReadConfig.getInstance().getValue("auto_create_schema"));
+        baseTime = parseDate();
     }
     @AfterClass
     public void afterSuie() throws IoTDBConnectionException, StatementExecutionException {
 //        logger.warn("############ BaseTestSuite AfterClass ##########" );
-        cleanDatabases(verbose);
-        cleanTemplates(verbose);
+//        cleanDatabases(verbose);
+//        cleanTemplates(verbose);
         session.close();
         session = null;
+    }
+    private long parseDate() throws IOException, ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return format.parse(ReadConfig.getInstance().getValue("time_base")).getTime();
     }
     public boolean checkStroageGroupExists(String storageGroupId) throws IoTDBConnectionException, StatementExecutionException {
         SessionDataSet records = session.executeQueryStatement("show storage group "+storageGroupId);
@@ -209,14 +217,14 @@ public class BaseTestSuite {
         tsDataTypeList.add(tsDataType);
         tsNames.add(tsName);
         if (alias == null) {
-            insertRecordMulti(device, tsNames, tsDataTypeList, 100, isAligned, null);
+            insertRecordMulti(device, tsNames, tsDataTypeList, baseTime, isAligned, null);
         } else {
             List<String> aliasList = new ArrayList<>(1);
             aliasList.add(alias);
-            insertRecordMulti(device, tsNames, tsDataTypeList, 100, isAligned, aliasList);
+            insertRecordMulti(device, tsNames, tsDataTypeList, baseTime, isAligned, aliasList);
         }
     }
-    public void insertRecordMulti(String device, List<String> tsNames, List<TSDataType> tsDataTypeList, int timestamp, boolean isAligned, List<String> aliasList) throws IoTDBConnectionException, StatementExecutionException {
+    public void insertRecordMulti(String device, List<String> tsNames, List<TSDataType> tsDataTypeList, long timestamp, boolean isAligned, List<String> aliasList) throws IoTDBConnectionException, StatementExecutionException {
 //        System.out.println("######## insertRecordMulti device = "+device);
         List<Object> values = new ArrayList<>(tsDataTypeList.size());
         for (int i = 0; i < tsDataTypeList.size(); i++) {
@@ -272,11 +280,13 @@ public class BaseTestSuite {
         }
         Tablet tablet = new Tablet(device, schemaList, insertCount);
         int rowIndex = 0;
+        long timestamp = baseTime;
         for (int row = 0; row < insertCount; row++) {
             rowIndex = tablet.rowSize++;
+            timestamp += 3600000; //+1小时
 //            System.out.println("row="+row+" rowIndex="+rowIndex);
-//            tablet.addTimestamp(rowIndex, System.currentTimeMillis());
-            tablet.addTimestamp(rowIndex, row);
+            tablet.addTimestamp(rowIndex, timestamp);
+//            tablet.addTimestamp(rowIndex, row);
             for (int i = 0; i < schemaList.size(); i++) {
                 switch(schemaList.get(i).getType()) {
                     case BOOLEAN:
