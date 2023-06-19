@@ -14,7 +14,7 @@
         <dependency>
             <groupId>org.apache.iotdb.api.test</groupId>
             <artifactId>common</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.3.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
