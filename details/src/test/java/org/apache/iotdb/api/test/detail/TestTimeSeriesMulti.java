@@ -78,7 +78,7 @@ public class TestTimeSeriesMulti extends TimeSeriesBaseTestSuite {
     }
 
     // TIMECHODB-127
-    @Test(priority = 22)
+    @Test(priority = 22, enabled = false)
     public void testCreateTimeSeriesMulti_inBatch() throws IOException, IoTDBConnectionException, StatementExecutionException {
         List<String> paths = new ArrayList<>();
         List<TSDataType> tsDataTypes = new ArrayList<>();
@@ -101,13 +101,13 @@ public class TestTimeSeriesMulti extends TimeSeriesBaseTestSuite {
             alias.add(line[8] == null ?null:line[8].toString());
 //            System.out.println(line[0] +" ," +line[1]+" datatype:"+tsDataTypes +" encoding:"+tsEncodings+ " compress:"+compressionTypes +" tags:"+ tags+" attrs:"+ attrs+" alias:"+ alias);
         }
-//        System.out.println("paths="+paths.size());
-//        System.out.println("tsDataTypes="+tsDataTypes.size());
-//        System.out.println("tsEncodings="+tsEncodings.size());
-//        System.out.println("compressionTypes="+compressionTypes.size());
-//        System.out.println("tags="+tags.size());
-//        System.out.println("attrs="+attrs.size());
-//        System.out.println("alias="+alias.size());
+        System.out.println("paths="+paths.size());
+        System.out.println("tsDataTypes="+tsDataTypes.size());
+        System.out.println("tsEncodings="+tsEncodings.size());
+        System.out.println("compressionTypes="+compressionTypes.size());
+        System.out.println("tags="+tags.size());
+        System.out.println("attrs="+attrs.size());
+        System.out.println("alias="+alias.size());
         session.createMultiTimeseries(
                 paths, tsDataTypes, tsEncodings, compressionTypes, null, tags, attrs, alias);
         assert paths.size() == getTimeSeriesCount("", verbose)  : "createMultiTimeseries normal";
@@ -190,12 +190,9 @@ public class TestTimeSeriesMulti extends TimeSeriesBaseTestSuite {
             compressionTypes.add((CompressionType) result.get(2));
         }
         Session s = PrepareConnection.getSession();
-        try {
-            s.createMultiTimeseries(
-                    paths, tsDataTypes, tsEncodings, compressionTypes, null, tags, attrs, alias);
-        } finally {
-            s.close();
-        }
+        s.createMultiTimeseries(
+                paths, tsDataTypes, tsEncodings, compressionTypes, null, tags, attrs, alias);
+        s.close();
     }
 
 

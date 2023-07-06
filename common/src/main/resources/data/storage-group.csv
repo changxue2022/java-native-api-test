@@ -204,7 +204,7 @@ root.USING,key word
 root.VALUES,key word
 root.VERIFY,key word
 root.VERSION,key word
-root.WATERMARK_EMBEDDING,key word
+#root.WATERMARK_EMBEDDING,key word #TIMECHODB-123
 root.WHERE,key word
 root.WITH,key word
 root.WITHOUT,key word

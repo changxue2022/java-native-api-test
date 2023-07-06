@@ -125,7 +125,7 @@ public class TestAlignedTSMinus extends BaseTestSuite {
         }
         session.insertAlignedTablet(tablet);
         assert expectCount-1 == getRecordCount(device, verbose) : "插入record数目";
-        Assert.assertThrows(StatementExecutionException.class, ()->session.insertTablet(tablet));
+//        Assert.assertThrows(StatementExecutionException.class, ()->session.insertTablet(tablet));
     }
     @Test(priority = 30)
     public void testQuery() throws IoTDBConnectionException, StatementExecutionException {

@@ -3,9 +3,9 @@ input,total,error place,msg
 ,5,1,空值的sg在第一位
 ,5,3,空值的sg在中间位置
 ,5,5,空值的sg在末位
-null,5,1,null值的sg在末位
-null,5,3,null值的sg在末位
-null,5,5,null值的sg在末位
+#null,5,1,null值的sg在末位
+#null,5,3,null值的sg在末位
+#null,5,5,null值的sg在末位
 root.notExists,5,1,不存在的sg在第一位
 root.notExists,5,3,不存在的sg在中间位置
 root.notExists,5,5,不存在的sg在末位

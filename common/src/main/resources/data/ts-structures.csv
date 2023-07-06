@@ -29,11 +29,6 @@ int,GORILLA,SNAPPY,int Gorilla SNAPPY,27
 int,GORILLA,GZIP,int Gorilla GZIP,28
 int,GORILLA,LZ4,int Gorilla LZ4,29
 int,GORILLA,ZSTD,int Gorilla ZSTD,30
-int,FREQ,UNCOMPRESSED,int Freq UNCOMPRESSED,31
-int,FREQ,SNAPPY,int Freq SNAPPY,32
-int,FREQ,GZIP,int Freq GZIP,33
-int,FREQ,LZ4,int Freq LZ4,34
-int,FREQ,ZSTD,int Freq ZSTD,35
 int,ZIGZAG,UNCOMPRESSED,int Zigzag UNCOMPRESSED,36
 int,ZIGZAG,SNAPPY,int Zigzag SNAPPY,37
 int,ZIGZAG,GZIP,int Zigzag GZIP,38
@@ -59,11 +54,6 @@ long,GORILLA,SNAPPY,long Gorilla SNAPPY,57
 long,GORILLA,GZIP,long Gorilla GZIP,58
 long,GORILLA,LZ4,long Gorilla LZ4,59
 long,GORILLA,ZSTD,long Gorilla ZSTD,60
-long,FREQ,UNCOMPRESSED,long Freq UNCOMPRESSED,61
-long,FREQ,SNAPPY,long Freq SNAPPY,62
-long,FREQ,GZIP,long Freq GZIP,63
-long,FREQ,LZ4,long Freq LZ4,64
-long,FREQ,ZSTD,long Freq ZSTD,65
 long,ZIGZAG,UNCOMPRESSED,long Zigzag UNCOMPRESSED,66
 long,ZIGZAG,SNAPPY,long Zigzag SNAPPY,67
 long,ZIGZAG,GZIP,long Zigzag GZIP,68
@@ -89,11 +79,6 @@ float,GORILLA,SNAPPY,float Gorilla SNAPPY,87
 float,GORILLA,GZIP,float Gorilla GZIP,88
 float,GORILLA,LZ4,float Gorilla LZ4,89
 float,GORILLA,ZSTD,float Gorilla ZSTD,90
-float,FREQ,UNCOMPRESSED,float Freq UNCOMPRESSED,91
-float,FREQ,SNAPPY,float Freq SNAPPY,92
-float,FREQ,GZIP,float Freq GZIP,93
-float,FREQ,LZ4,float Freq LZ4,94
-float,FREQ,ZSTD,float Freq ZSTD,95
 double,PLAIN,UNCOMPRESSED,double plain UNCOMPRESSED,96
 double,PLAIN,SNAPPY,double plain SNAPPY,97
 double,PLAIN,GZIP,double plain GZIP,98
@@ -114,11 +99,6 @@ double,GORILLA,SNAPPY,double Gorilla SNAPPY,112
 double,GORILLA,GZIP,double Gorilla GZIP,113
 double,GORILLA,LZ4,double Gorilla LZ4,114
 double,GORILLA,ZSTD,double Gorilla ZSTD,115
-double,FREQ,UNCOMPRESSED,double Freq UNCOMPRESSED,116
-double,FREQ,SNAPPY,double Freq SNAPPY,117
-double,FREQ,GZIP,double Freq GZIP,118
-double,FREQ,LZ4,double Freq LZ4,119
-double,FREQ,ZSTD,double Freq ZSTD,120
 text,PLAIN,UNCOMPRESSED,text plain UNCOMPRESSED,121
 text,PLAIN,SNAPPY,text plain SNAPPY,122
 text,PLAIN,GZIP,text plain GZIP,123

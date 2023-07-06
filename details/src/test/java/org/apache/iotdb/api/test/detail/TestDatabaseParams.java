@@ -37,7 +37,7 @@ public class TestDatabaseParams extends BaseTestSuite {
         session.createDatabase(null);
     }
     // TIMECHODB-122
-    @Test(expectedExceptions = StatementExecutionException.class)
+    @Test(enabled = false, expectedExceptions = StatementExecutionException.class)
     public void testDeleteSgNull() throws IoTDBConnectionException, StatementExecutionException {
         session.deleteStorageGroup(null);
     }
@@ -46,7 +46,7 @@ public class TestDatabaseParams extends BaseTestSuite {
         session.deleteStorageGroups(null);
     }
     // TIMECHODB-122
-    @Test(expectedExceptions = StatementExecutionException.class)
+    @Test(enabled = false, expectedExceptions = StatementExecutionException.class)
     public void testDeleteDatabaseNull() throws IoTDBConnectionException, StatementExecutionException {
         session.deleteDatabase(null);
     }

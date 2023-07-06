@@ -34,7 +34,7 @@ public class BaseTestSuite {
     protected boolean verbose;
     // 自动创建元数据开关。 dynamic module. 动态模版相关
     protected boolean auto_create_schema;
-    private long baseTime;
+    protected long baseTime;
     @BeforeClass
     public void beforeSuite() throws IoTDBConnectionException, IOException, ParseException {
 //        logger.warn("############ BaseTestSuite BeforeClass ##########" );
@@ -47,8 +47,8 @@ public class BaseTestSuite {
     @AfterClass
     public void afterSuie() throws IoTDBConnectionException, StatementExecutionException {
 //        logger.warn("############ BaseTestSuite AfterClass ##########" );
-//        cleanDatabases(verbose);
-//        cleanTemplates(verbose);
+        cleanDatabases(verbose);
+        cleanTemplates(verbose);
         session.close();
         session = null;
     }
@@ -131,10 +131,19 @@ public class BaseTestSuite {
     public void checkQueryResult(String sql, Object expectValue) throws IoTDBConnectionException, StatementExecutionException {
         logger.debug("sql="+sql);
         SessionDataSet dataSet = session.executeQueryStatement(sql);
-        while (dataSet.hasNext()) {
-            RowRecord records = dataSet.next();
-            String actualValue = records.getFields().get(0).toString();
-            assert actualValue.equals(expectValue.toString()): "确认结果"+dataSet.getColumnTypes().get(0)+"值: expect "+expectValue+", actual "+actualValue;
+        if (expectValue instanceof Number) {
+            Double expect = Double.valueOf(expectValue.toString());
+            while (dataSet.hasNext()) {
+                RowRecord records = dataSet.next();
+                Double actualValue = Double.valueOf(records.getFields().get(0).toString());
+                assert actualValue.equals(expect) : "确认结果" + dataSet.getColumnTypes().get(0) + "值: expect " + expectValue + ", actual " + records.getFields().get(0).toString();
+            }
+        } else {
+            while (dataSet.hasNext()) {
+                RowRecord records = dataSet.next();
+                String actualValue = records.getFields().get(0).toString();
+                assert actualValue.equals(expectValue.toString()) : "确认结果" + dataSet.getColumnTypes().get(0) + "值: expect " + expectValue + ", actual " + actualValue;
+            }
         }
     }
 

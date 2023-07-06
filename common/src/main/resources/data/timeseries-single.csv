@@ -29,11 +29,6 @@ root.sg.d1.ts1,int17,int,GORILLA,SNAPPY,m:null,m:null,m:null,int_Gorilla_SNAPPY,
 root.sg.d1.ts1,int18,int,GORILLA,GZIP,m:null,m:null,m:null,int_Gorilla_GZIP,int Gorilla GZIP
 root.sg.d1.ts1,int19,int,GORILLA,LZ4,m:null,m:null,m:null,int_Gorilla_LZ4,int Gorilla LZ4
 root.sg.d1.ts1,int20,int,GORILLA,ZSTD,m:null,m:null,m:null,int_Gorilla_ZSTD,int Gorilla ZSTD
-root.sg.d1.ts1,int21,int,FREQ,UNCOMPRESSED,m:null,m:null,m:null,int_Freq_UNCOMPRESSED,int Freq UNCOMPRESSED
-root.sg.d1.ts1,int22,int,FREQ,SNAPPY,m:null,m:null,m:null,int_Freq_SNAPPY,int Freq SNAPPY
-root.sg.d1.ts1,int23,int,FREQ,GZIP,m:null,m:null,m:null,int_Freq_GZIP,int Freq GZIP
-root.sg.d1.ts1,int24,int,FREQ,LZ4,m:null,m:null,m:null,int_Freq_LZ4,int Freq LZ4
-root.sg.d1.ts1,int25,int,FREQ,ZSTD,m:null,m:null,m:null,int_Freq_ZSTD,int Freq ZSTD
 root.sg.d1.ts1,int26,int,ZIGZAG,UNCOMPRESSED,m:null,m:null,m:null,int_Zigzag_UNCOMPRESSED,int Zigzag UNCOMPRESSED
 root.sg.d1.ts1,int27,int,ZIGZAG,SNAPPY,m:null,m:null,m:null,int_Zigzag_SNAPPY,int Zigzag SNAPPY
 root.sg.d1.ts1,int28,int,ZIGZAG,GZIP,m:null,m:null,m:null,int_Zigzag_GZIP,int Zigzag GZIP
@@ -59,11 +54,6 @@ root.sg.d1.ts1,long17,long,GORILLA,SNAPPY,m:null,m:null,m:null,long_Gorilla_SNAP
 root.sg.d1.ts1,long18,long,GORILLA,GZIP,m:null,m:null,m:null,long_Gorilla_GZIP,long Gorilla GZIP
 root.sg.d1.ts1,long19,long,GORILLA,LZ4,m:null,m:null,m:null,long_Gorilla_LZ4,long Gorilla LZ4
 root.sg.d1.ts1,long20,long,GORILLA,ZSTD,m:null,m:null,m:null,long_Gorilla_ZSTD,long Gorilla ZSTD
-root.sg.d1.ts1,long21,long,FREQ,UNCOMPRESSED,m:null,m:null,m:null,long_Freq_UNCOMPRESSED,long Freq UNCOMPRESSED
-root.sg.d1.ts1,long22,long,FREQ,SNAPPY,m:null,m:null,m:null,long_Freq_SNAPPY,long Freq SNAPPY
-root.sg.d1.ts1,long23,long,FREQ,GZIP,m:null,m:null,m:null,long_Freq_GZIP,long Freq GZIP
-root.sg.d1.ts1,long24,long,FREQ,LZ4,m:null,m:null,m:null,long_Freq_LZ4,long Freq LZ4
-root.sg.d1.ts1,long25,long,FREQ,ZSTD,m:null,m:null,m:null,long_Freq_ZSTD,long Freq ZSTD
 root.sg.d1.ts1,long26,long,ZIGZAG,UNCOMPRESSED,m:null,m:null,m:null,long_Zigzag_UNCOMPRESSED,long Zigzag UNCOMPRESSED
 root.sg.d1.ts1,long27,long,ZIGZAG,SNAPPY,m:null,m:null,m:null,long_Zigzag_SNAPPY,long Zigzag SNAPPY
 root.sg.d1.ts1,long28,long,ZIGZAG,GZIP,m:null,m:null,m:null,long_Zigzag_GZIP,long Zigzag GZIP
@@ -89,11 +79,6 @@ root.sg.d1.ts1,float17,float,GORILLA,SNAPPY,m:null,m:null,m:null,float_Gorilla_S
 root.sg.d1.ts1,float18,float,GORILLA,GZIP,m:null,m:null,m:null,float_Gorilla_GZIP,float Gorilla GZIP
 root.sg.d1.ts1,float19,float,GORILLA,LZ4,m:null,m:null,m:null,float_Gorilla_LZ4,float Gorilla LZ4
 root.sg.d1.ts1,float20,float,GORILLA,ZSTD,m:null,m:null,m:null,float_Gorilla_ZSTD,float Gorilla ZSTD
-root.sg.d1.ts1,float21,float,FREQ,UNCOMPRESSED,m:null,m:null,m:null,float_Freq_UNCOMPRESSED,float Freq UNCOMPRESSED
-root.sg.d1.ts1,float22,float,FREQ,SNAPPY,m:null,m:null,m:null,float_Freq_SNAPPY,float Freq SNAPPY
-root.sg.d1.ts1,float23,float,FREQ,GZIP,m:null,m:null,m:null,float_Freq_GZIP,float Freq GZIP
-root.sg.d1.ts1,float24,float,FREQ,LZ4,m:null,m:null,m:null,float_Freq_LZ4,float Freq LZ4
-root.sg.d1.ts1,float25,float,FREQ,ZSTD,m:null,m:null,m:null,float_Freq_ZSTD,float Freq ZSTD
 root.sg.d1.ts1,double,double,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,double_plain_UNCOMPRESSED,double plain UNCOMPRESSED
 root.sg.d1.ts1,double2,double,PLAIN,SNAPPY,m:null,m:null,m:null,double_plain_SNAPPY,double plain SNAPPY
 root.sg.d1.ts1,double3,double,PLAIN,GZIP,m:null,m:null,m:null,double_plain_GZIP,double plain GZIP
@@ -114,11 +99,6 @@ root.sg.d1.ts1,double17,double,GORILLA,SNAPPY,m:null,m:null,m:null,double_Gorill
 root.sg.d1.ts1,double18,double,GORILLA,GZIP,m:null,m:null,m:null,double_Gorilla_GZIP,double Gorilla GZIP
 root.sg.d1.ts1,double19,double,GORILLA,LZ4,m:null,m:null,m:null,double_Gorilla_LZ4,double Gorilla LZ4
 root.sg.d1.ts1,double20,double,GORILLA,ZSTD,m:null,m:null,m:null,double_Gorilla_ZSTD,double Gorilla ZSTD
-root.sg.d1.ts1,double21,double,FREQ,UNCOMPRESSED,m:null,m:null,m:null,double_Freq_UNCOMPRESSED,double Freq UNCOMPRESSED
-root.sg.d1.ts1,double22,double,FREQ,SNAPPY,m:null,m:null,m:null,double_Freq_SNAPPY,double Freq SNAPPY
-root.sg.d1.ts1,double23,double,FREQ,GZIP,m:null,m:null,m:null,double_Freq_GZIP,double Freq GZIP
-root.sg.d1.ts1,double24,double,FREQ,LZ4,m:null,m:null,m:null,double_Freq_LZ4,double Freq LZ4
-root.sg.d1.ts1,double25,double,FREQ,ZSTD,m:null,m:null,m:null,double_Freq_ZSTD,double Freq ZSTD
 root.sg.d1.ts1,text,text,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,text_plain_UNCOMPRESSED,text plain UNCOMPRESSED
 root.sg.d1.ts1,text2,text,PLAIN,SNAPPY,m:null,m:null,m:null,text_plain_SNAPPY,text plain SNAPPY
 root.sg.d1.ts1,text3,text,PLAIN,GZIP,m:null,m:null,m:null,text_plain_GZIP,text plain GZIP

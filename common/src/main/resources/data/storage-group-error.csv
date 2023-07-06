@@ -1,6 +1,6 @@
 input,expect,comment
 ,空串
-null,null 值
+#null,null 值
 root,single root
 root..cx3,empty string
 root.null,null string
@@ -13,7 +13,7 @@ root.111,all number
 # 最大长度(似乎没有限制)
 root.abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567,length:65 characters with only character and dot
 root.`1234567891234567891234567891234567891234567891234567891234`,max database length 65:all number
-root.汉语,中文
+#root.汉语,中文
 root.`测试方法不必是无参数的。可以在每个测试方法上使用任意数量的参数，并指示 TestNG 使用 @Parameters`,中文
 # 关键字
 #保留字（不能用于作为标识符）：

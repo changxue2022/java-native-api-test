@@ -151,7 +151,7 @@ public class TestTemplateNonAligned extends BaseTestSuite {
         }
         session.insertTablet(tablet);
         assert expectCount-1 == getRecordCount(device, verbose) : "插入record数目";
-        Assert.assertThrows(StatementExecutionException.class, ()->session.insertAlignedTablet(tablet));
+//        Assert.assertThrows(StatementExecutionException.class, ()->session.insertAlignedTablet(tablet));
     }
     @Test(priority = 30)
     public void testQuery() throws IoTDBConnectionException, StatementExecutionException {

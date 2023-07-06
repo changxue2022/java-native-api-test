@@ -129,9 +129,9 @@ public class TestOrdinary extends BaseTestSuite {
         });
         assert expectCount == getTSCountInTemplate(templateName, verbose) : "增加模版列：再次增加同名失败";
         Assert.assertThrows(StatementExecutionException.class, ()->{
-            int i=111;
-            addTSIntoTemplate(templateName, tsPrefix+i, (TSDataType) structures.get(i).get(0),
-                    (TSEncoding) structures.get(i).get(1), (CompressionType) structures.get(i).get(2), null);
+            int i=100;
+            addTSIntoTemplate(templateName, tsPrefix+i, (TSDataType) structures.get(1).get(0),
+                    (TSEncoding) structures.get(1).get(1), (CompressionType) structures.get(1).get(2), null);
         });
         assert expectCount == getTSCountInTemplate(templateName, verbose) : "增加不同类型同名模版列：失败";
     }

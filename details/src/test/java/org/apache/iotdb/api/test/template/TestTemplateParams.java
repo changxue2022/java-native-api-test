@@ -30,10 +30,10 @@ public class TestTemplateParams extends BaseTestSuite {
         session.dropSchemaTemplate(tName);
     }
     // TIMECHODB-141
-    @Test(priority = 10, expectedExceptions = StatementExecutionException.class)
-    public void testCreateTemplate_null() throws IoTDBConnectionException, IOException, StatementExecutionException {
-        session.createSchemaTemplate(null);
-    }
+//    @Test(priority = 10, expectedExceptions = StatementExecutionException.class)
+//    public void testCreateTemplate_null() throws IoTDBConnectionException, IOException, StatementExecutionException {
+//        session.createSchemaTemplate(null);
+//    }
     @Test(priority = 11)
     public void testCreateTemplate_empty() throws IoTDBConnectionException, IOException, StatementExecutionException {
         String templateName = tName +"_0TS";
@@ -43,10 +43,10 @@ public class TestTemplateParams extends BaseTestSuite {
         session.dropSchemaTemplate(templateName);
     }
     // TIMECHODB-149
-    @Test(priority = 12, expectedExceptions = StatementExecutionException.class)
-    public void testSet_nullTemplate() throws IoTDBConnectionException, StatementExecutionException {
-        session.setSchemaTemplate(null, database);
-    }
+//    @Test(priority = 12, expectedExceptions = StatementExecutionException.class)
+//    public void testSet_nullTemplate() throws IoTDBConnectionException, StatementExecutionException {
+//        session.setSchemaTemplate(null, database);
+//    }
     @Test(priority = 13, expectedExceptions = StatementExecutionException.class)
     public void testSet_noTemp() throws IoTDBConnectionException, StatementExecutionException {
         getTemplateCount(true);

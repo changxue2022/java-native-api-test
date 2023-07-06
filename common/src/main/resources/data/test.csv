@@ -1,4 +1,0 @@
-input,expect,comment
-tom,\&\\t\,OK,normal case
-jerry,error,err case
-kk,time:Ok|age:33,map test

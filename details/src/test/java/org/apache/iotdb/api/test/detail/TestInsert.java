@@ -480,7 +480,7 @@ public class TestInsert extends BaseTestSuite {
      * insertAlignedRecords
      * 对齐
      */
-    @Test(dataProvider= "getSingleNormal", priority = 126)
+    @Test(priority = 126)
     public void testinsertAlignedRecords() throws IOException, IoTDBConnectionException, StatementExecutionException {
         List<Long> times = new ArrayList<>();
         List<List<String>> measurementsList = new ArrayList<>();

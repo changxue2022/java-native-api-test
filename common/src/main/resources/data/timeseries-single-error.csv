@@ -86,3 +86,23 @@ root.error.d1.alias6,long,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,汉语是�
 root.error.d1.alias7,long,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abc,Alias:65英文数字
 root.error.d1,int,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,parent_ts,parent_ts child ts
 root.error.d1.props1,int,PLAIN,UNCOMPRESSED,m:props:2,m:null,m:null,contain_props,contain 1 property error
+root.sg.d1.ts1,int21,int,FREQ,UNCOMPRESSED,m:null,m:null,m:null,int_Freq_UNCOMPRESSED,int Freq UNCOMPRESSED
+root.sg.d1.ts1,int22,int,FREQ,SNAPPY,m:null,m:null,m:null,int_Freq_SNAPPY,int Freq SNAPPY
+root.sg.d1.ts1,int23,int,FREQ,GZIP,m:null,m:null,m:null,int_Freq_GZIP,int Freq GZIP
+root.sg.d1.ts1,int24,int,FREQ,LZ4,m:null,m:null,m:null,int_Freq_LZ4,int Freq LZ4
+root.sg.d1.ts1,int25,int,FREQ,ZSTD,m:null,m:null,m:null,int_Freq_ZSTD,int Freq ZSTD
+root.sg.d1.ts1,long21,long,FREQ,UNCOMPRESSED,m:null,m:null,m:null,long_Freq_UNCOMPRESSED,long Freq UNCOMPRESSED
+root.sg.d1.ts1,long22,long,FREQ,SNAPPY,m:null,m:null,m:null,long_Freq_SNAPPY,long Freq SNAPPY
+root.sg.d1.ts1,long23,long,FREQ,GZIP,m:null,m:null,m:null,long_Freq_GZIP,long Freq GZIP
+root.sg.d1.ts1,long24,long,FREQ,LZ4,m:null,m:null,m:null,long_Freq_LZ4,long Freq LZ4
+root.sg.d1.ts1,long25,long,FREQ,ZSTD,m:null,m:null,m:null,long_Freq_ZSTD,long Freq ZSTD
+root.sg.d1.ts1,float21,float,FREQ,UNCOMPRESSED,m:null,m:null,m:null,float_Freq_UNCOMPRESSED,float Freq UNCOMPRESSED
+root.sg.d1.ts1,float22,float,FREQ,SNAPPY,m:null,m:null,m:null,float_Freq_SNAPPY,float Freq SNAPPY
+root.sg.d1.ts1,float23,float,FREQ,GZIP,m:null,m:null,m:null,float_Freq_GZIP,float Freq GZIP
+root.sg.d1.ts1,float24,float,FREQ,LZ4,m:null,m:null,m:null,float_Freq_LZ4,float Freq LZ4
+root.sg.d1.ts1,float25,float,FREQ,ZSTD,m:null,m:null,m:null,float_Freq_ZSTD,float Freq ZSTD
+root.sg.d1.ts1,double21,double,FREQ,UNCOMPRESSED,m:null,m:null,m:null,double_Freq_UNCOMPRESSED,double Freq UNCOMPRESSED
+root.sg.d1.ts1,double22,double,FREQ,SNAPPY,m:null,m:null,m:null,double_Freq_SNAPPY,double Freq SNAPPY
+root.sg.d1.ts1,double23,double,FREQ,GZIP,m:null,m:null,m:null,double_Freq_GZIP,double Freq GZIP
+root.sg.d1.ts1,double24,double,FREQ,LZ4,m:null,m:null,m:null,double_Freq_LZ4,double Freq LZ4
+root.sg.d1.ts1,double25,double,FREQ,ZSTD,m:null,m:null,m:null,double_Freq_ZSTD,double Freq ZSTD

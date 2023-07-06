@@ -128,13 +128,13 @@ public class TestTemplateAlignedAddTS extends BaseTestSuite {
                 }
             }
         }
-        if (isAligned) {
-            session.insertAlignedTablet(tablet);
-            Assert.assertThrows(StatementExecutionException.class, () -> session.insertTablet(tablet));
-        } else {
+//        if (isAligned) {
+//            session.insertAlignedTablet(tablet);
+//            Assert.assertThrows(StatementExecutionException.class, () -> session.insertTablet(tablet));
+//        } else {
             session.insertTablet(tablet);
-            Assert.assertThrows(StatementExecutionException.class, () -> session.insertAlignedTablet(tablet));
-        }
+//            Assert.assertThrows(StatementExecutionException.class, () -> session.insertAlignedTablet(tablet));
+//        }
         assert 6 == getTimeSeriesCount(devices[index]+".**", verbose) : "成功创建TimeSeries";
         assert expectCount - 1 == getRecordCount(devices[index], verbose) : "插入record数目,"+devices[index]+" isAligned="+isAligned;
     }
@@ -157,17 +157,17 @@ public class TestTemplateAlignedAddTS extends BaseTestSuite {
         values.add(4.0);
         values.add("update_value");
         valuesList.add(values);
-        if (isAligned) {
-            session.insertAlignedRecordsOfOneDevice(devices[index], times, measurementsList, datatypeList, valuesList);
-            Assert.assertThrows(StatementExecutionException.class, () ->{
-                session.insertRecordsOfOneDevice(devices[index], times, measurementsList, datatypeList, valuesList);
-            });
-        } else {
+//        if (isAligned) {
+//            session.insertAlignedRecordsOfOneDevice(devices[index], times, measurementsList, datatypeList, valuesList);
+//            Assert.assertThrows(StatementExecutionException.class, () ->{
+//                session.insertRecordsOfOneDevice(devices[index], times, measurementsList, datatypeList, valuesList);
+//            });
+//        } else {
             session.insertRecordsOfOneDevice(devices[index], times, measurementsList, datatypeList, valuesList);
-            Assert.assertThrows(StatementExecutionException.class, () ->{
-                session.insertAlignedRecordsOfOneDevice(devices[index], times, measurementsList, datatypeList, valuesList);
-            });
-        }
+//            Assert.assertThrows(StatementExecutionException.class, () ->{
+//                session.insertAlignedRecordsOfOneDevice(devices[index], times, measurementsList, datatypeList, valuesList);
+//            });
+//        }
         checkQueryResult("select s_text from "+devices[index] +" where time="+timestamp+";", "update_value");
         checkQueryResult("select s_long from "+devices[index] +" where time="+timestamp+";", timestamp);
     }

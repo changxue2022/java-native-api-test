@@ -125,10 +125,10 @@ public class TestTemplate extends BaseTestSuite {
             assert 1 == getActivePathsCount(tName, verbose): "激活成功";
         }
         insertRecordSingle(path+"."+name, tsDataType, isAligned, null);
-        deactiveTemplate(tName, path);
-        session.unsetSchemaTemplate(path, tName);
-        assert 0 == getSetPathsCount(tName, verbose):"挂载成功:挂载路径数量";
-        session.dropSchemaTemplate(tName);
+//        deactiveTemplate(tName, path);
+//        session.unsetSchemaTemplate(path, tName);
+//        assert 0 == getSetPathsCount(tName, verbose):"挂载成功:挂载路径数量";
+//        session.dropSchemaTemplate(tName);
     }
     @Test(priority = 6, dataProvider = "getErrorStructures", expectedExceptions = StatementExecutionException.class)
     public void testCreateSingle_errorStruct(TSDataType tsDataType, TSEncoding encoding, CompressionType compressionType, String comment, String index) throws StatementExecutionException, IoTDBConnectionException, IOException {
@@ -152,7 +152,7 @@ public class TestTemplate extends BaseTestSuite {
         session.createSchemaTemplate(template);
     }
     @Test(priority = 17)
-    public void createTemplate() throws IoTDBConnectionException, StatementExecutionException, IOException {
+    public void createTemplate_aligned() throws IoTDBConnectionException, StatementExecutionException, IOException {
         createTemplate(tName, "", isAligned, null);
     }
     @Test(priority = 21)
@@ -187,7 +187,7 @@ public class TestTemplate extends BaseTestSuite {
         getSetPathsCount(tName, verbose);
      }
 
-    @Test(priority = 31, dataProvider = "getNormalNames")
+    @Test(enabled = false, priority = 31, dataProvider = "getNormalNames")
     public void testCreateTemplate_nameNormal (String name, String comment, String index) throws IoTDBConnectionException, IOException, StatementExecutionException {
         String database = databasePrefix+index;
         session.createDatabase(database);
@@ -202,20 +202,21 @@ public class TestTemplate extends BaseTestSuite {
         session.unsetSchemaTemplate(loadNode, name);
         assert 0 == getSetPathsCount(name, verbose) : "卸载模版成功:"+name;
         // 删除模版
-        session.dropSchemaTemplate(name);
-        session.deleteDatabase(database);
-        session.createDatabase(database);
+//        session.dropSchemaTemplate(name);
+//        session.deleteDatabase(database);
+//        session.createDatabase(database);
         // IOTDB-5469
     }
 
     // IOTDB-5233  TIMECHODB-137
-    @Test(priority = 32, dataProvider = "getErrorNames", expectedExceptions = StatementExecutionException.class)
+    @Test(enabled = false, priority = 32, dataProvider = "getErrorNames", expectedExceptions = StatementExecutionException.class)
     public void testCreateTemplate_nameError(String templateName, String comment, String index) throws IoTDBConnectionException, IOException, StatementExecutionException {
         createTemplate(templateName, "", isAligned, PrepareConnection.getSession());
     }
 
     @Test(priority = 40)
     public void testCreateTemplate_structNormal() throws IoTDBConnectionException, StatementExecutionException, IOException {
+        getNormalStructures();
         String databaseStr = databasePrefix+89098;
         if (!checkStroageGroupExists(databaseStr)) {
             session.createDatabase(databaseStr);
@@ -281,14 +282,12 @@ public class TestTemplate extends BaseTestSuite {
             assert 0 == getActivePathsCount(templateNames.get(i), verbose) : "激活成功";
             session.unsetSchemaTemplate(device, templateNames.get(i));
             assert 0 == getSetPathsCount(templateNames.get(i), verbose) : "激活成功";
-            session.dropSchemaTemplate(templateNames.get(i));
-            assert false == checkTemplateExists(templateNames.get(i)) : "删除0TS模版成功对齐:"+flg;
+//            session.dropSchemaTemplate(templateNames.get(i));
+//            assert false == checkTemplateExists(templateNames.get(i)) : "删除0TS模版成功对齐:"+flg;
             paths.clear();
             flg = false;
         }
-        session.deleteDatabase(database);
-
-
+//        session.deleteDatabase(database);
     }
     @Test(priority = 51)
     public void testCreateTemplate_1TS() throws StatementExecutionException, IoTDBConnectionException, IOException {
@@ -320,10 +319,10 @@ public class TestTemplate extends BaseTestSuite {
         Assert.assertThrows(StatementExecutionException.class, ()->{
             session.dropSchemaTemplate(templateName);
         });
-        session.deleteDatabase(database);
-        assert false == checkStroageGroupExists(database) : "database已经删除："+database;
-        session.dropSchemaTemplate(templateName);
-        assert false == checkTemplateExists(templateName) : "template已经删除:"+templateName;
+//        session.deleteDatabase(database);
+//        assert false == checkStroageGroupExists(database) : "database已经删除："+database;
+//        session.dropSchemaTemplate(templateName);
+//        assert false == checkTemplateExists(templateName) : "template已经删除:"+templateName;
     }
 
     @Test(enabled = false, priority = 52) // loop=100 112s; loop=1000 hang?

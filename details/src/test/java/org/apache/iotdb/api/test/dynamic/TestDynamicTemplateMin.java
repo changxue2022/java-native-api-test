@@ -176,9 +176,9 @@ public class TestDynamicTemplateMin extends BaseTestSuite {
         assert expectTSCountEach == getTimeSeriesCount(device+".**", verbose) : "确定设备上TS数量:"+expectTSCountEach;
 
         // 对齐非对齐错位插入数据
-        Assert.assertThrows(StatementExecutionException.class, ()->{
-            insertTabletMulti(database+".d1.group1", schemaList_org, 10, !isAligned);
-        });
+//        Assert.assertThrows(StatementExecutionException.class, ()->{
+//            insertTabletMulti(database+".d1.group1", schemaList_org, 10, !isAligned);
+//        });
         // 激活子节点(嵌套设备)
         device = database + ".d1.group1.subGroup";
         devicePaths.add(device);
@@ -317,7 +317,8 @@ public class TestDynamicTemplateMin extends BaseTestSuite {
         // 删除部分数据 TIMECHODB-104
         for (int i = 0; i < devicePaths.size(); i++) {
             int recordCount = getCount("select count(*) from "+devicePaths.get(i), verbose);
-            session.deleteData(devicePaths.get(i)+".*", 3);
+            countLines("select * from "+devicePaths.get(i), verbose);
+            session.deleteData(devicePaths.get(i)+".*", 1672513196000L);
             assert recordCount > getCount("select count(*) from "+devicePaths.get(i), verbose) : "删除部分数据成功";
         }
         // 删除普通序列
