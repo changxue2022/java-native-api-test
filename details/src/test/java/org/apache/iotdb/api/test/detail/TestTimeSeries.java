@@ -101,15 +101,19 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
 
     // TIMECHODB-124
     @Test(priority = 10, dataProvider = "createSingleTimeSeriesNormal")
-    public void testCreateSingleTimeSeries_normal(String device, String tsName, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException {
+    public void testCreateSingleTimeSeries_normal(String device, String tsName, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {
         List<Object> result = translateString2Type(datatypeStr, encodingStr, compressStr);
-        session.createTimeseries(device+"."+tsName, (TSDataType) result.get(0),
+        Session s = PrepareConnection.getSession();
+        s.createTimeseries(device+"."+tsName, (TSDataType) result.get(0),
                 (TSEncoding)result.get(1) , (CompressionType) result.get(2), props, tags, attrs, alias);
         insertRecordSingle(device+"."+tsName,  (TSDataType) result.get(0), false, alias);
+        s.close();
     }
     @Test(priority = 20, dataProvider = "createSingleTimeSeriesNormal")
-    public void testDeleteSingleTimeSeries_normal(String device, String tsName, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException {
-        session.deleteTimeseries(device+"."+tsName);
+    public void testDeleteSingleTimeSeries_normal(String device, String tsName, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {
+        Session s = PrepareConnection.getSession();
+        s.deleteTimeseries(device+"."+tsName);
+        s.close();
     }
     @DataProvider(name = "createSingleTimeSeriesError", parallel = true)
     private Iterator<Object[]> getSingleTimeSeriesError() throws IOException {
@@ -128,12 +132,9 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
     public void testCreateSingleTimeSeries_error(String path, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {
         List<Object> result = translateString2Type(datatypeStr, encodingStr, compressStr);
         Session s = PrepareConnection.getSession();
-        try {
-            s.createTimeseries(path, (TSDataType) result.get(0), (TSEncoding) result.get(1),
-                    (CompressionType) result.get(2), props, tags, attrs, alias);
-        } finally {
-            s.close();
-        }
+        s.createTimeseries(path, (TSDataType) result.get(0), (TSEncoding) result.get(1),
+                (CompressionType) result.get(2), props, tags, attrs, alias);
+        s.close();
     }
     @Test(priority = 40, dataProvider = "createSingleTimeSeriesNormal")
     public void testCreateSingleTimeSeriesAligned_normal(String device, String tsName, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {
@@ -149,7 +150,9 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
         tsList.add(tsName);
         aliasList.add(alias);
 //        out.println(device+"."+tsName+" datatype:"+tsDataTypes +" encoding:"+tsEncodings+ " compress:"+compressionTypes +" props:"+props+" tags:"+ tags+" attrs:"+ attrs+" alias:"+ aliasList);
-        session.createAlignedTimeseries(device, tsList, tsDataTypes, tsEncodings, compressionTypes, aliasList);
+        Session s = PrepareConnection.getSession();
+        s.createAlignedTimeseries(device, tsList, tsDataTypes, tsEncodings, compressionTypes, aliasList);
+        s.close();
     }
     @DataProvider(name = "deleteNormalWildcard")
     private Iterator<Object[]> deleteNormal_wildcard() throws IOException {

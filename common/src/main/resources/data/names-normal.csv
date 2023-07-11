@@ -52,202 +52,259 @@ DELETE_USER,一般关键字,49
 DESC,一般关键字,50
 DESCRIBE,一般关键字,51
 DEVICE,一般关键字,52
-DEVICES,一般关键字,53
-DISABLE,一般关键字,54
-DISCARD,一般关键字,55
-DROP,一般关键字,56
-DROP_CONTINUOUS_QUERY,一般关键字,57
-DROP_FUNCTION,一般关键字,58
-DROP_TRIGGER,一般关键字,59
-END,一般关键字,60
-ENDTIME,一般关键字,61
-EVERY,一般关键字,62
-EXPLAIN,一般关键字,63
-FILL,一般关键字,64
-FILE,一般关键字,65
-FLUSH,一般关键字,66
-FOR,一般关键字,67
-FROM,一般关键字,68
-FULL,一般关键字,69
-FUNCTION,一般关键字,70
-FUNCTIONS,一般关键字,71
-GLOBAL,一般关键字,72
-GRANT,一般关键字,73
-GRANT_ROLE_PRIVILEGE,一般关键字,74
-GRANT_USER_PRIVILEGE,一般关键字,75
-GRANT_USER_ROLE,一般关键字,76
-GROUP,一般关键字,77
-HAVING,一般关键字,78
-INDEX,一般关键字,79
-INFO,一般关键字,80
-INSERT,一般关键字,81
-INSERT_TIMESERIES,一般关键字,82
-INTO,一般关键字,83
-KILL,一般关键字,84
-LABEL,一般关键字,85
-LAST,一般关键字,86
-LATEST,一般关键字,87
-LEVEL,一般关键字,88
-LIKE,一般关键字,89
-LIMIT,一般关键字,90
-LINEAR,一般关键字,91
-LINK,一般关键字,92
-LIST,一般关键字,93
-LIST_ROLE,一般关键字,94
-LIST_USER,一般关键字,95
-LOAD,一般关键字,96
-LOCAL,一般关键字,97
-LOCK,一般关键字,98
-MERGE,一般关键字,99
-METADATA,一般关键字,100
-MODIFY_PASSWORD,一般关键字,101
-NODES,一般关键字,102
-NONE,一般关键字,103
-NOW,一般关键字,104
-OF,一般关键字,105
-OFF,一般关键字,106
-OFFSET,一般关键字,107
-ON,一般关键字,108
-ORDER,一般关键字,109
-ONSUCCESS,一般关键字,110
-PARTITION,一般关键字,111
-PASSWORD,一般关键字,112
-PATHS,一般关键字,113
-PIPE,一般关键字,114
-PIPES,一般关键字,115
-PIPESINK,一般关键字,116
-PIPESINKS,一般关键字,117
-PIPESINKTYPE,一般关键字,118
-POLICY,一般关键字,119
-PREVIOUS,一般关键字,120
-PREVIOUSUNTILLAST,一般关键字,121
-PRIVILEGES,一般关键字,122
-PROCESSLIST,一般关键字,123
-PROPERTY,一般关键字,124
-PRUNE,一般关键字,125
-QUERIES,一般关键字,126
-QUERY,一般关键字,127
-RANGE,一般关键字,128
-READONLY,一般关键字,129
-READ_TEMPLATE,一般关键字,130
-READ_TEMPLATE_APPLICATION,一般关键字,131
-READ_TIMESERIES,一般关键字,132
-REGEXP,一般关键字,133
-REGIONID,一般关键字,134
-REGIONS,一般关键字,135
-REMOVE,一般关键字,136
-RENAME,一般关键字,137
-RESAMPLE,一般关键字,138
-RESOURCE,一般关键字,139
-REVOKE,一般关键字,140
-REVOKE_ROLE_PRIVILEGE,一般关键字,141
-REVOKE_USER_PRIVILEGE,一般关键字,142
-REVOKE_USER_ROLE,一般关键字,143
-ROLE,一般关键字,144
-RUNNING,一般关键字,145
-SCHEMA,一般关键字,146
-SELECT,一般关键字,147
-SERIESSLOTID,一般关键字,148
-SET,一般关键字,149
-SET_STORAGE_GROUP,一般关键字,150
-SETTLE,一般关键字,151
-SGLEVEL,一般关键字,152
-SHOW,一般关键字,153
-SLIMIT,一般关键字,154
-SOFFSET,一般关键字,155
-STORAGE,一般关键字,156
-START,一般关键字,157
-STARTTIME,一般关键字,158
-STATELESS,一般关键字,159
-STATEFUL,一般关键字,160
-STOP,一般关键字,161
-SYSTEM,一般关键字,162
-TAGS,一般关键字,163
-TASK,一般关键字,164
-TEMPLATE,一般关键字,165
-TIMEOUT,一般关键字,166
-TIMESERIES,一般关键字,167
-TIMESLOTID,一般关键字,168
-TO,一般关键字,169
-TOLERANCE,一般关键字,170
-TOP,一般关键字,171
-TRACING,一般关键字,172
-TRIGGER,一般关键字,173
-TRIGGERS,一般关键字,174
-TTL,一般关键字,175
-UNLINK,一般关键字,176
-UNLOAD,一般关键字,177
-UNSET,一般关键字,178
-UPDATE,一般关键字,179
-UPDATE_TEMPLATE,一般关键字,180
-UPSERT,一般关键字,181
-URI,一般关键字,182
-USER,一般关键字,183
-USING,一般关键字,184
-VALUES,一般关键字,185
-VERIFY,一般关键字,186
-VERSION,一般关键字,187
-# root.db.factory.WATERMARK_EMBEDDING is not a legal path,一般关键字,188
-# WATERMARK_EMBEDDING,一般关键字,189
+DEVICEID,一般关键字,53
+DEVICES,一般关键字,54
+DISABLE,一般关键字,55
+DISCARD,一般关键字,56
+DROP,一般关键字,57
+DROP_CONTINUOUS_QUERY,一般关键字,58
+DROP_FUNCTION,一般关键字,59
+DROP_TRIGGER,一般关键字,60
+END,一般关键字,61
+ENDTIME,一般关键字,62
+EVERY,一般关键字,63
+EXPLAIN,一般关键字,64
+FILL,一般关键字,65
+FILE,一般关键字,66
+FLUSH,一般关键字,67
+FOR,一般关键字,68
+FROM,一般关键字,69
+FULL,一般关键字,70
+FUNCTION,一般关键字,71
+FUNCTIONS,一般关键字,72
+GLOBAL,一般关键字,73
+GRANT,一般关键字,74
+GRANT_ROLE_PRIVILEGE,一般关键字,75
+GRANT_USER_PRIVILEGE,一般关键字,76
+GRANT_USER_ROLE,一般关键字,77
+GROUP,一般关键字,78
+HAVING,一般关键字,79
+INDEX,一般关键字,80
+INFO,一般关键字,81
+INSERT,一般关键字,82
+INSERT_TIMESERIES,一般关键字,83
+INTO,一般关键字,84
+KILL,一般关键字,85
+LABEL,一般关键字,86
+LAST,一般关键字,87
+LATEST,一般关键字,88
+LEVEL,一般关键字,89
+LIKE,一般关键字,90
+LIMIT,一般关键字,91
+LINEAR,一般关键字,92
+LINK,一般关键字,93
+LIST,一般关键字,94
+LIST_ROLE,一般关键字,95
+LIST_USER,一般关键字,96
+LOAD,一般关键字,97
+LOCAL,一般关键字,98
+LOCK,一般关键字,99
+MERGE,一般关键字,100
+METADATA,一般关键字,101
+MODIFY_PASSWORD,一般关键字,102
+NODES,一般关键字,103
+NONE,一般关键字,104
+NOW,一般关键字,105
+OF,一般关键字,106
+OFF,一般关键字,107
+OFFSET,一般关键字,108
+ON,一般关键字,109
+ORDER,一般关键字,110
+ONSUCCESS,一般关键字,111
+PARTITION,一般关键字,112
+PASSWORD,一般关键字,113
+PATHS,一般关键字,114
+PIPE,一般关键字,115
+PIPES,一般关键字,116
+PIPESINK,一般关键字,117
+PIPESINKS,一般关键字,118
+PIPESINKTYPE,一般关键字,119
+POLICY,一般关键字,120
+PREVIOUS,一般关键字,121
+PREVIOUSUNTILLAST,一般关键字,122
+PRIVILEGES,一般关键字,123
+PROCESSLIST,一般关键字,124
+PROPERTY,一般关键字,125
+PRUNE,一般关键字,126
+QUERIES,一般关键字,127
+QUERY,一般关键字,128
+RANGE,一般关键字,129
+READONLY,一般关键字,130
+READ_TEMPLATE,一般关键字,131
+READ_TEMPLATE_APPLICATION,一般关键字,132
+READ_TIMESERIES,一般关键字,133
+REGEXP,一般关键字,134
+REGIONID,一般关键字,135
+REGIONS,一般关键字,136
+REMOVE,一般关键字,137
+RENAME,一般关键字,138
+RESAMPLE,一般关键字,139
+RESOURCE,一般关键字,140
+REVOKE,一般关键字,141
+REVOKE_ROLE_PRIVILEGE,一般关键字,142
+REVOKE_USER_PRIVILEGE,一般关键字,143
+REVOKE_USER_ROLE,一般关键字,144
+ROLE,一般关键字,145
+RUNNING,一般关键字,146
+SCHEMA,一般关键字,147
+SELECT,一般关键字,148
+SERIESSLOTID,一般关键字,149
+SET,一般关键字,150
+SET_STORAGE_GROUP,一般关键字,151
+SETTLE,一般关键字,152
+SGLEVEL,一般关键字,153
+SHOW,一般关键字,154
+SLIMIT,一般关键字,155
+SOFFSET,一般关键字,156
+STORAGE,一般关键字,157
+START,一般关键字,158
+STARTTIME,一般关键字,159
+STATELESS,一般关键字,160
+STATEFUL,一般关键字,161
+STOP,一般关键字,162
+SYSTEM,一般关键字,163
+TAGS,一般关键字,164
+TASK,一般关键字,165
+TEMPLATE,一般关键字,166
+TIMEOUT,一般关键字,167
+TIMESERIES,一般关键字,168
+TIMESLOTID,一般关键字,169
+TO,一般关键字,170
+TOLERANCE,一般关键字,171
+TOP,一般关键字,172
+TRACING,一般关键字,173
+TRIGGER,一般关键字,174
+TRIGGERS,一般关键字,175
+TTL,一般关键字,176
+UNLINK,一般关键字,177
+UNLOAD,一般关键字,178
+UNSET,一般关键字,179
+UPDATE,一般关键字,180
+UPDATE_TEMPLATE,一般关键字,181
+UPSERT,一般关键字,182
+URI,一般关键字,183
+USER,一般关键字,184
+USING,一般关键字,185
+VALUES,一般关键字,186
+VERIFY,一般关键字,187
+VERSION,一般关键字,188
+WATERMARK_EMBEDDING,一般关键字,189
 WHERE,一般关键字,190
 WITH,一般关键字,191
 WITHOUT,一般关键字,192
 WRITABLE,一般关键字,193
-c,单个字符,194
-_start,下划线开头,195
-_Start,大小写,196
-`123`,全数字,197
-`123.89`,带小数点,198
-`a.b.1.c`,带点,199
-`6`,单个数字,200
-`timecho.com`,网址格式,201
-中文,中文,202
-`française`,法语,203
-`العربية`,阿拉伯语,204
-`Español`,西班牙语,205
-にほんご,日语,206
-`Русский`,俄语,207
-`한국어`,韩语,208
-abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345,max database length,209
-`1234567891234567891234567891234567891234567891234567891234`,max database length:all number,210
-abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ab,最大长度字符,211
-`123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789.12345678912345678912345678912345678912345678912345678912345678912345678912345678912356`,最大长度数值,212
-
-`org(1)`,special word,214
-`ab```,with backquotes,215
-"`ab,`",coma with backquotes,216
-`ab|`,| with backquotes,217
-`ab!`,! with backquotes,218
-`ab@`,@ with backquotes,219
-`ab#`,# with backquotes,220
-`ab\$`,$ with backquotes,221
-`ab\%`,% with backquotes,222
-`ab\^`,^ with backquotes,223
-`ab\&`,^ with backquotes,224
-`ab\(`,( with backquotes,225
-`ab\)`,) with backquotes,226
-`ab\-`,- with backquotes,227
-`ab\+`,+ with backquotes,228
-`ab\=`,= with backquotes,229
-`ab\]`,] with backquotes,230
-`ab\[`,[ with backquotes,231
-`ab\|`,| with backquotes,232
-`ab\{`,{ with backquotes,233
-`ab\}`,} with backquotes,234
-`ab\:`,: with backquotes,235
-`ab\;`,; with backquotes,236
-`ab\?`,? with backquotes,237
-`ab\<`,< with backquotes,238
-`ab\>`,> with backquotes,239
-`ab\'`,' with backquotes,240
-`ab\/`,/ with backquotes,241
-`ab\\`,\ with backquotes,242
-`ab\。`,。 with backquotes,243
-`ab\……`,…… with backquotes,244
-`ab\ `,white space with backquotes,245
-
-"#""`ab\*`""",^ with backquotes,247
-#`ab`	` is not a legal path,,248
-"#""`ab`\t`""",tab with backquotes,249
-"#""`*`""",wildcard,250
-"#""`**`""",wildcard,251
+abstract,java关键字,200
+assert,java关键字,201
+boolean,java关键字,202
+break,java关键字,203
+byte,java关键字,204
+case,java关键字,205
+catch,java关键字,206
+char,java关键字,207
+class,java关键字,208
+continue,java关键字,209
+default,java关键字,210
+do,java关键字,211
+double,java关键字,212
+else,java关键字,213
+enum,java关键字,214
+extends,java关键字,215
+final,java关键字,216
+finally,java关键字,217
+float,java关键字,218
+for,java关键字,219
+if,java关键字,220
+implements,java关键字,221
+import,java关键字,222
+instanceof,java关键字,223
+int,java关键字,224
+interface,java关键字,225
+long,java关键字,226
+native,java关键字,227
+new,java关键字,228
+null,java关键字,229
+package,java关键字,230
+private,java关键字,231
+protected,java关键字,232
+public,java关键字,233
+return,java关键字,234
+short,java关键字,235
+static,java关键字,236
+strictfp,java关键字,237
+super,java关键字,238
+switch,java关键字,239
+synchronized,java关键字,240
+this,java关键字,241
+throw,java关键字,242
+throws,java关键字,243
+transient,java关键字,244
+try,java关键字,245
+void,java关键字,246
+volatile,java关键字,247
+while,java关键字,248
+const,java关键字,249
+goto,java关键字,250
+TRUE,java关键字,251
+FALSE,java关键字,252
+contains,java关键字,253
+and,java关键字,254
+or,java关键字,255
+nil,ruby关键字,256
+c,单个字符,257
+_start,下划线开头,258
+_Start,大小写,259
+`123`,全数字,260
+`123.89`,带小数点,261
+`a.b.1.c`,带点,262
+`6`,单个数字,263
+`timecho.com`,网址格式,264
+中文,中文,265
+`française`,法语,266
+`العربية`,阿拉伯语,267
+`Español`,西班牙语,268
+にほんご,日语,269
+`Русский`,俄语,270
+`한국어`,韩语,271
+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345,max database length,272
+`1234567891234567891234567891234567891234567891234567891234`,max database length:all number,273
+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ab,最大长度字符,274
+`123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789.12345678912345678912345678912345678912345678912345678912345678912345678912345678912356`,最大长度数值,275
+`org(1)`,special word,276
+`ab```,with backquotes,277
+"`ab,`",coma with backquotes,278
+`ab|`,| with backquotes,279
+`ab!`,! with backquotes,280
+`ab@`,@ with backquotes,281
+`ab#`,# with backquotes,282
+`ab\$`,$ with backquotes,283
+`ab\%`,% with backquotes,284
+`ab\^`,^ with backquotes,285
+`ab\&`,^ with backquotes,286
+`ab\(`,( with backquotes,287
+`ab\)`,) with backquotes,288
+`ab\-`,- with backquotes,289
+`ab\+`,+ with backquotes,290
+`ab\=`,= with backquotes,291
+`ab\]`,] with backquotes,292
+`ab\[`,[ with backquotes,293
+`ab\|`,| with backquotes,294
+`ab\{`,{ with backquotes,295
+`ab\}`,} with backquotes,296
+`ab\:`,: with backquotes,297
+`ab\;`,; with backquotes,298
+`ab\?`,? with backquotes,299
+`ab\<`,< with backquotes,300
+`ab\>`,> with backquotes,301
+`ab\'`,' with backquotes,302
+`ab\/`,/ with backquotes,303
+`ab\\`,\ with backquotes,304
+`ab\。`,。 with backquotes,305
+`ab\……`,…… with backquotes,306
+`ab\ `,white space with backquotes,307
+#,,
+"#""`ab\*`""",^ with backquotes,309
+#`ab`	` is not a legal path,,310
+"#""`ab`\t`""",tab with backquotes,311
+"`*`",wildcard,312
+"#""`**`""",wildcard,313
+"`org-apache-IoTDB`",减号,314

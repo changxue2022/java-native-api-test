@@ -3,13 +3,7 @@ name,comment,index
 ROOT,关键字ROOT,1
 TIME,关键字Time,2
 TIMESTAMP,关键字timestamp,3
-AND,关键字and,4
-OR,关键字or,5
-NOT,关键字not,6
-NULL,关键字null,7
-CONTAINS,关键字contains,8
 ,空串,9
-null,kong,10
 root,root,11
 Root,Root,12
 1,单个数字,13
