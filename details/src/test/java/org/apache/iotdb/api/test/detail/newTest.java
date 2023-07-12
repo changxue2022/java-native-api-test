@@ -32,7 +32,7 @@ public class newTest extends BaseTestSuite {
     @BeforeClass(enabled = true)
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException, IOException {
         normalNames = new CustomDataProvider().loadString("data/names-normal.csv",',');
-        normalNames_keyword = new CustomDataProvider().loadString("data/key-value.csv",',');
+        normalNames_keyword = new CustomDataProvider().loadString("data/keyword-normal.csv",',');
         structures = new CustomDataProvider().parseTSStructure("data/ts-structures.csv");
 //        List<Map<String, String>> props = new CustomDataProvider().loadProps("data/props-normal.csv");
 //        List<Map<String, String>> attributes = new CustomDataProvider().loadProps("data/props-normal.csv");

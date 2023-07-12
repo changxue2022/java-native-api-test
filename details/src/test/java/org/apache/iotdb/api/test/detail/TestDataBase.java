@@ -49,12 +49,27 @@ public class TestDataBase extends BaseTestSuite {
     private Iterator<Object[]> getStorageGroupError() throws IOException {
         return new CustomDataProvider().load("data/storage-group-error.csv").getData();
     }
+    @DataProvider(name = "normalNames", parallel = true)
+    private Iterator<Object[]> getNormalNames() throws IOException {
+        return new CustomDataProvider().load("data/keyword-normal.csv").getData();
+    }
+
     //##################################################################################################################
     @Test(priority=10, dataProvider = "storageGroupNormal")
-    public void testSetStorageGroup_normal(String storageGroupId, String msg) throws IoTDBConnectionException, StatementExecutionException {
-//        out.println(storageGroupId + "," + msg);
-        session.setStorageGroup(storageGroupId);
+    public void testSetStorageGroup_normal(String storageGroupId, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {
+        Session s = PrepareConnection.getSession();
+        s.setStorageGroup(storageGroupId);
         assert checkStroageGroupExists(storageGroupId) == true : storageGroupId+" , "+msg ;
+        s.close();
+    }
+    @Test(priority=11, dataProvider = "normalNames")
+    public void testSetStorageGroup_keyword_normal(String name, String msg, String index) throws IoTDBConnectionException, StatementExecutionException, IOException {
+        String storageGroupId = "root."+name;
+        Session s = PrepareConnection.getSession();
+        s.setStorageGroup(storageGroupId);
+        assert checkStroageGroupExists(storageGroupId) == true : storageGroupId+" , "+msg ;
+        s.deleteStorageGroup(storageGroupId);
+        s.close();
     }
 
     // TIMECHODB-84  TIMECHODB-123

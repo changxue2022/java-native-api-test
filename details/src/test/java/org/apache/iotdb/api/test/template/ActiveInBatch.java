@@ -269,7 +269,7 @@ public class ActiveInBatch extends BaseTestSuite {
         Template template = new Template(templateName, isAligned);
         List<Object> struct = Tools.getRandom(structures);
         TSDataType tsDataType = (TSDataType) struct.get(0);
-        MeasurementNode mNode = new MeasurementNode(tsName, tsDataType,
+        MeasurementNode mNode = new MeasurementNode(name, tsDataType,
                 (TSEncoding) struct.get(1), (CompressionType) struct.get(2));
         template.addToTemplate(mNode);
         session.createSchemaTemplate(template);
@@ -277,8 +277,6 @@ public class ActiveInBatch extends BaseTestSuite {
         session.setSchemaTemplate(templateName, database);
         assert checkTemplateContainPath(templateName, database) : "挂载模版成功";
         paths.add(database+"."+name);
-        System.out.println("paths="+paths);
-        System.out.println("paths.size="+paths.size());
         session.createTimeseriesUsingSchemaTemplate(paths);
         assert paths.size() == getActivePathsCount(templateName, verbose) : "激活成功";
         assert checkUsingTemplate(paths.get(0), verbose) : paths.get(0)+"使用了模版";

@@ -1,9 +1,7 @@
 input,expect,comment
 ,空串
-#null,null 值
 root,single root
 root..cx3,empty string
-root.null,null string
 Root.capital,case sensitive:capital
 ROOT.big,case sensitive:all big
 sg.root,prefix is not root
@@ -20,18 +18,7 @@ root.`测试方法不必是无参数的。可以在每个测试方法上使用�
 root.ROOT,关键字ROOT
 root.TIME,关键字Time
 root.TIMESTAMP,关键字timestamp
-root.AND,关键字and
-root.OR,关键字or
-root.NOT,关键字not
-root.NULL,关键字null
-root.CONTAINS,关键字contains
-root.and,key word of and
-root.or,key word of or
-root.null,key word of or
-# IOTDB-4707(单机版能建不能查，分布式创建error)
-root.quote.`null`,null with backquotes
-root.quote.`and`,and with backquotes
-root.quote.`or`,or with backquotes
+
 # 特殊字符转义
 root.`\"a`,quote with backquotes
 root.`ab\``,` with backquotes
@@ -67,3 +54,8 @@ root.`ab\。`,。 with backquotes
 root.`ab\……`,…… with backquotes
 root.`ab\ `,white space with backquotes
 root.`ab\\t`,tab with backquotes
+# 国际化支持
+#root.中文,language:chinese characters
+#root.cx2.中文1.中文2,language:Chinese characters 4 level
+#root.にほんご,language:Japanese characters
+#root.quote4.`にほんご`,language:Japanese characters with backquotes
