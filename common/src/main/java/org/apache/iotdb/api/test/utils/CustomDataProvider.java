@@ -249,6 +249,10 @@ public class CustomDataProvider {
                 return TSEncoding.ZIGZAG;
             case "FREQ":
                 return TSEncoding.FREQ;
+            case "SPRINTZ":
+                return TSEncoding.SPRINTZ;
+            case "RLBE":
+                return TSEncoding.RLBE;
             default:
                 throw new RuntimeException("bad input:"+encodingStr);
         }
@@ -274,6 +278,8 @@ public class CustomDataProvider {
                 return CompressionType.LZ4;
             case "ZSTD":
                 return CompressionType.ZSTD;
+            case "LZMA2":
+                return CompressionType.LZMA2;
             default:
                 throw new RuntimeException("bad input："+compressStr);
         }

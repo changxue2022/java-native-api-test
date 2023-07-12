@@ -17,17 +17,21 @@ import java.util.Iterator;
 
 public class PipeNameTest extends BaseTestSuite {
 
-    @BeforeClass
+//    @BeforeClass
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException {
         clean_pipes();
     }
-    @AfterClass
+//    @AfterClass
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
         clean_pipes();
     }
     @DataProvider(name = "normalNames", parallel = true)
     private Iterator<Object[]> getNormalNames() throws IOException {
         return new CustomDataProvider().load("data/names-normal.csv").getData();
+    }
+    @DataProvider(name = "sameNames", parallel = true)
+    private Iterator<Object[]> getSameNames() throws IOException {
+        return new CustomDataProvider().load("data/same-name-concurrent.csv").getData();
     }
     @DataProvider(name = "errorNames", parallel = true)
     private Iterator<Object[]> getErrorNames() throws IOException {
@@ -76,11 +80,21 @@ public class PipeNameTest extends BaseTestSuite {
         System.out.println(sql);
         Session s = PrepareConnection.getSession();
         s.executeNonQueryStatement(sql);
+        s.executeNonQueryStatement("drop pipe "+name);
         s.close();
-//        check_pipe_status(name, "STOPPED");
-//        session.executeNonQueryStatement("start pipe "+name);
-//        check_pipe_status(name, "RUNNING");
-//        session.executeNonQueryStatement("drop pipe "+name);
+    }
+
+    @Test(priority = 30, dataProvider = "sameNames")
+    public void testConcurrent_sameName(String name, String comment, String Index) throws IoTDBConnectionException, StatementExecutionException, IOException {
+        String sql = "create pipe " +name+
+                " with connector ('connector'='iotdb-thrift-connector', 'connector.ip'='127.0.0.1', 'connector.port'='6667');";
+        Session s = PrepareConnection.getSession();
+        s.executeNonQueryStatement(sql);
+        check_pipe_status(name, "STOPPED");
+        s.executeNonQueryStatement("start pipe "+name);
+        check_pipe_status(name, "RUNNING");
+        s.executeNonQueryStatement("drop pipe "+name);
+        s.close();
     }
 
 }

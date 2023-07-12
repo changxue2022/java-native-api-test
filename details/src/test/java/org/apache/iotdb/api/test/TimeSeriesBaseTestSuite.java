@@ -74,6 +74,12 @@ public class TimeSeriesBaseTestSuite extends BaseTestSuite{
             case "FREQ":
                 result.add(TSEncoding.FREQ);
                 break;
+            case "SPRINTZ":
+                result.add(TSEncoding.SPRINTZ);
+                break;
+            case "RLBE":
+                result.add(TSEncoding.RLBE);
+                break;
             default:
                 result.add(null);
                 break;
@@ -93,6 +99,9 @@ public class TimeSeriesBaseTestSuite extends BaseTestSuite{
                 break;
             case "ZSTD":
                 result.add(CompressionType.ZSTD);
+                break;
+            case "LZMA2":
+                result.add(CompressionType.LZMA2);
                 break;
             default:
                 result.add(null);

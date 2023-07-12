@@ -15,6 +15,7 @@ text,TS_2DIFF,UNCOMPRESSED,text TS_2DIFF UNCOMPRESSED,13
 text,GORILLA,UNCOMPRESSED,text GORILLA UNCOMPRESSED,14
 text,FREQ,UNCOMPRESSED,text FREQ UNCOMPRESSED,15
 text,ZIGZAG,UNCOMPRESSED,text ZIGZAG UNCOMPRESSED,16
+# 1.2.0 去掉,,,,
 int,FREQ,UNCOMPRESSED,int Freq UNCOMPRESSED,31
 int,FREQ,SNAPPY,int Freq SNAPPY,32
 int,FREQ,GZIP,int Freq GZIP,33
@@ -35,3 +36,15 @@ double,FREQ,SNAPPY,double Freq SNAPPY,117
 double,FREQ,GZIP,double Freq GZIP,118
 double,FREQ,LZ4,double Freq LZ4,119
 double,FREQ,ZSTD,double Freq ZSTD,120
+boolean,sprintz,UNCOMPRESSED,boolean sprintz UNCOMPRESSED,121
+boolean,sprintz,SNAPPY,boolean sprintz SNAPPY,122
+boolean,sprintz,GZIP,boolean sprintz GZIP,123
+boolean,sprintz,LZ4,boolean sprintz LZ4,124
+boolean,sprintz,ZSTD,boolean sprintz ZSTD,125
+boolean,sprintz,LZMA2,boolean sprintz LZMA2,126
+text,sprintz,UNCOMPRESSED,text sprintz UNCOMPRESSED,127
+text,sprintz,SNAPPY,text sprintz SNAPPY,128
+text,sprintz,GZIP,text sprintz GZIP,129
+text,sprintz,LZ4,text sprintz LZ4,130
+text,sprintz,ZSTD,text sprintz ZSTD,131
+text,sprintz,LZMA2,text sprintz LZMA2,132

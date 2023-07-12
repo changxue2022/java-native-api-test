@@ -15,15 +15,15 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class PipeNameTest extends BaseTestSuite {
+public class TriggerNameTest extends BaseTestSuite {
 
     @BeforeClass
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException {
-        clean_pipes();
+        clean_triggers();
     }
     @AfterClass
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
-        clean_pipes();
+        clean_triggers();
     }
     @DataProvider(name = "normalNames", parallel = true)
     private Iterator<Object[]> getNormalNames() throws IOException {
@@ -33,16 +33,21 @@ public class PipeNameTest extends BaseTestSuite {
     private Iterator<Object[]> getErrorNames() throws IOException {
         return new CustomDataProvider().load("data/names-error.csv").getData();
     }
+    @DataProvider(name = "sameNames", parallel = true)
+    private Iterator<Object[]> getSameNames() throws IOException {
+        return new CustomDataProvider().load("data/same-name-concurrent.csv").getData();
+    }
 
-    private void check_pipe_status(String name, String status) throws IoTDBConnectionException, StatementExecutionException {
-        SessionDataSet records = session.executeQueryStatement("show pipe " + name);
+
+    private void check_trigger_status(String name, String status) throws IoTDBConnectionException, StatementExecutionException {
+        SessionDataSet records = session.executeQueryStatement("show triggers;");
         while(records.hasNext()) {
             RowRecord row = records.next();
             assert status.equals(row.getFields().get(2).toString()) : "pipe状态检查:expect ["+status+"], actual ["+row.getFields().get(2).toString()+"]";
 //            assert name.equals(row.getFields().get(0).toString()) : "show pipe中的名称检查:expect ["+name+"], actual ["+row.getFields().get(0).toString()+"]";
         }
     }
-    private void clean_pipes() throws IoTDBConnectionException, StatementExecutionException {
+    private void clean_triggers() throws IoTDBConnectionException, StatementExecutionException {
         SessionDataSet records = session.executeQueryStatement("show pipes;");
         int index = 0;
         while(records.hasNext()) {
@@ -58,29 +63,22 @@ public class PipeNameTest extends BaseTestSuite {
         }
     }
     @Test(priority = 10, dataProvider = "normalNames")
-    public void testPipe_normal(String name, String comment, String Index) throws IoTDBConnectionException, StatementExecutionException, IOException {
-        String sql = "create pipe " +name+
-                " with connector ('connector'='iotdb-thrift-connector', 'connector.ip'='127.0.0.1', 'connector.port'='6667');";
+    public void testTriggerName_normal(String name, String comment, String Index) throws IoTDBConnectionException, StatementExecutionException, IOException {
+        String sql = "CREATE STATELESS TRIGGER " +name+
+                " AFTER INSERT ON root.triggertest.d1.* AS 'org.example.DoubleValueMonitor' WITH ( 'remote_ip'='127.0.0.1',  'lo' = '10',  'hi' = '15.5');";
         Session s = PrepareConnection.getSession();
         s.executeNonQueryStatement(sql);
-        check_pipe_status(name, "STOPPED");
-        s.executeNonQueryStatement("start pipe "+name);
-        check_pipe_status(name, "RUNNING");
-        s.executeNonQueryStatement("drop pipe "+name);
+        s.executeNonQueryStatement("drop trigger "+name);
         s.close();
     }
     @Test(priority = 20, dataProvider = "errorNames", expectedExceptions = StatementExecutionException.class)
-    public void testPipe_error(String name, String comment, String Index) throws IoTDBConnectionException, StatementExecutionException, IOException {
-        String sql = "create pipe " +name+
-                " with connector ('connector'='iotdb-thrift-connector', 'connector.ip'='127.0.0.1', 'connector.port'='6667');";
-        System.out.println(sql);
+    public void testTriggerName_error(String name, String comment, String Index) throws IoTDBConnectionException, StatementExecutionException, IOException {
+        String sql = "CREATE STATELESS TRIGGER " +name+
+                " AFTER INSERT ON root.triggertest.d1.* AS 'org.example.DoubleValueMonitor' WITH ( 'remote_ip'='127.0.0.1',  'lo' = '10',  'hi' = '15.5');";
+//        System.out.println(sql);
         Session s = PrepareConnection.getSession();
         s.executeNonQueryStatement(sql);
         s.close();
-//        check_pipe_status(name, "STOPPED");
-//        session.executeNonQueryStatement("start pipe "+name);
-//        check_pipe_status(name, "RUNNING");
-//        session.executeNonQueryStatement("drop pipe "+name);
     }
 
 }
