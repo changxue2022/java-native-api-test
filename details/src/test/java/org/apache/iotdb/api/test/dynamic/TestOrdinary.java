@@ -363,7 +363,7 @@ public class TestOrdinary extends BaseTestSuite {
         return new CustomDataProvider().load("data/names-normal.csv").getData();
     }
     @Test(priority = 65, dataProvider = "getNormalNames")
-    public void testNormalNames(String name, String comment, String index) throws IoTDBConnectionException, StatementExecutionException, IOException {
+    public void testAddTSToTemplate_normalNames(String name, String comment, String index) throws IoTDBConnectionException, StatementExecutionException, IOException {
         schemaList.add(new MeasurementSchema(name, TSDataType.FLOAT, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED));
         List<String> paths = new ArrayList<>(1);
         paths.add(database + "." + name);
@@ -376,9 +376,8 @@ public class TestOrdinary extends BaseTestSuite {
     }
     @Test(priority = 67)
     public void testNormalNames_resultCheck() throws IoTDBConnectionException, StatementExecutionException, IOException {
-        logger.info("schemaList.size()="+schemaList.size());
-        logger.info("schemaList="+schemaList);
-        assert schemaList.size() == getTSCountInTemplate(templateName, verbose) : "并发修改模版成功：names-normal.csv";
+        int actual = getTSCountInTemplate(templateName, verbose);
+        assert schemaList.size() ==  actual: "并发修改模版成功：names-normal.csv, actual "+actual + ", expect "+ schemaList.size();
         for (int i = 0; i < devicePaths.size(); i++) {
             insertTabletMulti(devicePaths.get(i), schemaList, 10, isAligned);
         }
