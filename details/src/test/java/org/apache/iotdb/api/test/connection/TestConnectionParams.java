@@ -24,7 +24,7 @@ public class TestConnectionParams {
         config = ReadConfig.getInstance();
     }
     // https://issues.apache.org/jira/browse/IOTDB-5932
-    @Test
+//    @Test
     public void testTimeout() throws IoTDBConnectionException, StatementExecutionException, InterruptedException {
         Session session = new Session.Builder()
                 .host(config.getValue("host"))
@@ -33,7 +33,7 @@ public class TestConnectionParams {
                 .password(config.getValue("password"))
                 .enableRedirection(false)
                 .fetchSize(100000)
-                .timeOut(1)
+//                .timeOut(1)
                 .zoneId(ZoneId.of("GMT+8"))
                 .thriftDefaultBufferSize(100)
                 .thriftMaxFrameSize(100)

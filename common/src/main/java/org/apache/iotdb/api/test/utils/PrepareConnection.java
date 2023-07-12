@@ -35,7 +35,7 @@ public class PrepareConnection {
                     .username(config.getValue("user"))
                     .password(config.getValue("password"))
                     .enableRedirection(false)
-                    .timeOut(Long.parseLong(config.getValue("session_timeout")))
+//                    .timeOut(Long.parseLong(config.getValue("session_timeout")))
                     .build();
         } else {
             session = new Session.Builder()
@@ -44,7 +44,7 @@ public class PrepareConnection {
                     .username(config.getValue("user"))
                     .password(config.getValue("password"))
                     .enableRedirection(false)
-                    .timeOut(Long.parseLong(config.getValue("session_timeout")))
+//                    .timeOut(Long.parseLong(config.getValue("session_timeout")))
                     .build();
         }
         session.open(false);
@@ -61,7 +61,7 @@ public class PrepareConnection {
                     .user(config.getValue("user"))
                     .password(config.getValue("password"))
                     .maxSize(10)
-                    .timeOut(Long.parseLong(config.getValue("session_timeout")))
+//                    .timeOut(Long.parseLong(config.getValue("session_timeout")))
                     .build();
         } else {
             sessionPool = new SessionPool.Builder()
@@ -70,7 +70,7 @@ public class PrepareConnection {
                     .user(config.getValue("user"))
                     .password(config.getValue("password"))
                     .maxSize(10)
-                    .timeOut(Long.parseLong(config.getValue("session_timeout")))
+//                    .timeOut(Long.parseLong(config.getValue("session_timeout")))
                     .build();
         }
 
