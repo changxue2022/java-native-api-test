@@ -13,6 +13,7 @@ import org.apache.iotdb.tsfile.file.metadata.enums.TSEncoding;
 import org.apache.iotdb.tsfile.write.schema.MeasurementSchema;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.testng.log4testng.Logger;
 
@@ -26,6 +27,12 @@ import static java.lang.System.out;
 public class Tmp extends BaseTestSuite {
     private Map<String, Object[]> structureInfo = new LinkedHashMap<>(6);
     Logger logger = Logger.getLogger(Tmp.class);
+    private List<String> devicePaths = new ArrayList<>();
+    private String database = "root.db.factory";
+    private String tsPrefix = "sensors_";
+    private String tsName = "appendSensor";
+    private String templateName = "template01";
+
 
     @BeforeClass
     public void BeforeClass() throws IoTDBConnectionException, StatementExecutionException {
@@ -36,7 +43,8 @@ public class Tmp extends BaseTestSuite {
         structureInfo.put("s_float", new Object[]{TSDataType.FLOAT, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
         structureInfo.put("s_double", new Object[]{TSDataType.DOUBLE, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
         structureInfo.put("s_text", new Object[]{TSDataType.TEXT, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
-
+        if (!checkStroageGroupExists(database))
+        session.createDatabase(database);
 
     }
     @AfterClass
@@ -44,13 +52,7 @@ public class Tmp extends BaseTestSuite {
         logger.warn("###### Tmp afterClass #####");
     }
 
-//    @Test
-    public void test82() throws IoTDBConnectionException, StatementExecutionException {
-        List<String> paths=new ArrayList<>();
 
-        paths.add("root.test.single");
-        session.createTimeseriesUsingSchemaTemplate(paths);
-    }
 
     // TIMECHODB-124
 //    @Test
@@ -90,11 +92,28 @@ public class Tmp extends BaseTestSuite {
         }
     }
 
-    @Test
-    public void test3() throws IOException, ParseException {
-        String mydate = "2022-12-31 23:59:56";
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        System.out.println(format.parse(mydate).getTime());
+    // TIMECHODB-271
+    @Test(priority = 10)
+    public void test271() throws IOException, ParseException, IoTDBConnectionException, StatementExecutionException {
+        createTemplate(templateName, database, true);
+    }
+    @DataProvider(name="getNormalNames", parallel = true)
+    public Iterator<Object[]> getNormalNames() throws IOException {
+//        return new CustomDataProvider().load("data/names-normal.csv").getData();
+        return new CustomDataProvider().load("data/test.csv").getData();
+    }
+    @Test(priority = 65, dataProvider = "getNormalNames")
+    public void testAddTSToTemplate_normalNames(String name, String comment, String index) throws IoTDBConnectionException, StatementExecutionException, IOException {
+        schemaList.add(new MeasurementSchema(name, TSDataType.FLOAT, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED));
+        List<String> paths = new ArrayList<>(1);
+        paths.add(database + "." + name);
+        devicePaths.add(database + "." + name);
+        addTSIntoTemplate(templateName, name, TSDataType.FLOAT, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED, null);
+        getTSCountInTemplate(templateName, true);
+        getSetPathsCount(templateName, true);
+        getActivePathsCount(templateName, true);
+        session.createTimeseriesUsingSchemaTemplate(paths);
+        assert checkUsingTemplate(paths.get(0), verbose) : "激活成功";
     }
 
 
