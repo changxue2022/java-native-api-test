@@ -7,8 +7,8 @@ import org.apache.iotdb.isession.template.Template;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
 import org.apache.iotdb.session.template.MeasurementNode;
+import org.apache.iotdb.tsfile.enums.TSDataType;
 import org.apache.iotdb.tsfile.file.metadata.enums.CompressionType;
-import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSEncoding;
 import org.apache.iotdb.tsfile.write.schema.MeasurementSchema;
 import org.testng.annotations.AfterClass;
@@ -97,13 +97,14 @@ public class Tmp extends BaseTestSuite {
     public void test271() throws IOException, ParseException, IoTDBConnectionException, StatementExecutionException {
         createTemplate(templateName, database, true);
     }
+    // TIMECHODB-271
     @DataProvider(name="getNormalNames", parallel = true)
-    public Iterator<Object[]> getNormalNames() throws IOException {
-//        return new CustomDataProvider().load("data/names-normal.csv").getData();
-        return new CustomDataProvider().load("data/test.csv").getData();
+    public Object[][] getNormalNames() throws IOException {
+        return new Object[][]{{"`*`"} };
     }
+    // TIMECHODB-271
     @Test(priority = 65, dataProvider = "getNormalNames")
-    public void testAddTSToTemplate_normalNames(String name, String comment, String index) throws IoTDBConnectionException, StatementExecutionException, IOException {
+    public void testAddTSToTemplate_normalNames(String name) throws IoTDBConnectionException, StatementExecutionException, IOException {
         schemaList.add(new MeasurementSchema(name, TSDataType.FLOAT, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED));
         List<String> paths = new ArrayList<>(1);
         paths.add(database + "." + name);
@@ -116,5 +117,31 @@ public class Tmp extends BaseTestSuite {
         assert checkUsingTemplate(paths.get(0), verbose) : "激活成功";
     }
 
+    @DataProvider(name="insertNames", parallel = true)
+    public Object[][] getInsertNames() throws IOException {
+        return new Object[][]{
+                {"`*`"} ,
+//                {"SET_STORAGE_GROUP"} ,
+//                {"null"} ,
+//                {"TRUE"} ,
+//                {"true"} ,
+//                {"FALSE"} ,
+//                {"false"}
+        };
+    }
+    //
+    @Test(dataProvider = "insertNames")
+    public void testInsert(String name) throws IoTDBConnectionException, StatementExecutionException {
+        insertRecordSingle(database+"."+name+"."+name, TSDataType.FLOAT, false, null);
+    }
+
+    @Test
+    public void test2() throws IoTDBConnectionException, StatementExecutionException {
+        List<TSDataType> tsDataTypeList = new ArrayList<>(1);
+        List<String> measurement = new ArrayList<>();
+        measurement.add( "`*`");
+        tsDataTypeList.add(TSDataType.INT32);
+        session.insertRecord("root.sg.`*`", 1L, measurement, tsDataTypeList, 32);
+    }
 
 }

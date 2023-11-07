@@ -166,5 +166,102 @@ public class TestTemplateParams extends BaseTestSuite {
     public void testUnset_wildcardPath() throws IoTDBConnectionException, StatementExecutionException {
         session.unsetSchemaTemplate(database+".**", tName);
     }
-
+//    @Test(priority = 70) //目前接口未实现，不测试
+//    public void testNullParams_templateName() throws IoTDBConnectionException, StatementExecutionException {
+//        expectCount = getTSCountInTemplate(templateName, verbose);
+//        this.tsName = "nullTest";
+//        Assert.assertThrows(StatementExecutionException.class, ()->{
+//            addTSIntoTemplate(null, tsName, TSDataType.INT32, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED);
+//        });
+//        assert expectCount == getTSCountInTemplate(templateName, verbose) : "增加模版列：templateName is null";
+//        List<String> paths = new ArrayList<>(1);
+//        List<TSDataType> tsDataTypes = new ArrayList<>(1);
+//        List<TSEncoding> tsEncodings = new ArrayList<>(1);
+//        List<CompressionType> compressionTypes = new ArrayList<>(1);
+//        paths.add(tsName);
+//        tsDataTypes.add(TSDataType.BOOLEAN);
+//        tsEncodings.add(TSEncoding.PLAIN);
+//        compressionTypes.add(CompressionType.UNCOMPRESSED);
+//        Assert.assertThrows(StatementExecutionException.class, ()->{
+//            addTSIntoTemplate(null, paths, tsDataTypes, tsEncodings, compressionTypes);
+//        });
+//        assert expectCount == getTSCountInTemplate(templateName, verbose) : "增加模版列：templateName is null";
+//    }
+//    @Test(priority = 71)
+//    public void testNullParams_tsName() throws IoTDBConnectionException, StatementExecutionException {
+//        expectCount = getTSCountInTemplate(templateName, verbose);
+//        Assert.assertThrows(StatementExecutionException.class, ()->{
+//            addTSIntoTemplate(templateName, null, TSDataType.INT32, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED);
+//        });
+//        assert expectCount == getTSCountInTemplate(templateName, verbose) : "增加模版列：tsName is null";
+//        List<String> paths = new ArrayList<>(1);
+//        List<TSDataType> tsDataTypes = new ArrayList<>(1);
+//        List<TSEncoding> tsEncodings = new ArrayList<>(1);
+//        List<CompressionType> compressionTypes = new ArrayList<>(1);
+//        paths.add(tsName);
+//        tsDataTypes.add(TSDataType.BOOLEAN);
+//        tsEncodings.add(TSEncoding.PLAIN);
+//        compressionTypes.add(CompressionType.UNCOMPRESSED);
+//        Assert.assertThrows(StatementExecutionException.class, ()->{
+//            addTSIntoTemplate(templateName, null, tsDataTypes, tsEncodings, compressionTypes);
+//        });
+//        assert expectCount == getTSCountInTemplate(templateName, verbose) : "增加模版列：nameList is null";
+//    }
+//    @Test(priority = 72)
+//    public void testNullParams_dataType() throws IoTDBConnectionException, StatementExecutionException {
+//        Assert.assertThrows(StatementExecutionException.class, ()->{
+//            addTSIntoTemplate(templateName, tsName, null, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED);
+//        });
+//        assert expectCount == getTSCountInTemplate(templateName, verbose) : "增加模版列：dataType is null";
+//        List<String> paths = new ArrayList<>(1);
+//        List<TSDataType> tsDataTypes = new ArrayList<>(1);
+//        List<TSEncoding> tsEncodings = new ArrayList<>(1);
+//        List<CompressionType> compressionTypes = new ArrayList<>(1);
+//        paths.add(tsName);
+//        tsDataTypes.add(TSDataType.BOOLEAN);
+//        tsEncodings.add(TSEncoding.PLAIN);
+//        compressionTypes.add(CompressionType.UNCOMPRESSED);
+//        Assert.assertThrows(StatementExecutionException.class, ()->{
+//            addTSIntoTemplate(templateName, paths, null, tsEncodings, compressionTypes);
+//        });
+//        assert expectCount == getTSCountInTemplate(templateName, verbose) : "增加模版列：dataTypeList is null";
+//    }
+//    @Test(priority = 73)
+//    public void testNullParams_encoding() throws IoTDBConnectionException, StatementExecutionException {
+//        Assert.assertThrows(StatementExecutionException.class, ()->{
+//            addTSIntoTemplate(templateName, tsName, TSDataType.INT32, null, CompressionType.UNCOMPRESSED);
+//        });
+//        assert expectCount == getTSCountInTemplate(templateName, verbose) : "增加模版列：encoding is null";
+//        List<String> paths = new ArrayList<>(1);
+//        List<TSDataType> tsDataTypes = new ArrayList<>(1);
+//        List<TSEncoding> tsEncodings = new ArrayList<>(1);
+//        List<CompressionType> compressionTypes = new ArrayList<>(1);
+//        paths.add(tsName);
+//        tsDataTypes.add(TSDataType.BOOLEAN);
+//        tsEncodings.add(TSEncoding.PLAIN);
+//        compressionTypes.add(CompressionType.UNCOMPRESSED);
+//        Assert.assertThrows(StatementExecutionException.class, ()->{
+//            addTSIntoTemplate(templateName, paths, tsDataTypes, null, compressionTypes);
+//        });
+//        assert expectCount == getTSCountInTemplate(templateName, verbose) : "增加模版列：encoding is null";
+//    }
+//    @Test(priority = 74)
+//    public void testNullParams_compress() throws IoTDBConnectionException, StatementExecutionException {
+//        Assert.assertThrows(StatementExecutionException.class, ()->{
+//            addTSIntoTemplate(templateName, tsName, TSDataType.INT32, TSEncoding.PLAIN, null);
+//        });
+//        assert expectCount == getTSCountInTemplate(templateName, verbose) : "增加模版列：compress is null";
+//        List<String> paths = new ArrayList<>(1);
+//        List<TSDataType> tsDataTypes = new ArrayList<>(1);
+//        List<TSEncoding> tsEncodings = new ArrayList<>(1);
+//        List<CompressionType> compressionTypes = new ArrayList<>(1);
+//        paths.add(tsName);
+//        tsDataTypes.add(TSDataType.BOOLEAN);
+//        tsEncodings.add(TSEncoding.PLAIN);
+//        compressionTypes.add(CompressionType.UNCOMPRESSED);
+//        Assert.assertThrows(StatementExecutionException.class, ()->{
+//            addTSIntoTemplate(templateName, paths, tsDataTypes, tsEncodings, null);
+//        });
+//        assert expectCount == getTSCountInTemplate(templateName, verbose) : "增加模版列：compressList is null";
+//    }
 }

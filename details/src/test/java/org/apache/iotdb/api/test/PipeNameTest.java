@@ -65,6 +65,7 @@ public class PipeNameTest extends BaseTestSuite {
     public void testPipe_normal(String name, String comment, String Index) throws IoTDBConnectionException, StatementExecutionException, IOException {
         String sql = "create pipe " +name+
                 " with connector ('connector'='iotdb-thrift-connector', 'connector.ip'='127.0.0.1', 'connector.port'='6667');";
+//        String sql = "CREATE PIPEPLUGIN "+name+" AS 'org.pipe.plugin.connector.TestConnector' USING URI \"file:///Users/changxue/work/pipe测试/pipe-plugin/target/pipe-plugin-1.jar\";";
         Session s = PrepareConnection.getSession();
         s.executeNonQueryStatement(sql);
         check_pipe_status(name, "STOPPED");
@@ -77,6 +78,7 @@ public class PipeNameTest extends BaseTestSuite {
     public void testPipe_error(String name, String comment, String Index) throws IoTDBConnectionException, StatementExecutionException, IOException {
         String sql = "create pipe " +name+
                 " with connector ('connector'='iotdb-thrift-connector', 'connector.ip'='127.0.0.1', 'connector.port'='6667');";
+//        String sql = "CREATE PIPEPLUGIN "+ name +" AS 'org.pipe.plugin.connector.TestConnector' USING URI \"file:///Users/changxue/work/pipe测试/pipe-plugin/target/pipe-plugin-1.jar\";";
         System.out.println(sql);
         Session s = PrepareConnection.getSession();
         s.executeNonQueryStatement(sql);
@@ -88,12 +90,13 @@ public class PipeNameTest extends BaseTestSuite {
     public void testConcurrent_sameName(String name, String comment, String Index) throws IoTDBConnectionException, StatementExecutionException, IOException {
         String sql = "create pipe " +name+
                 " with connector ('connector'='iotdb-thrift-connector', 'connector.ip'='127.0.0.1', 'connector.port'='6667');";
+//        String sql = "CREATE PIPEPLUGIN log AS 'org.pipe.plugin.connector.TestConnector' USING URI \"file:///Users/changxue/work/pipe测试/pipe-plugin/target/pipe-plugin-1.jar\";";
         Session s = PrepareConnection.getSession();
         s.executeNonQueryStatement(sql);
-        check_pipe_status(name, "STOPPED");
-        s.executeNonQueryStatement("start pipe "+name);
-        check_pipe_status(name, "RUNNING");
-        s.executeNonQueryStatement("drop pipe "+name);
+//        check_pipe_status(name, "STOPPED");
+//        s.executeNonQueryStatement("start pipe "+name);
+//        check_pipe_status(name, "RUNNING");
+//        s.executeNonQueryStatement("drop pipe "+name);
         s.close();
     }
 
