@@ -39,11 +39,10 @@ public class CreatePipeConcurrent {
         for (int i = 0; i < loop; i++) {
 //            String sql = "create pipe test with extractor ('extractor'='iotdb-extractor','extractor.pattern'='"+pattern+"', 'extractor.realtime.mode'='"+mode+"', 'extractor.forwarding-pipe-requests'='false') with connector ('connector'='"+connector+"', 'connector.node-urls'='"+targetHost+"');";
 //            String sql = "create pipe pipe_s_0_d_"+i+" with extractor ('extractor'='iotdb-extractor','extractor.pattern'='"+pattern+i+".s_0', 'extractor.realtime.mode'='"+mode+"', 'extractor.forwarding-pipe-requests'='false') with connector ('connector'='"+connector+"', 'connector.node-urls'='"+targetHost+"');";
-//            String sql = "create pipe pipe_"+i+" with extractor ('extractor'='iotdb-extractor','extractor.pattern'='"+pattern+i+"', 'extractor.realtime.mode'='"+mode+"', 'extractor.forwarding-pipe-requests'='false') with connector ('connector'='"+connector+"', 'connector.node-urls'='"+targetHost+"');";
+//            String sql = "create pipe pipe_"+i+" with extractor ('extractor'='iotdb-extractor','extractor.pattern'='"+pattern+i+"', 'extractor.realtime.mode'='"+mode+"', 'extractor.forwarding-pipe-requests'='false') with connector ('connector.batch.enable'='false','connector'='"+connector+"', 'connector.node-urls'='"+targetHost+"');";
 // pattern=root
 //            String sql = "create pipe pipe_"+i+" with extractor ('extractor'='iotdb-extractor','extractor.pattern'='root', 'extractor.realtime.mode'='"+mode+"', 'extractor.forwarding-pipe-requests'='false') with connector ('connector'='"+connector+"', 'connector.node-urls'='"+targetHost+"');";
           String sql = "start pipe pipe_"+i;
-//          String sql = "start pipe pipe_"+i;
 //          String sql = "start pipe pipe_"+i;
 //          String sql = "start pipe pipe_s_0_d_"+i;
 //          String sql = "drop pipe pipe_s_0_d_"+i;

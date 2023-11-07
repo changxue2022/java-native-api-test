@@ -2,15 +2,16 @@ package org.apache.iotdb.api.test.concurrent;
 
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.session.pool.SessionPool;
+import org.apache.iotdb.tsfile.enums.TSDataType;
 import org.apache.iotdb.tsfile.file.metadata.enums.CompressionType;
-import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSEncoding;
 import org.apache.iotdb.tsfile.write.schema.MeasurementSchema;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static java.lang.System.out;
 
