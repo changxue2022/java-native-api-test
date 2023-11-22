@@ -1,8 +1,6 @@
 package org.apache.iotdb.api.test.connection;
 
-import org.apache.iotdb.isession.util.Version;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
-import org.apache.iotdb.rpc.StatementExecutionException;
 import org.apache.iotdb.session.Session;
 import org.apache.iotdb.session.pool.SessionPool;
 import org.testng.annotations.Test;

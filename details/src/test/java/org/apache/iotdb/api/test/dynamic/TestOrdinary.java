@@ -7,12 +7,14 @@ import org.apache.iotdb.isession.template.Template;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
 import org.apache.iotdb.session.template.MeasurementNode;
-import org.apache.iotdb.tsfile.enums.TSDataType;
 import org.apache.iotdb.tsfile.file.metadata.enums.CompressionType;
+import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSEncoding;
 import org.apache.iotdb.tsfile.write.schema.MeasurementSchema;
 import org.testng.Assert;
-import org.testng.annotations.*;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 import org.testng.log4testng.Logger;
 
 import java.io.IOException;
@@ -282,6 +284,7 @@ public class TestOrdinary extends BaseTestSuite {
         int actual = getTSCountInTemplate(templateName, verbose);
         assert schemaList.size() ==  actual: "并发修改模版成功：names-normal.csv, actual "+actual + ", expect "+ schemaList.size();
         for (int i = 0; i < devicePaths.size(); i++) {
+            System.out.println(devicePaths.get(i));
             insertTabletMulti(devicePaths.get(i), schemaList, 10, isAligned);
         }
     }

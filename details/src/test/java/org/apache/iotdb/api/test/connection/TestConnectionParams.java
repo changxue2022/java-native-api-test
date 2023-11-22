@@ -5,8 +5,7 @@ import org.apache.iotdb.isession.SessionDataSet;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
 import org.apache.iotdb.session.Session;
-import org.apache.iotdb.tsfile.enums.TSDataType;
-import org.testng.Assert;
+import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.testng.annotations.BeforeClass;
 
 import java.io.IOException;

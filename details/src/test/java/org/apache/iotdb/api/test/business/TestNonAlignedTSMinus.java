@@ -1,12 +1,11 @@
 package org.apache.iotdb.api.test.business;
 
-import com.sun.glass.ui.Clipboard;
 import org.apache.iotdb.api.test.BaseTestSuite;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
-import org.apache.iotdb.tsfile.enums.TSDataType;
 import org.apache.iotdb.tsfile.file.metadata.enums.CompressionType;
+import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSEncoding;
 import org.apache.iotdb.tsfile.write.record.Tablet;
 import org.apache.iotdb.tsfile.write.schema.MeasurementSchema;

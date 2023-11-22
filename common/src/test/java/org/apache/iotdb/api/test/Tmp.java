@@ -1,14 +1,11 @@
 package org.apache.iotdb.api.test;
 
-import org.apache.iotdb.api.test.BaseTestSuite;
-import org.apache.iotdb.api.test.utils.CustomDataProvider;
-import org.apache.iotdb.api.test.utils.ReadConfig;
 import org.apache.iotdb.isession.template.Template;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
 import org.apache.iotdb.session.template.MeasurementNode;
-import org.apache.iotdb.tsfile.enums.TSDataType;
 import org.apache.iotdb.tsfile.file.metadata.enums.CompressionType;
+import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSEncoding;
 import org.apache.iotdb.tsfile.write.schema.MeasurementSchema;
 import org.testng.annotations.AfterClass;
@@ -19,10 +16,7 @@ import org.testng.log4testng.Logger;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
-
-import static java.lang.System.out;
 
 public class Tmp extends BaseTestSuite {
     private Map<String, Object[]> structureInfo = new LinkedHashMap<>(6);
@@ -53,12 +47,19 @@ public class Tmp extends BaseTestSuite {
     }
 
 
+    @Test
+    public void testINsert() throws IoTDBConnectionException, IOException, StatementExecutionException {
+        session.createTimeseries("root.sg.d.s_name", TSDataType.BOOLEAN, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED, null, null, null, null);
+        List<MeasurementSchema> schemaTypeList = new ArrayList<>();
+        schemaTypeList.add(new MeasurementSchema("s_name",TSDataType.BOOLEAN));
+        insertTabletMulti("root.sg.d", schemaTypeList, 10, true);
+    }
 
     // TIMECHODB-124
 //    @Test
     public void test() throws IoTDBConnectionException, StatementExecutionException {
         Map<String,String> props = new HashMap<>();
-        props.put("Prop1", "3");
+//        props.put("Prop1", "3");
         session.createTimeseries("root.sg.d.s_name", TSDataType.BOOLEAN, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED, props, null, null, null);
     }
 

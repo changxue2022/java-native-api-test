@@ -244,8 +244,8 @@ volatile,java关键字,247
 while,java关键字,248
 const,java关键字,249
 goto,java关键字,250
-TRUE,java关键字,251
-FALSE,java关键字,252
+#TRUE,java关键字,251
+#FALSE,java关键字,252
 contains,java关键字,253
 and,java关键字,254
 or,java关键字,255
