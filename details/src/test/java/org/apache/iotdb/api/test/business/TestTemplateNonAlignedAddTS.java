@@ -171,10 +171,10 @@ public class TestTemplateNonAlignedAddTS extends BaseTestSuite {
     private void doUpdateAfterAddTS(int index, boolean isAligned) throws IoTDBConnectionException, StatementExecutionException {
         long timestamp1 = 1669109508000L;
         long timestamp2 = 1669109398772L;
-        System.out.println("###### 前  ######");
+        logger.debug("###### 前  ######");
         getCount("select count(*) from "+devices[index]+" where time="+timestamp1+";", verbose);
         getCount("select count(*) from "+devices[index]+" where time="+timestamp2+";", verbose);
-        System.out.println("###### 前  ######");
+        logger.debug("###### 前  ######");
         List<Long> times = new ArrayList<>(2);
         List<List<String>> valueList = new ArrayList<>(2);
         List<List<String>> measurementList = new ArrayList<>(2);
@@ -199,10 +199,10 @@ public class TestTemplateNonAlignedAddTS extends BaseTestSuite {
         } else {
             session.insertStringRecordsOfOneDevice(devices[index], times, measurementList, valueList);
         }
-        System.out.println("###### 后  ######");
+        logger.debug("###### 前  ######");
         getCount("select count(*) from "+devices[index]+" where time="+timestamp1+";", verbose);
         getCount("select count(*) from "+devices[index]+" where time="+timestamp2+";", verbose);
-        System.out.println("###### 后  ######");
+        logger.debug("###### 前  ######");
         checkQueryResult("select s_float from "+devices[index]+" where time="+timestamp1+";", 13.33);
         checkQueryResult("select appendFloat from "+devices[index]+" where time="+timestamp1+";", 34567.0);
         checkQueryResult("select s_long from "+devices[index]+" where time="+timestamp2+";", timestamp2);
@@ -212,10 +212,10 @@ public class TestTemplateNonAlignedAddTS extends BaseTestSuite {
     private void doUpdateAfterAddTS2(int index, boolean isAligned) throws IoTDBConnectionException, StatementExecutionException {
         long timestamp1 = 1669109508000L;
         long timestamp2 = 1669109398772L;
-        System.out.println("###### 前  ######");
+        logger.debug("###### 前  ######");
         getCount("select count(*) from "+devices[index]+" where time="+timestamp1+";", verbose);
         getCount("select count(*) from "+devices[index]+" where time="+timestamp2+";", verbose);
-        System.out.println("###### 前  ######");
+        logger.debug("###### 前  ######");
         List<Long> times = new ArrayList<>(2);
         List<List<Object>> valueList = new ArrayList<>(2);
         List<List<String>> measurementList = new ArrayList<>(2);
@@ -240,10 +240,10 @@ public class TestTemplateNonAlignedAddTS extends BaseTestSuite {
                 session.insertRecord(devices[index], times.get(i), measurements, dataTypes, valueList.get(i));
             }
         }
-        System.out.println("###### 后  ######");
+        logger.debug("###### 后  ######");
         getCount("select count(*) from "+devices[index]+" where time="+timestamp1+";", verbose);
         getCount("select count(*) from "+devices[index]+" where time="+timestamp2+";", verbose);
-        System.out.println("###### 后  ######");
+        logger.debug("###### 后  ######");
         checkQueryResult("select s_float from "+devices[index]+" where time="+timestamp1+";", 13.33);
         checkQueryResult("select appendFloat from "+devices[index]+" where time="+timestamp1+";", 34567.0);
         checkQueryResult("select s_long from "+devices[index]+" where time="+timestamp2+";", timestamp2);
@@ -251,10 +251,10 @@ public class TestTemplateNonAlignedAddTS extends BaseTestSuite {
     }
     private void doUpdateAfterAddTS_origin(int index, boolean isAligned) throws IoTDBConnectionException, StatementExecutionException {
         Long[] times = new Long[]{1669109509000L, 1669109398772L};
-        System.out.println("###### 前  ######");
+        logger.debug("###### 前  ######");
         getCount("select count(*) from "+devices[index]+" where time="+times[0]+";", verbose);
         getCount("select count(*) from "+devices[index]+" where time="+times[1]+";", verbose);
-        System.out.println("###### 前  ######");
+        logger.debug("###### 前  ######");
         Tablet tablet = new Tablet(devices[index], schemaList, 100);
         int rowIndex = 0;
         tablet.initBitMaps();
@@ -274,10 +274,10 @@ public class TestTemplateNonAlignedAddTS extends BaseTestSuite {
         } else {
             session.insertTablet(tablet);
         }
-        System.out.println("###### 后  ######");
+        logger.debug("###### 后  ######");
         getCount("select count(*) from "+devices[index]+" where time="+times[0]+";", verbose);
         getCount("select count(*) from "+devices[index]+" where time="+times[1]+";", verbose);
-        System.out.println("###### 后  ######");
+        logger.debug("###### 后  ######");
         checkQueryResult("select s_float from "+devices[index]+" where time="+times[0]+";", 130.33);
         checkQueryResult("select s_text from "+devices[index]+" where time="+times[0]+";", "doUpdateAfterAddTS_origin:0");
         checkQueryResult("select s_long from "+devices[index]+" where time="+times[1]+";", times[1]);

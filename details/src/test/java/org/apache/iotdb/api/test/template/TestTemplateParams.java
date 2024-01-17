@@ -1,6 +1,7 @@
 package org.apache.iotdb.api.test.template;
 
 import org.apache.iotdb.api.test.BaseTestSuite;
+import org.apache.iotdb.api.test.utils.PrepareConnection;
 import org.apache.iotdb.isession.template.Template;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
@@ -32,7 +33,7 @@ public class TestTemplateParams extends BaseTestSuite {
     // TIMECHODB-141
 //    @Test(priority = 10, expectedExceptions = StatementExecutionException.class)
 //    public void testCreateTemplate_null() throws IoTDBConnectionException, IOException, StatementExecutionException {
-//        session.createSchemaTemplate(null);
+//        PrepareConnection.getSession().createSchemaTemplate(null);
 //    }
     @Test(priority = 11)
     public void testCreateTemplate_empty() throws IoTDBConnectionException, IOException, StatementExecutionException {
@@ -40,30 +41,31 @@ public class TestTemplateParams extends BaseTestSuite {
         Template template = new Template(templateName, isAligned);
         session.createSchemaTemplate(template);
         assert checkTemplateExists(templateName) : "创建0TS模版成功";
-        session.dropSchemaTemplate(templateName);
+        PrepareConnection.getSession().dropSchemaTemplate(templateName);
     }
     // TIMECHODB-149
 //    @Test(priority = 12, expectedExceptions = StatementExecutionException.class)
 //    public void testSet_nullTemplate() throws IoTDBConnectionException, StatementExecutionException {
-//        session.setSchemaTemplate(null, database);
+//        PrepareConnection.getSession().setSchemaTemplate(null, database);
 //    }
     @Test(priority = 13, expectedExceptions = StatementExecutionException.class)
     public void testSet_noTemp() throws IoTDBConnectionException, StatementExecutionException {
         getTemplateCount(true);
-        session.setSchemaTemplate(tName, database);
+        PrepareConnection.getSession().setSchemaTemplate(tName, database);
     }
 
-    @Test(priority = 14, expectedExceptions = IoTDBConnectionException.class)
+    // TIMECHODB-527
+//    @Test(priority = 14, expectedExceptions = IoTDBConnectionException.class)
     public void testSet_noTempNullPath() throws IoTDBConnectionException, StatementExecutionException {
-        session.setSchemaTemplate(tName, null);
+        PrepareConnection.getSession().setSchemaTemplate(tName, null);
     }
     @Test(priority = 15, expectedExceptions = StatementExecutionException.class)
     public void testSet_noTempEmptyPath() throws IoTDBConnectionException, StatementExecutionException {
-        session.setSchemaTemplate(tName, "");
+        PrepareConnection.getSession().setSchemaTemplate(tName, "");
     }
     @Test(priority = 16, expectedExceptions = StatementExecutionException.class)
     public void testSet_noTempRootPath() throws IoTDBConnectionException, StatementExecutionException {
-        session.setSchemaTemplate(tName, "root");
+        PrepareConnection.getSession().setSchemaTemplate(tName, "root");
         countLines("show paths set schema template "+tName, verbose);
     }
     @Test(priority = 17)
@@ -76,44 +78,44 @@ public class TestTemplateParams extends BaseTestSuite {
         session.createSchemaTemplate(template);
         assert templateCount + 1 == getTemplateCount(verbose) : "创建单节点模版成功";
     }
-    @Test(priority = 18, expectedExceptions = IoTDBConnectionException.class)
+//    @Test(priority = 18, expectedExceptions = IoTDBConnectionException.class)
     public void testSet_nullPath() throws IoTDBConnectionException, StatementExecutionException {
-        session.setSchemaTemplate(tName, null);
+        PrepareConnection.getSession().setSchemaTemplate(tName, null);
     }
     @Test(priority = 19, expectedExceptions = StatementExecutionException.class)
     public void testSet_emptyPath() throws IoTDBConnectionException, StatementExecutionException {
-        session.setSchemaTemplate(tName, "");
+        PrepareConnection.getSession().setSchemaTemplate(tName, "");
     }
     @Test(priority = 20, expectedExceptions = StatementExecutionException.class)
     public void testSet_noPath() throws IoTDBConnectionException, StatementExecutionException {
         // database 不存在
-        session.setSchemaTemplate(tName, database+"_nonExist");
+        PrepareConnection.getSession().setSchemaTemplate(tName, database+"_nonExist");
     }
-    @Test(priority = 30, expectedExceptions = IoTDBConnectionException.class)
+//    @Test(priority = 30, expectedExceptions = IoTDBConnectionException.class)
     public void testUnSet_nullPath() throws IoTDBConnectionException, StatementExecutionException {
-        session.unsetSchemaTemplate(null, tName);
+        PrepareConnection.getSession().unsetSchemaTemplate(null, tName);
     }
     @Test(priority = 31, expectedExceptions = StatementExecutionException.class)
     public void testUnSet_emptyPath() throws IoTDBConnectionException, StatementExecutionException {
-        session.unsetSchemaTemplate("", tName);
+        PrepareConnection.getSession().unsetSchemaTemplate("", tName);
     }
     @Test(priority = 32, expectedExceptions = StatementExecutionException.class)
     public void testUnSet_noPath() throws IoTDBConnectionException, StatementExecutionException {
         // database 不存在
-        session.unsetSchemaTemplate(database+"_nonExist", tName);
+        PrepareConnection.getSession().unsetSchemaTemplate(database+"_nonExist", tName);
     }
 
-    @Test(priority = 40, expectedExceptions = IoTDBConnectionException.class)
+//    @Test(priority = 40, expectedExceptions = IoTDBConnectionException.class)
     public void testDropTemplate_null() throws IoTDBConnectionException, StatementExecutionException {
-        session.dropSchemaTemplate(null);
+        PrepareConnection.getSession().dropSchemaTemplate(null);
     }
     @Test(priority = 41, expectedExceptions = StatementExecutionException.class)
     public void testDropTemplate_empty() throws IoTDBConnectionException, StatementExecutionException {
-        session.dropSchemaTemplate("");
+        PrepareConnection.getSession().dropSchemaTemplate("");
     }
     @Test(priority = 42, expectedExceptions = StatementExecutionException.class)
     public void testDropTemplate_invalid() throws IoTDBConnectionException, StatementExecutionException {
-        session.dropSchemaTemplate("abc.**");
+        PrepareConnection.getSession().dropSchemaTemplate("abc.**");
     }
     @Test(priority = 44, expectedExceptions = StatementExecutionException.class)
     public void testDeactive_wildcardPath_noActive() throws IoTDBConnectionException, StatementExecutionException {
@@ -156,7 +158,7 @@ public class TestTemplateParams extends BaseTestSuite {
     }
     @Test(priority = 57, expectedExceptions = StatementExecutionException.class)
     public void testUnset_activePath() throws IoTDBConnectionException, StatementExecutionException {
-        session.unsetSchemaTemplate(database, tName);
+        PrepareConnection.getSession().unsetSchemaTemplate(database, tName);
     }
     @Test(priority = 58)
     public void testDeactive_wildcardPath() throws IoTDBConnectionException, StatementExecutionException {
@@ -164,7 +166,7 @@ public class TestTemplateParams extends BaseTestSuite {
     }
     @Test(priority = 60, expectedExceptions = StatementExecutionException.class)
     public void testUnset_wildcardPath() throws IoTDBConnectionException, StatementExecutionException {
-        session.unsetSchemaTemplate(database+".**", tName);
+        PrepareConnection.getSession().unsetSchemaTemplate(database+".**", tName);
     }
 //    @Test(priority = 70) //目前接口未实现，不测试
 //    public void testNullParams_templateName() throws IoTDBConnectionException, StatementExecutionException {

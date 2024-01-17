@@ -305,7 +305,7 @@ public class TestDynamicTemplateMin extends BaseTestSuite {
             insertTabletMulti(device, schemaList_more, 10, isAligned);
             insertTabletMulti(device, schemaList_org, 10, isAligned);
             insertTabletMulti(device, schemaList_less, 10, isAligned);
-            assert expectTSCountEach == getTimeSeriesCount(device+".*", verbose) : "插入后，确定模版内TS数量:"+expectTSCountEach;
+            assert expectTSCountEach == getTimeSeriesCount(device+".*", verbose) : "插入后，确定模版内TS数量 expect:"+expectTSCountEach+" actual: "+getTimeSeriesCount(device+".*", verbose) ;
             assert expectTSCountEach == getTSCountInTemplate(templateName, verbose)  : "Template内TS数量:"+expectTSCountEach;
         }
 
@@ -317,11 +317,14 @@ public class TestDynamicTemplateMin extends BaseTestSuite {
         }
 
         // 删除部分数据 TIMECHODB-104
+        // TIMECHODB-526 301: Declared positions (2) does not match column 0's number of entries (3)
         for (int i = 0; i < devicePaths.size(); i++) {
             int recordCount = getCount("select count(*) from "+devicePaths.get(i), verbose);
             countLines("select * from "+devicePaths.get(i), verbose);
             session.deleteData(devicePaths.get(i)+".*", 1672513196000L);
-            assert recordCount > getCount("select count(*) from "+devicePaths.get(i), verbose) : "删除部分数据成功";
+            int actual = countLines("select * from "+devicePaths.get(i), verbose);
+
+            assert recordCount > actual : "删除部分数据成功, expect:"+recordCount+" actual: "+actual;
         }
         // 删除普通序列
         device = devicePaths.get(0);

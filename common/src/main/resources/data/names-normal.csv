@@ -222,7 +222,7 @@ interface,java关键字,225
 long,java关键字,226
 native,java关键字,227
 new,java关键字,228
-null,java关键字,229
+`null`,java关键字,229
 package,java关键字,230
 private,java关键字,231
 protected,java关键字,232

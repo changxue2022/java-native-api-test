@@ -10,6 +10,7 @@ import java.util.Arrays;
 
 public class PrepareConnection {
     private static ReadConfig config;
+    private static Session session;
 
     static {
         try {
@@ -18,7 +19,8 @@ public class PrepareConnection {
             throw new RuntimeException(e);
         }
     }
-    public static Session getSession() throws IoTDBConnectionException, IOException {
+
+    public static Session getSession() throws IoTDBConnectionException {
         Session session = null;
         if (config.getValue("is_cluster").equals("true")) {
             String host_nodes_str = config.getValue("host_nodes");
@@ -27,7 +29,6 @@ public class PrepareConnection {
                     .username(config.getValue("user"))
                     .password(config.getValue("password"))
                     .enableRedirection(false)
-//                    .timeOut(Long.parseLong(config.getValue("session_timeout")))
                     .build();
         } else {
             session = new Session.Builder()
@@ -36,7 +37,6 @@ public class PrepareConnection {
                     .username(config.getValue("user"))
                     .password(config.getValue("password"))
                     .enableRedirection(false)
-//                    .timeOut(Long.parseLong(config.getValue("session_timeout")))
                     .build();
         }
         session.open(false);
@@ -44,6 +44,7 @@ public class PrepareConnection {
         session.setFetchSize(10000);
         return session;
     }
+
     public static SessionPool getSessionPool() {
         SessionPool sessionPool = null;
         if (config.getValue("is_cluster").equals("true")) {

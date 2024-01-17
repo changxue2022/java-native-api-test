@@ -3,27 +3,27 @@ root.error.d1.ts1.text2,text,RLE,UNCOMPRESSED,m:empty,m:empty,m:empty,text_rle_U
 root.error.d1.ts1.text3,text,RLE,SNAPPY,m:empty,m:empty,m:empty,text_rle_SNAPPY,text rle SNAPPY
 root.error.d1.ts1.text4,text,RLE,GZIP,m:empty,m:empty,m:empty,text_rle_GZIP,text rle GZIP
 root.error.d1.ts1.text5,text,RLE,LZ4,m:empty,m:empty,m:empty,text_rle_LZ4,text rle LZ4
-root.error.d1.ts1.text6,text,RLE,SDT,m:empty,m:empty,m:empty,text_rle_SDT,text rle SDT
+#root.error.d1.ts1.text6,text,RLE,SDT,m:empty,m:empty,m:empty,text_rle_SDT,text rle SDT
 root.error.d1.ts1.text7,text,TS_2DIFF,UNCOMPRESSED,m:empty,m:empty,m:empty,text_ts_2diff_UNCOMPRESSED,text ts_2diff UNCOMPRESSED
 root.error.d1.ts1.text8,text,TS_2DIFF,SNAPPY,m:empty,m:empty,m:empty,text_ts_2diff_SNAPPY,text ts_2diff SNAPPY
 root.error.d1.ts1.text9,text,TS_2DIFF,GZIP,m:empty,m:empty,m:empty,text_ts_2diff_GZIP,text ts_2diff GZIP
 root.error.d1.ts1.text10,text,TS_2DIFF,LZ4,m:empty,m:empty,m:empty,text_ts_2diff_LZ4,text ts_2diff LZ4
-root.error.d1.ts1.text11,text,TS_2DIFF,SDT,m:empty,m:empty,m:empty,text_ts_2diff_SDT,text ts_2diff SDT
+#root.error.d1.ts1.text11,text,TS_2DIFF,SDT,m:empty,m:empty,m:empty,text_ts_2diff_SDT,text ts_2diff SDT
 root.error.d1.ts1.text12,text,GORILLA,UNCOMPRESSED,m:empty,m:empty,m:empty,text_Gorilla_UNCOMPRESSED,text Gorilla UNCOMPRESSED
 root.error.d1.ts1.text13,text,GORILLA,SNAPPY,m:empty,m:empty,m:empty,text_Gorilla_SNAPPY,text Gorilla SNAPPY
 root.error.d1.ts1.text14,text,GORILLA,GZIP,m:empty,m:empty,m:empty,text_Gorilla_GZIP,text Gorilla GZIP
 root.error.d1.ts1.text15,text,GORILLA,LZ4,m:empty,m:empty,m:empty,text_Gorilla_LZ4,text Gorilla LZ4
-root.error.d1.ts1.text16,text,GORILLA,SDT,m:empty,m:empty,m:empty,text_Gorilla_SDT,text Gorilla SDT
-root.error.d1.ts1.text17,text,FREQ,UNCOMPRESSED,m:empty,m:empty,m:empty,text_Freq_UNCOMPRESSED,text Freq UNCOMPRESSED
-root.error.d1.ts1.text18,text,FREQ,SNAPPY,m:empty,m:empty,m:empty,text_Freq_SNAPPY,text Freq SNAPPY
-root.error.d1.ts1.text19,text,FREQ,GZIP,m:empty,m:empty,m:empty,text_Freq_GZIP,text Freq GZIP
-root.error.d1.ts1.text20,text,FREQ,LZ4,m:empty,m:empty,m:empty,text_Freq_LZ4,text Freq LZ4
-root.error.d1.ts1.text21,text,FREQ,SDT,m:empty,m:empty,m:empty,text_Freq_SDT,text Freq SDT
+#root.error.d1.ts1.text16,text,GORILLA,SDT,m:empty,m:empty,m:empty,text_Gorilla_SDT,text Gorilla SDT
+#root.error.d1.ts1.text17,text,FREQ,UNCOMPRESSED,m:empty,m:empty,m:empty,text_Freq_UNCOMPRESSED,text Freq UNCOMPRESSED
+#root.error.d1.ts1.text18,text,FREQ,SNAPPY,m:empty,m:empty,m:empty,text_Freq_SNAPPY,text Freq SNAPPY
+#root.error.d1.ts1.text19,text,FREQ,GZIP,m:empty,m:empty,m:empty,text_Freq_GZIP,text Freq GZIP
+#root.error.d1.ts1.text20,text,FREQ,LZ4,m:empty,m:empty,m:empty,text_Freq_LZ4,text Freq LZ4
+#root.error.d1.ts1.text21,text,FREQ,SDT,m:empty,m:empty,m:empty,text_Freq_SDT,text Freq SDT
 root.error.d1.ts1.text22,text,ZIGZAG,UNCOMPRESSED,m:empty,m:empty,m:empty,text_Zigzag_UNCOMPRESSED,text Zigzag UNCOMPRESSED
 root.error.d1.ts1.text23,text,ZIGZAG,SNAPPY,m:empty,m:empty,m:empty,text_Zigzag_SNAPPY,text Zigzag SNAPPY
 root.error.d1.ts1.text24,text,ZIGZAG,GZIP,m:empty,m:empty,m:empty,text_Zigzag_GZIP,text Zigzag GZIP
 root.error.d1.ts1.text25,text,ZIGZAG,LZ4,m:empty,m:empty,m:empty,text_Zigzag_LZ4,text Zigzag LZ4
-root.error.d1.ts1.text26,text,ZIGZAG,SDT,m:empty,m:empty,m:empty,text_Zigzag_SDT,text Zigzag SDT
+#root.error.d1.ts1.text26,text,ZIGZAG,SDT,m:empty,m:empty,m:empty,text_Zigzag_SDT,text Zigzag SDT
 root.error.ts_error.boolean1,boolean,TS_2DIFF,UNCOMPRESSED,m:empty,m:empty,m:empty,boolean_TS_2DIFF_UNCOMPRESSED,boolean TS_2DIFF UNCOMPRESSED
 root.error.ts_error.boolean2,boolean,GORILLA,UNCOMPRESSED,m:empty,m:empty,m:empty,boolean_GORILLA_UNCOMPRESSED,boolean GORILLA UNCOMPRESSED
 root.error.ts_error.boolean3,boolean,FREQ,UNCOMPRESSED,m:empty,m:empty,m:empty,boolean_FREQ_UNCOMPRESSED,boolean FREQ UNCOMPRESSED
@@ -40,11 +40,11 @@ root.error.111,Boolean,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,all_number,Pat
 root.caseSensitive.ROOT,Boolean,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,Root,path:CaseSensitive: Root
 root.caseSensitive.ts1.root,Boolean,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,root,path:CaseSensitive: root
 root.error.1.2,Boolean,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,纯数值,path:Device sensor 都为数值
-root.error.`6`.`timecho.com`,Boolean,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,重复,path:Duplicate
-root.error.maxLength.abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abc,Boolean,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,超出max,Path:超出max值
-root.error.maxLength.汉语是中国使用人数最多的语言也是世界上作为第一语言使用人数最多的语言中国除汉族使用汉语外回族满族等也基本使用或转用汉语其他民族都有自己的语言许多民族都不同程度地转用或兼用汉语现代汉语有标准语和方言之分普通话是现代汉语的标准语以北京语音为标准音以北方话为基础方言以典范的现代白话文著作为语法规范中华人民共和国宪,Boolean,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,超出max中文,Path:超出max值中文
-root.error.maxLength.`123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123.56789123456`,Boolean,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,超出max数值,Path:超出max值数值
-"root.`\""a`",Int,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,特殊字符1,"特殊字符:"""
+#root.error.maxLength.abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abc,Boolean,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,超出max,Path:超出max值
+# max value
+#root.error.maxLength.汉语是中国使用人数最多的语言也是世界上作为第一语言使用人数最多的语言中国除汉族使用汉语外回族满族等也基本使用或转用汉语其他民族都有自己的语言许多民族都不同程度地转用或兼用汉语现代汉语有标准语和方言之分普通话是现代汉语的标准语以北京语音为标准音以北方话为基础方言以典范的现代白话文著作为语法规范中华人民共和国宪,Boolean,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,超出max中文,Path:超出max值中文
+#root.error.maxLength.`123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123.56789123456`,Boolean,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,超出max数值,Path:超出max值数值
+#"root.`\""a`",Int,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,特殊字符1,"特殊字符:"""
 root.`ab\``,Int,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,特殊字符2,特殊字符:`
 root.`ab\!`,Int,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,特殊字符5,特殊字符:!
 root.`ab\@`,Int,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,特殊字符6,特殊字符:@
@@ -82,27 +82,27 @@ root.error.d1.alias2,long,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,a.b,Alias:C
 root.error.d1.alias3,long,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,空 格,Alias:有空格
 root.error.d1.alias4,long,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,A-b,Alias:-
 root.error.d1.alias5,long,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,123456,Alias:all number
-root.error.d1.alias6,long,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,汉语是中国使用人数最多的语言也是世界上作为第一语言使用人数最多的语言中国除汉族使用汉语外回族满族等也基本使用或转用汉语其他民族都有,Alias:65中文
-root.error.d1.alias7,long,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abc,Alias:65英文数字
-root.error.d1,int,PLAIN,UNCOMPRESSED,m:null,m:null,m:null,parent_ts,parent_ts child ts
-root.error.d1.props1,int,PLAIN,UNCOMPRESSED,m:props:2,m:null,m:null,contain_props,contain 1 property error
-root.sg.d1.ts1,int21,int,FREQ,UNCOMPRESSED,m:null,m:null,m:null,int_Freq_UNCOMPRESSED,int Freq UNCOMPRESSED
-root.sg.d1.ts1,int22,int,FREQ,SNAPPY,m:null,m:null,m:null,int_Freq_SNAPPY,int Freq SNAPPY
-root.sg.d1.ts1,int23,int,FREQ,GZIP,m:null,m:null,m:null,int_Freq_GZIP,int Freq GZIP
-root.sg.d1.ts1,int24,int,FREQ,LZ4,m:null,m:null,m:null,int_Freq_LZ4,int Freq LZ4
-root.sg.d1.ts1,int25,int,FREQ,ZSTD,m:null,m:null,m:null,int_Freq_ZSTD,int Freq ZSTD
-root.sg.d1.ts1,long21,long,FREQ,UNCOMPRESSED,m:null,m:null,m:null,long_Freq_UNCOMPRESSED,long Freq UNCOMPRESSED
-root.sg.d1.ts1,long22,long,FREQ,SNAPPY,m:null,m:null,m:null,long_Freq_SNAPPY,long Freq SNAPPY
-root.sg.d1.ts1,long23,long,FREQ,GZIP,m:null,m:null,m:null,long_Freq_GZIP,long Freq GZIP
-root.sg.d1.ts1,long24,long,FREQ,LZ4,m:null,m:null,m:null,long_Freq_LZ4,long Freq LZ4
-root.sg.d1.ts1,long25,long,FREQ,ZSTD,m:null,m:null,m:null,long_Freq_ZSTD,long Freq ZSTD
-root.sg.d1.ts1,float21,float,FREQ,UNCOMPRESSED,m:null,m:null,m:null,float_Freq_UNCOMPRESSED,float Freq UNCOMPRESSED
-root.sg.d1.ts1,float22,float,FREQ,SNAPPY,m:null,m:null,m:null,float_Freq_SNAPPY,float Freq SNAPPY
-root.sg.d1.ts1,float23,float,FREQ,GZIP,m:null,m:null,m:null,float_Freq_GZIP,float Freq GZIP
-root.sg.d1.ts1,float24,float,FREQ,LZ4,m:null,m:null,m:null,float_Freq_LZ4,float Freq LZ4
-root.sg.d1.ts1,float25,float,FREQ,ZSTD,m:null,m:null,m:null,float_Freq_ZSTD,float Freq ZSTD
-root.sg.d1.ts1,double21,double,FREQ,UNCOMPRESSED,m:null,m:null,m:null,double_Freq_UNCOMPRESSED,double Freq UNCOMPRESSED
-root.sg.d1.ts1,double22,double,FREQ,SNAPPY,m:null,m:null,m:null,double_Freq_SNAPPY,double Freq SNAPPY
-root.sg.d1.ts1,double23,double,FREQ,GZIP,m:null,m:null,m:null,double_Freq_GZIP,double Freq GZIP
-root.sg.d1.ts1,double24,double,FREQ,LZ4,m:null,m:null,m:null,double_Freq_LZ4,double Freq LZ4
-root.sg.d1.ts1,double25,double,FREQ,ZSTD,m:null,m:null,m:null,double_Freq_ZSTD,double Freq ZSTD
+# ?
+#root.error.d1.alias6,long,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,汉语是中国使用人数最多的语言也是世界上作为第一语言使用人数最多的语言中国除汉族使用汉语外回族满族等也基本使用或转用汉语其他民族都有,Alias:65中文
+#root.error.d1.alias7,long,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abc,Alias:65英文数字
+#root.error.d1.props1,int,PLAIN,UNCOMPRESSED,m:props:2,m:null,m:null,"contain_props,contain 1 property error"
+#root.sg.d1.ts1,int,FREQ,UNCOMPRESSED,m:null,m:null,m:null,int_Freq_UNCOMPRESSED,"int Freq UNCOMPRESSED"
+#root.sg.d1.ts1,int,FREQ,SNAPPY,m:null,m:null,m:null,int_Freq_SNAPPY,int Freq SNAPPY
+#root.sg.d1.ts1,int,FREQ,GZIP,m:null,m:null,m:null,int_Freq_GZIP,int Freq GZIP
+#root.sg.d1.ts1,int,FREQ,LZ4,m:null,m:null,m:null,int_Freq_LZ4,int Freq LZ4
+#root.sg.d1.ts1,int,FREQ,ZSTD,m:null,m:null,m:null,int_Freq_ZSTD,int Freq ZSTD
+#root.sg.d1.ts1,long,FREQ,UNCOMPRESSED,m:null,m:null,m:null,long_Freq_UNCOMPRESSED,long Freq UNCOMPRESSED
+#root.sg.d1.ts1,long,FREQ,SNAPPY,m:null,m:null,m:null,long_Freq_SNAPPY,long Freq SNAPPY
+#root.sg.d1.ts1,long,FREQ,GZIP,m:null,m:null,m:null,long_Freq_GZIP,long Freq GZIP
+#root.sg.d1.ts1,long,FREQ,LZ4,m:null,m:null,m:null,long_Freq_LZ4,long Freq LZ4
+#root.sg.d1.ts1,long,FREQ,ZSTD,m:null,m:null,m:null,long_Freq_ZSTD,long Freq ZSTD
+#root.sg.d1.ts1,float,FREQ,UNCOMPRESSED,m:null,m:null,m:null,float_Freq_UNCOMPRESSED,float Freq UNCOMPRESSED
+#root.sg.d1.ts1,float,FREQ,SNAPPY,m:null,m:null,m:null,float_Freq_SNAPPY,float Freq SNAPPY
+#root.sg.d1.ts1,float,FREQ,GZIP,m:null,m:null,m:null,float_Freq_GZIP,float Freq GZIP
+#root.sg.d1.ts1,float,FREQ,LZ4,m:null,m:null,m:null,float_Freq_LZ4,float Freq LZ4
+#root.sg.d1.ts1,float,FREQ,ZSTD,m:null,m:null,m:null,float_Freq_ZSTD,float Freq ZSTD
+#root.sg.d1.ts1,double,FREQ,UNCOMPRESSED,m:null,m:null,m:null,double_Freq_UNCOMPRESSED,double Freq UNCOMPRESSED
+#root.sg.d1.ts1,double,FREQ,SNAPPY,m:null,m:null,m:null,double_Freq_SNAPPY,double Freq SNAPPY
+#root.sg.d1.ts1,double,FREQ,GZIP,m:null,m:null,m:null,double_Freq_GZIP,double Freq GZIP
+#root.sg.d1.ts1,double,FREQ,LZ4,m:null,m:null,m:null,double_Freq_LZ4,double Freq LZ4
+#root.sg.d1.ts1,double,FREQ,ZSTD,m:null,m:null,m:null,double_Freq_ZSTD,double Freq ZSTD

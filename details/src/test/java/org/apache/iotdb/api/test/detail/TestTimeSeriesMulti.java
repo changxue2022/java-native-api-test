@@ -55,7 +55,8 @@ public class TestTimeSeriesMulti extends TimeSeriesBaseTestSuite {
         if (tags != null) {tagList.add(tags);} else {tagList = null;}
         if (attrs != null) {attrList.add(attrs);} else {attrList = null;}
         if (alias != null) {aliasList.add(alias);} else {aliasList = null;}
-        System.out.println(paths+" datatype:"+tsDataTypes +" encoding:"+tsEncodings+ " compress:"+compressionTypes +" tags:"+ tagList+" attrs:"+ attrList+" alias:"+ aliasList);
+        if (verbose)
+        logger.debug(paths+" datatype:"+tsDataTypes +" encoding:"+tsEncodings+ " compress:"+compressionTypes +" tags:"+ tagList+" attrs:"+ attrList+" alias:"+ aliasList);
         session.createMultiTimeseries(
                 paths, tsDataTypes, tsEncodings, compressionTypes,
                 null, tagList, attrList, aliasList);
@@ -102,15 +103,17 @@ public class TestTimeSeriesMulti extends TimeSeriesBaseTestSuite {
             tags.add((Map<String,String>)line[6]);
             attrs.add((Map<String,String>)line[7]);
             alias.add(line[8] == null ?null:line[8].toString());
-//            System.out.println(line[0] +" ," +line[1]+" datatype:"+tsDataTypes +" encoding:"+tsEncodings+ " compress:"+compressionTypes +" tags:"+ tags+" attrs:"+ attrs+" alias:"+ alias);
+//            logger.debug(line[0] +" ," +line[1]+" datatype:"+tsDataTypes +" encoding:"+tsEncodings+ " compress:"+compressionTypes +" tags:"+ tags+" attrs:"+ attrs+" alias:"+ alias);
         }
-        System.out.println("paths="+paths.size());
-        System.out.println("tsDataTypes="+tsDataTypes.size());
-        System.out.println("tsEncodings="+tsEncodings.size());
-        System.out.println("compressionTypes="+compressionTypes.size());
-        System.out.println("tags="+tags.size());
-        System.out.println("attrs="+attrs.size());
-        System.out.println("alias="+alias.size());
+        if(verbose) {
+            logger.debug("paths=" + paths.size());
+            logger.debug("tsDataTypes=" + tsDataTypes.size());
+            logger.debug("tsEncodings=" + tsEncodings.size());
+            logger.debug("compressionTypes=" + compressionTypes.size());
+            logger.debug("tags=" + tags.size());
+            logger.debug("attrs=" + attrs.size());
+            logger.debug("alias=" + alias.size());
+        }
         session.createMultiTimeseries(
                 paths, tsDataTypes, tsEncodings, compressionTypes, null, tags, attrs, alias);
         assert paths.size() == getTimeSeriesCount("", verbose)  : "createMultiTimeseries normal";
@@ -192,10 +195,10 @@ public class TestTimeSeriesMulti extends TimeSeriesBaseTestSuite {
             tsEncodings.add((TSEncoding) result.get(1));
             compressionTypes.add((CompressionType) result.get(2));
         }
-        Session s = PrepareConnection.getSession();
-        s.createMultiTimeseries(
-                paths, tsDataTypes, tsEncodings, compressionTypes, null, tags, attrs, alias);
-        s.close();
+        try(Session s = PrepareConnection.getSession()) {
+            s.createMultiTimeseries(
+                    paths, tsDataTypes, tsEncodings, compressionTypes, null, tags, attrs, alias);
+        }
     }
 
 

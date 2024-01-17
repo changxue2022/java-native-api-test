@@ -101,14 +101,15 @@ public class TestDataBase extends BaseTestSuite {
     @Test(priority=50,dataProvider = "deleteStorageGroupError", expectedExceptions = StatementExecutionException.class)
     public void testDeleteStorageGroup_error(String storageGroupId, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {
         Session s = PrepareConnection.getSession();
-        System.out.println(storageGroupId + " ," + msg);
+        if (verbose)
+        logger.info(storageGroupId + " ," + msg);
 //        try {
             s.deleteStorageGroup(storageGroupId);
 //        } finally {
             s.close();
 //        }
         //失败打印
-        System.out.println(storageGroupId + " ," + msg);
+        logger.info(storageGroupId + " ,testDeleteStorageGroup_error:" + msg);
     }
 
     @Test(priority = 52, expectedExceptions = StatementExecutionException.class)
@@ -168,7 +169,9 @@ public class TestDataBase extends BaseTestSuite {
             }
         }
         int expectCount = getStorageGroupCount("", verbose) - total + 1 ;
-        System.out.println(sgs);
+        if (verbose) {
+            logger.debug(sgs);
+        }
         session.deleteStorageGroups(sgs);
         int actualCount = getStorageGroupCount("", verbose);
         Thread.sleep(100);

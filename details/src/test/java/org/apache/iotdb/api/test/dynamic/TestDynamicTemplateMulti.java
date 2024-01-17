@@ -1,6 +1,7 @@
 package org.apache.iotdb.api.test.dynamic;
 
 import org.apache.iotdb.api.test.BaseTestSuite;
+import org.apache.iotdb.api.test.utils.PrepareConnection;
 import org.apache.iotdb.isession.template.Template;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
@@ -30,6 +31,7 @@ public class TestDynamicTemplateMulti extends BaseTestSuite {
 
     @BeforeClass
     public void BeforeClass() throws IOException, IoTDBConnectionException, StatementExecutionException {
+        session = PrepareConnection.getSession();
         cleanDatabases(verbose);
         cleanTemplates(verbose);
     }

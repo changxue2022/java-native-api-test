@@ -46,9 +46,11 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
             tags.put("tag_" + i, "竖编辑模式" + i);
             attrs.put("attr_" + i, "显示当前类" + i);
         }
-        System.out.println("props=" + props.size());
-        System.out.println("tags=" + tags.size());
-        System.out.println("attrs=" + attrs.size());
+        if (verbose) {
+            logger.info("props=" + props.size());
+            logger.info("tags=" + tags.size());
+            logger.info("attrs=" + attrs.size());
+        }
         session.createTimeseries(path,
                 TSDataType.BOOLEAN,
                 TSEncoding.PLAIN,
@@ -127,6 +129,27 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
         } finally {
             s.close();
         }
+    }
+    @Test(priority = 22)
+    public void testDeviceAsTS() throws IoTDBConnectionException, StatementExecutionException {
+        String device = "root.sgt.d1";
+        session.createTimeseries(device+".s1", TSDataType.FLOAT, TSEncoding.GORILLA, CompressionType.SNAPPY);
+        assertTSExists(device+".s1", verbose);
+        Assert.assertThrows(StatementExecutionException.class, ()->{
+            session.createTimeseries(device, TSDataType.BOOLEAN, TSEncoding.GORILLA, CompressionType.SNAPPY);
+        });
+        session.deleteTimeseries(device+".**");
+    }
+
+    @Test(priority = 23)
+    public void testDuplicateTS() throws IoTDBConnectionException, StatementExecutionException {
+        String path = "root.error.`6`.`timecho.com`";
+        session.createTimeseries(path, TSDataType.TEXT, TSEncoding.PLAIN, CompressionType.GZIP);
+        assertTSExists(path, verbose);
+        Assert.assertThrows(StatementExecutionException.class, ()->{
+            session.createTimeseries(path, TSDataType.INT32, TSEncoding.PLAIN, CompressionType.GZIP);
+        });
+        session.deleteTimeseries(path);
     }
     @Test(priority = 30, dataProvider = "createSingleTimeSeriesError", expectedExceptions = StatementExecutionException.class)
     public void testCreateSingleTimeSeries_error(String path, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {

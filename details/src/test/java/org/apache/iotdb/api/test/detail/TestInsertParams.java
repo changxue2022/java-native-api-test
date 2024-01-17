@@ -1,6 +1,7 @@
 package org.apache.iotdb.api.test.detail;
 
 import org.apache.iotdb.api.test.BaseTestSuite;
+import org.apache.iotdb.api.test.utils.GenerateValues;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
 import org.apache.iotdb.tsfile.file.metadata.enums.CompressionType;
@@ -69,18 +70,61 @@ public class TestInsertParams extends BaseTestSuite {
 //        Tablet tablet = new Tablet(null, schemaList);
 //        session.insertTablet(tablet);
 //    }
-//    @Test(priority = 12) //TIMECHODB-144
-//    public void testInsertTablet_schemaListNull() throws IoTDBConnectionException, StatementExecutionException {
-//        Tablet tablet = new Tablet(device, null);
-//        session.insertTablet(tablet);
-//    }
-//    @Test(priority = 13) //TIMECHODB-145
-//    public void testInsertTablet_schemaListNullIn() throws IoTDBConnectionException, StatementExecutionException {
-//        List<MeasurementSchema> schemas = new ArrayList<>(1);
-//        schemas.add(null);
-//        Tablet tablet = new Tablet(device, schemas);
-//        session.insertTablet(tablet);
-//    }
+    @Test(priority = 12, expectedExceptions = NullPointerException.class) //TIMECHODB-144
+    public void testInsertTablet_schemaListNull() throws IoTDBConnectionException, StatementExecutionException {
+        Tablet tablet = new Tablet(device, null);
+        session.insertTablet(tablet);
+    }
+    @Test(priority = 13, expectedExceptions = NullPointerException.class) //TIMECHODB-145
+    public void testInsertTablet_schemaListNullIn() throws IoTDBConnectionException, StatementExecutionException {
+        List<MeasurementSchema> schemas = new ArrayList<>(1);
+        schemas.add(null);
+        Tablet tablet = new Tablet(device, schemas);
+        session.insertTablet(tablet);
+    }
+    // TIMECHODB-530
+    @Test(priority = 13, expectedExceptions = NullPointerException.class)
+    public void testInsertTablet_schemaListNullIn2() throws IoTDBConnectionException, StatementExecutionException {
+        int insertCount = 1;
+        List<MeasurementSchema> schemas = new ArrayList<>(3);
+        schemas.add(new MeasurementSchema("s_0", TSDataType.BOOLEAN));
+        schemas.add(new MeasurementSchema(null, TSDataType.INT32));
+        schemas.add(new MeasurementSchema("s_1", TSDataType.INT32));
+        Tablet tablet = new Tablet(device, schemas, insertCount);
+        int rowIndex = 0;
+        long timestamp = baseTime;
+        for (int row = 0; row < insertCount; row++) {
+            rowIndex = tablet.rowSize++;
+            timestamp += 3600000; //+1小时
+//            System.out.println("row="+row+" rowIndex="+rowIndex);
+            tablet.addTimestamp(rowIndex, timestamp);
+//            tablet.addTimestamp(rowIndex, row);
+            for (int i = 0; i < schemas.size(); i++) {
+                switch(schemas.get(i).getType()) {
+                    case BOOLEAN:
+                        tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex, GenerateValues.getBoolean());
+                        break;
+                    case INT32:
+                        tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex, GenerateValues.getInt());
+                        break;
+                    case INT64:
+                        tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex, GenerateValues.getLong(10));
+                        break;
+                    case FLOAT:
+                        tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex, GenerateValues.getFloat(2,100,200));
+                        break;
+                    case DOUBLE:
+                        tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex, GenerateValues.getDouble(2,500,1000));
+                        break;
+                    case TEXT:
+                        tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex, GenerateValues.getChinese());
+                        break;
+                }
+            }
+        }
+        session.insertTablet(tablet);
+    }
+
     @Test(priority = 14)
     public void testInsertTablet_NoValue() throws IoTDBConnectionException, StatementExecutionException {
         Tablet tablet = new Tablet(device, schemaList);

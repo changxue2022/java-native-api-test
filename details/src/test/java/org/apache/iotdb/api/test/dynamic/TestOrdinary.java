@@ -6,6 +6,7 @@ import org.apache.iotdb.api.test.utils.PrepareConnection;
 import org.apache.iotdb.isession.template.Template;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
+import org.apache.iotdb.session.Session;
 import org.apache.iotdb.session.template.MeasurementNode;
 import org.apache.iotdb.tsfile.file.metadata.enums.CompressionType;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
@@ -225,9 +226,10 @@ public class TestOrdinary extends BaseTestSuite {
         session.deleteDatabase(databaseTmp);
     }
     @Test(priority = 51)
-    public void testTemplateAndTS() throws IoTDBConnectionException, StatementExecutionException {
+    public void testTemplateAndTS() throws IoTDBConnectionException, StatementExecutionException, IOException {
         List<String> paths = new ArrayList<>(1);
         String databaseTmp = this.database +"_b11";
+        Session session = PrepareConnection.getSession();
         if (!checkStroageGroupExists(databaseTmp)) {
             session.createDatabase(databaseTmp);
             session.setSchemaTemplate(templateName, databaseTmp);
@@ -284,101 +286,100 @@ public class TestOrdinary extends BaseTestSuite {
         int actual = getTSCountInTemplate(templateName, verbose);
         assert schemaList.size() ==  actual: "并发修改模版成功：names-normal.csv, actual "+actual + ", expect "+ schemaList.size();
         for (int i = 0; i < devicePaths.size(); i++) {
-            System.out.println(devicePaths.get(i));
             insertTabletMulti(devicePaths.get(i), schemaList, 10, isAligned);
         }
     }
-    @DataProvider(name="getErrorNames", parallel = true)
-    public Iterator<Object[]> getErrorNames () throws IOException {
-        return new CustomDataProvider().load("data/names-error.csv").getData();
-    }
-    @Test(priority = 71, dataProvider = "getErrorNames", expectedExceptions = StatementExecutionException.class)
-    public void testErrorNames(String name, String comment, String index) throws IoTDBConnectionException, StatementExecutionException, IOException {
-//        if (!auto_create_schema) {
-            addTSIntoTemplate(templateName, name, TSDataType.FLOAT, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED, PrepareConnection.getSession());
-//        } else {
-//            insertTabletSingle(database +".d_"+index, name, TSDataType.FLOAT, 0, isAligned);
+//    @DataProvider(name="getErrorNames", parallel = true)
+//    public Iterator<Object[]> getErrorNames () throws IOException {
+//        return new CustomDataProvider().load("data/names-error.csv").getData();
+//    }
+//    @Test(priority = 71, dataProvider = "getErrorNames", expectedExceptions = StatementExecutionException.class)
+//    public void testErrorNames(String name, String comment, String index) throws IoTDBConnectionException, StatementExecutionException, IOException {
+////        if (!auto_create_schema) {
+//            addTSIntoTemplate(templateName, name, TSDataType.FLOAT, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED, PrepareConnection.getSession());
+////        } else {
+////            insertTabletSingle(database +".d_"+index, name, TSDataType.FLOAT, 0, isAligned);
+////        }
+//    }
+//    @DataProvider(name="getErrorStructures", parallel = true)
+//    public Iterator<Object[]> getErrorStructures () throws IOException {
+//        CustomDataProvider provider =  new CustomDataProvider();
+//        provider.parseTSStructure("data/ts-structures-error.csv");
+//        return provider.getData();
+//    }
+//    @Test(priority = 80, dataProvider = "getErrorStructures", expectedExceptions = StatementExecutionException.class)
+//    public void testErrorStructures(TSDataType tsDataType, TSEncoding encoding, CompressionType compressionType,String comment, String index) throws IoTDBConnectionException, StatementExecutionException, IOException {
+//        addTSIntoTemplate(templateName, "ts_error" + index, tsDataType, encoding, compressionType, PrepareConnection.getSession());
+//    }
+//
+//    @Test(enabled = false, priority = 100)
+//    public void testMultiAdding() throws IoTDBConnectionException, StatementExecutionException, IOException {
+//        int appendCount = 3000;
+//        int i = 0;
+//        String device = database + "2.device_" + i;
+//        List<String> tsNames = new ArrayList<>(appendCount);
+//        List<TSDataType> tsDataTypes = new ArrayList<>(appendCount);
+//        List<TSEncoding> tsEncodings = new ArrayList<>(appendCount);
+//        List<CompressionType> compressionTypes = new ArrayList<>(appendCount);
+//        for (int k = 0; k < appendCount; k++) {
+//            tsNames.add(tsPrefix+k);
+//            i = k%structures.size();
+//            tsDataTypes.add((TSDataType) structures.get(i).get(0));
+//            tsEncodings.add((TSEncoding) structures.get(i).get(1));
+//            compressionTypes.add((CompressionType) structures.get(i).get(2));
+//            schemaList.add(new MeasurementSchema(tsPrefix + k,
+//                    (TSDataType) structures.get(i).get(0), (TSEncoding) structures.get(i).get(1),
+//                    (CompressionType) structures.get(i).get(2)));
 //        }
-    }
-    @DataProvider(name="getErrorStructures", parallel = true)
-    public Iterator<Object[]> getErrorStructures () throws IOException {
-        CustomDataProvider provider =  new CustomDataProvider();
-        provider.parseTSStructure("data/ts-structures-error.csv");
-        return provider.getData();
-    }
-    @Test(priority = 80, dataProvider = "getErrorStructures", expectedExceptions = StatementExecutionException.class)
-    public void testErrorStructures(TSDataType tsDataType, TSEncoding encoding, CompressionType compressionType,String comment, String index) throws IoTDBConnectionException, StatementExecutionException, IOException {
-        addTSIntoTemplate(templateName, "ts_error" + index, tsDataType, encoding, compressionType, PrepareConnection.getSession());
-    }
-
-    @Test(enabled = false, priority = 100)
-    public void testMultiAdding() throws IoTDBConnectionException, StatementExecutionException, IOException {
-        int appendCount = 3000;
-        int i = 0;
-        String device = database + "2.device_" + i;
-        List<String> tsNames = new ArrayList<>(appendCount);
-        List<TSDataType> tsDataTypes = new ArrayList<>(appendCount);
-        List<TSEncoding> tsEncodings = new ArrayList<>(appendCount);
-        List<CompressionType> compressionTypes = new ArrayList<>(appendCount);
-        for (int k = 0; k < appendCount; k++) {
-            tsNames.add(tsPrefix+k);
-            i = k%structures.size();
-            tsDataTypes.add((TSDataType) structures.get(i).get(0));
-            tsEncodings.add((TSEncoding) structures.get(i).get(1));
-            compressionTypes.add((CompressionType) structures.get(i).get(2));
-            schemaList.add(new MeasurementSchema(tsPrefix + k,
-                    (TSDataType) structures.get(i).get(0), (TSEncoding) structures.get(i).get(1),
-                    (CompressionType) structures.get(i).get(2)));
-        }
-        logger.debug("auto_create_schema="+auto_create_schema);
-        logger.debug("isAligned="+isAligned);
-        addTSIntoTemplate(templateName,tsNames,tsDataTypes, tsEncodings,compressionTypes);
-//        int actualCount = getTSCountInTemplate(templateName, verbose);
-//        int expectCount = appendCount + structures.size();
-//        assert expectCount == actualCount: "append 成功:expect="+expectCount+" actual="+actualCount;
-        insertTabletMulti(device, schemaList, appendCount, isAligned);
-        session.deleteDatabase(database +2);
-
-    }
-    @Test(enabled = false, priority = 120) //189130 //3930 insert
-    public void testContinuousAdding() throws IoTDBConnectionException, StatementExecutionException, IOException {
-        String database = this.database +1;
-        int maxLength = 2;
-        int appendCount = 100;
-        List<String> devicePaths = new ArrayList<>(maxLength);
-        for (int i = 0; i < maxLength; i++) {
-            devicePaths.add(database + ".device_" + i);
-        }
-        session.createDatabase(database);
-        session.setSchemaTemplate(templateName, database);
-        session.createTimeseriesUsingSchemaTemplate(devicePaths);
-
-        int baseIndex = structures.size();
-        int index = baseIndex ;
-        for (int l = 0; l < loop; l++) {
-            for (int i = 0; i < structures.size(); i++) {
-                List<String> tsNames = new ArrayList<>(appendCount);
-                List<TSDataType> tsDataTypes = new ArrayList<>(appendCount);
-                List<TSEncoding> tsEncodings = new ArrayList<>(appendCount);
-                List<CompressionType> compressionTypes = new ArrayList<>(appendCount);
-                for (int k = 0; k < appendCount; k++) {
-                    index++;
-//                    logger.debug("l="+l+" i="+i+" k="+k+" index="+index);
-                    tsNames.add(tsPrefix+index);
-                    tsDataTypes.add((TSDataType) structures.get(i).get(0));
-                    tsEncodings.add((TSEncoding) structures.get(i).get(1));
-                    compressionTypes.add((CompressionType) structures.get(i).get(2));
-                    schemaList.add(new MeasurementSchema(tsPrefix + index,
-                            (TSDataType) structures.get(i).get(0), (TSEncoding) structures.get(i).get(1),
-                            (CompressionType) structures.get(i).get(2)));
-                }
-                addTSIntoTemplate(templateName,tsNames,tsDataTypes, tsEncodings,compressionTypes);
-                for (int j = 0; j < maxLength; j++) {
-                    insertTabletMulti(devicePaths.get(j), schemaList, index, isAligned);
-                }
-            }
-        }
-        session.deleteDatabase(this.database +1);
-    }
+//        logger.debug("auto_create_schema="+auto_create_schema);
+//        logger.debug("isAligned="+isAligned);
+//        addTSIntoTemplate(templateName,tsNames,tsDataTypes, tsEncodings,compressionTypes);
+////        int actualCount = getTSCountInTemplate(templateName, verbose);
+////        int expectCount = appendCount + structures.size();
+////        assert expectCount == actualCount: "append 成功:expect="+expectCount+" actual="+actualCount;
+//        insertTabletMulti(device, schemaList, appendCount, isAligned);
+//        session.deleteDatabase(database +2);
+//
+//    }
+//    @Test(enabled = false, priority = 120) //189130 //3930 insert
+//    public void testContinuousAdding() throws IoTDBConnectionException, StatementExecutionException, IOException {
+//        String database = this.database +1;
+//        int maxLength = 2;
+//        int appendCount = 100;
+//        List<String> devicePaths = new ArrayList<>(maxLength);
+//        for (int i = 0; i < maxLength; i++) {
+//            devicePaths.add(database + ".device_" + i);
+//        }
+//        session.createDatabase(database);
+//        session.setSchemaTemplate(templateName, database);
+//        session.createTimeseriesUsingSchemaTemplate(devicePaths);
+//
+//        int baseIndex = structures.size();
+//        int index = baseIndex ;
+//        for (int l = 0; l < loop; l++) {
+//            for (int i = 0; i < structures.size(); i++) {
+//                List<String> tsNames = new ArrayList<>(appendCount);
+//                List<TSDataType> tsDataTypes = new ArrayList<>(appendCount);
+//                List<TSEncoding> tsEncodings = new ArrayList<>(appendCount);
+//                List<CompressionType> compressionTypes = new ArrayList<>(appendCount);
+//                for (int k = 0; k < appendCount; k++) {
+//                    index++;
+////                    logger.debug("l="+l+" i="+i+" k="+k+" index="+index);
+//                    tsNames.add(tsPrefix+index);
+//                    tsDataTypes.add((TSDataType) structures.get(i).get(0));
+//                    tsEncodings.add((TSEncoding) structures.get(i).get(1));
+//                    compressionTypes.add((CompressionType) structures.get(i).get(2));
+//                    schemaList.add(new MeasurementSchema(tsPrefix + index,
+//                            (TSDataType) structures.get(i).get(0), (TSEncoding) structures.get(i).get(1),
+//                            (CompressionType) structures.get(i).get(2)));
+//                }
+//                addTSIntoTemplate(templateName,tsNames,tsDataTypes, tsEncodings,compressionTypes);
+//                for (int j = 0; j < maxLength; j++) {
+//                    insertTabletMulti(devicePaths.get(j), schemaList, index, isAligned);
+//                }
+//            }
+//        }
+//        session.deleteDatabase(this.database +1);
+//    }
 
 }

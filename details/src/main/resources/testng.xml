@@ -79,35 +79,17 @@
             <class name="org.apache.iotdb.api.test.template.TestTemplateParams"></class>
         </classes>
     </test>
-<!--    <test name="TimeseriesTest" preserve-order="true">-->
+<!--    <test name="TriggerNameTest" preserve-order="true">-->
 <!--        <classes>-->
-<!--            <class name="org.apache.iotdb.api.test.detail.TestDataBase"></class>-->
-<!--            <class name="org.apache.iotdb.api.test.detail.TestTimeSeries"></class>-->
-<!--            <class name="org.apache.iotdb.api.test.detail.TestTimeSeriesMulti"></class>-->
+<!--            <class name="org.apache.iotdb.api.test.TriggerNameTest"></class>-->
 <!--        </classes>-->
 <!--    </test>-->
-<!--    <test name="TemplateTest" preserve-order="true">-->
+<!--    <test name="UDFNameTest" preserve-order="true">-->
 <!--        <classes>-->
-<!--            <class name="org.apache.iotdb.api.test.detail.newTest"></class>-->
-<!--            <class name="org.apache.iotdb.api.test.template.TestTemplate"></class>-->
-<!--            <class name="org.apache.iotdb.api.test.template.ActiveInBatch"></class>-->
+<!--            <class name="org.apache.iotdb.api.test.UDFNameTest"></class>-->
 <!--        </classes>-->
 <!--    </test>-->
-<!--    <test name="DynamicTemplateTest" preserve-order="true">-->
-<!--        <classes>-->
-<!--            <class name="org.apache.iotdb.api.test.dynamic.TestOrdinary" />-->
-<!--            <class name="org.apache.iotdb.api.test.dynamic.TestDynamicTemplateMin" />-->
-<!--            <class name="org.apache.iotdb.api.test.dynamic.TestDynamicTemplateMulti" />-->
-<!--        </classes>-->
-<!--    </test>-->
-<!--    <test name="ParamsTest" preserve-order="true">-->
-<!--        <classes>-->
-<!--            <class name="org.apache.iotdb.api.test.detail.TestDatabaseParams"></class>-->
-<!--            <class name="org.apache.iotdb.api.test.detail.TestTimeSeriesParams"></class>-->
-<!--            <class name="org.apache.iotdb.api.test.detail.TestInsertParams"></class>-->
-<!--            <class name="org.apache.iotdb.api.test.template.TestTemplateParams"></class>-->
-<!--        </classes>-->
-<!--    </test>-->
+
 
     <listeners>
 <!--        <listener class-name="org.testng.reporters.JUnitXMLReporter"/>-->

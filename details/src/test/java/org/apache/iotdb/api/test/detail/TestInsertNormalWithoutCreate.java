@@ -41,7 +41,7 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
 
 
     @BeforeClass(enabled = true)
-    public void beforeClass() throws IoTDBConnectionException, StatementExecutionException {
+    public void beforeClass() throws IoTDBConnectionException, StatementExecutionException, IOException {
         cleanDatabases(verbose);
         out.println("创建序列");
         session.setStorageGroup(device.substring(0,device.lastIndexOf('.')));

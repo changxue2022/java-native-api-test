@@ -2,11 +2,13 @@ package org.apache.iotdb.api.test.template;
 
 import org.apache.iotdb.api.test.BaseTestSuite;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
+import org.apache.iotdb.api.test.utils.PrepareConnection;
 import org.apache.iotdb.api.test.utils.ReadConfig;
 import org.apache.iotdb.api.test.utils.Tools;
 import org.apache.iotdb.isession.template.Template;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
+import org.apache.iotdb.session.Session;
 import org.apache.iotdb.session.template.MeasurementNode;
 import org.apache.iotdb.tsfile.file.metadata.enums.CompressionType;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
@@ -40,9 +42,12 @@ public class ActiveInBatch extends BaseTestSuite {
         maxDatabaseLength = Integer.parseInt(ReadConfig.getInstance().getValue("max_database_length"));
         structures = new CustomDataProvider().parseTSStructure("data/ts-structures.csv");
         errStructures = new CustomDataProvider().parseTSStructure("data/ts-structures-error.csv");
+        if (verbose) {
+            logger.info("######## ActiveInBatch #######");
+        }
     }
 
-    @DataProvider(name="getErrorNames")
+    @DataProvider(name="getErrorNames", parallel = true)
     public Iterator<Object[]> getErrorNames() throws IOException {
         return new CustomDataProvider().load("data/names-error.csv").getData();
     }
@@ -259,6 +264,7 @@ public class ActiveInBatch extends BaseTestSuite {
 
     @Test(priority = 120, dataProvider = "getNormalNames")
     public void testNormalOne(String name, String comment, String index) throws StatementExecutionException, IoTDBConnectionException, IOException {
+        Session session = PrepareConnection.getSession();
         String database = databasePrefix+index;
         String templateName = templateNamePrefix+index;
         if (!checkStroageGroupExists(database)) {
@@ -277,12 +283,13 @@ public class ActiveInBatch extends BaseTestSuite {
         assert checkTemplateContainPath(templateName, database) : "挂载模版成功";
         paths.add(database+"."+name);
         session.createTimeseriesUsingSchemaTemplate(paths);
-        assert paths.size() == getActivePathsCount(templateName, verbose) : "激活成功";
+        assert paths.size() == getActivePathsCount(templateName, verbose) : "激活成功: expect "+paths.size()+" actual "+getActivePathsCount(templateName, verbose);
         assert checkUsingTemplate(paths.get(0), verbose) : paths.get(0)+"使用了模版";
         insertRecordSingle(database+"."+name+"."+name, tsDataType, isAligned, null);
         session.deleteStorageGroup(database);
         session.dropSchemaTemplate(templateName);
         session.createDatabase(database);
+        session.close();
     }
 //    @Test(priority = 130)
     public void createTemplateBig() throws IoTDBConnectionException, StatementExecutionException, IOException {
