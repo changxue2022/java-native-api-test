@@ -5,6 +5,7 @@ import org.apache.iotdb.api.test.utils.PrepareConnection;
 import org.apache.iotdb.isession.template.Template;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
+import org.apache.iotdb.session.Session;
 import org.apache.iotdb.session.template.MeasurementNode;
 import org.apache.iotdb.tsfile.file.metadata.enums.CompressionType;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
@@ -168,7 +169,34 @@ public class TestTemplateParams extends BaseTestSuite {
     public void testUnset_wildcardPath() throws IoTDBConnectionException, StatementExecutionException {
         PrepareConnection.getSession().unsetSchemaTemplate(database+".**", tName);
     }
-//    @Test(priority = 70) //目前接口未实现，不测试
+    // TIMECHODB-483
+    @Test(priority = 61, expectedExceptions = StatementExecutionException.class)
+    public void testNullTsName() throws IoTDBConnectionException, StatementExecutionException, IOException {
+        Session session = PrepareConnection.getSession();
+        Template template = new Template("null_t", true);
+        MeasurementNode mNode = new MeasurementNode(null, TSDataType.FLOAT,
+                TSEncoding.GORILLA, CompressionType.LZ4);
+        template.addToTemplate(mNode);
+        session.createSchemaTemplate(template);
+        session.close();
+    }
+    @Test(priority = 62, expectedExceptions = StatementExecutionException.class)
+    public void testContainsNullTsName() throws IoTDBConnectionException, StatementExecutionException, IOException {
+        Session session = PrepareConnection.getSession();
+        Template template = new Template("null_t2", true);
+        MeasurementNode mNode1 = new MeasurementNode("s_0", TSDataType.FLOAT,
+                TSEncoding.GORILLA, CompressionType.LZ4);
+        MeasurementNode mNode2 = new MeasurementNode(null, TSDataType.FLOAT,
+                TSEncoding.GORILLA, CompressionType.LZ4);
+        MeasurementNode mNode3 = new MeasurementNode("s_1", TSDataType.FLOAT,
+                TSEncoding.GORILLA, CompressionType.LZ4);
+        template.addToTemplate(mNode1);
+        template.addToTemplate(mNode2);
+        template.addToTemplate(mNode3);
+        session.createSchemaTemplate(template);
+        session.close();
+    }
+ //    @Test(priority = 70) //目前接口未实现，不测试
 //    public void testNullParams_templateName() throws IoTDBConnectionException, StatementExecutionException {
 //        expectCount = getTSCountInTemplate(templateName, verbose);
 //        this.tsName = "nullTest";
