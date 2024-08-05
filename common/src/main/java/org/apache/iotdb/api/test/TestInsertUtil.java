@@ -13,8 +13,6 @@ import org.testng.annotations.DataProvider;
 import java.io.IOException;
 import java.util.*;
 
-import static java.lang.System.out;
-
 public class TestInsertUtil extends BaseTestSuite {
     // 数据库名称
     protected static String database = "root.testInsert";

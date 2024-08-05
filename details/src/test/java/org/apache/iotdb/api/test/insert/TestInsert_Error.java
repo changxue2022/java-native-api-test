@@ -2,8 +2,6 @@ package org.apache.iotdb.api.test.insert;
 
 
 import org.apache.iotdb.api.test.TestInsertUtil;
-import org.apache.iotdb.api.test.utils.CustomDataProvider;
-import org.apache.iotdb.rpc.BatchExecutionException;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
 import org.apache.tsfile.enums.TSDataType;
@@ -12,7 +10,6 @@ import org.apache.tsfile.file.metadata.enums.TSEncoding;
 import org.apache.tsfile.utils.Binary;
 import org.apache.tsfile.write.record.Tablet;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.io.IOException;

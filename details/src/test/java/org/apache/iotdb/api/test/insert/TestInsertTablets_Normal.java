@@ -20,8 +20,6 @@ import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.util.*;
 
-import static java.lang.System.out;
-
 public class TestInsertTablets_Normal extends BaseTestSuite {
     // 数据库名称
     private static final String database = "root.testInsertTables";

@@ -18,8 +18,6 @@ import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.util.*;
 
-import static java.lang.System.out;
-
 /**
  * 测试数据写入——insertRecords 正常情况
  * author：肖林捷

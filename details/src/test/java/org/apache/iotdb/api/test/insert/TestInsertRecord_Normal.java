@@ -4,9 +4,6 @@ import org.apache.iotdb.api.test.BaseTestSuite;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
-//import org.apache.tsfile.enums.TSDataType;
-//import org.apache.tsfile.file.metadata.enums.CompressionType;
-//import org.apache.tsfile.file.metadata.enums.TSEncoding;
 import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.file.metadata.enums.CompressionType;
 import org.apache.tsfile.file.metadata.enums.TSEncoding;
@@ -20,8 +17,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.util.*;
-
-import static java.lang.System.out;
 
 public class TestInsertRecord_Normal extends BaseTestSuite {
     // 数据库名称

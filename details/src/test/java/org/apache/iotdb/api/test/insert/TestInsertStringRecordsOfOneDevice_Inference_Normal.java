@@ -15,8 +15,6 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.util.*;
 
-import static java.lang.System.out;
-
 public class TestInsertStringRecordsOfOneDevice_Inference_Normal extends BaseTestSuite {
     // 数据库名称
     private static final String database = "root.testInsertRecordsOfOneDevice";

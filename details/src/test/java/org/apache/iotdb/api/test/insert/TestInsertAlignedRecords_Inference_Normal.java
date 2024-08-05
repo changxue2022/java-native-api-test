@@ -7,18 +7,13 @@ import org.apache.iotdb.rpc.StatementExecutionException;
 import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.file.metadata.enums.CompressionType;
 import org.apache.tsfile.file.metadata.enums.TSEncoding;
-import org.apache.tsfile.utils.Binary;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.time.LocalDate;
 import java.util.*;
-
-import static java.lang.System.out;
 
 public class TestInsertAlignedRecords_Inference_Normal extends BaseTestSuite {
     // 数据库名称

@@ -32,3 +32,6 @@ After running, here is the reports:
 details/target/site/surefire-report.html
 ```
 ![](assets/16843000786395.jpg)
+
+
+
