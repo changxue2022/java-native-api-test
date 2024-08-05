@@ -19,6 +19,28 @@
         </classes>
     </test>
 
+    <test name="InsertTest" preserve-order="true">
+        <classes>
+            <class name="org.apache.iotdb.api.test.insert.TestInsert_Error"></class>
+            <class name="org.apache.iotdb.api.test.insert.TestInsertAlignedRecord_Inference_Normal"></class>
+            <class name="org.apache.iotdb.api.test.insert.TestInsertAlignedRecord_Normal"></class>
+            <class name="org.apache.iotdb.api.test.insert.TestInsertAlignedRecords_Inference_Normal"></class>
+            <class name="org.apache.iotdb.api.test.insert.TestInsertAlignedRecords_Normal"></class>
+            <class name="org.apache.iotdb.api.test.insert.TestInsertAlignedRecordsOfOneDevice_Normal"></class>
+            <class name="org.apache.iotdb.api.test.insert.TestInsertAlignedStringRecordsOfOneDevice_Inference_Normal"></class>
+            <class name="org.apache.iotdb.api.test.insert.TestInsertAlignedTablet_Normal"></class>
+            <class name="org.apache.iotdb.api.test.insert.TestInsertAlignedTablets_Normal"></class>
+            <class name="org.apache.iotdb.api.test.insert.TestInsertRecord_Inference_Normal"></class>
+            <class name="org.apache.iotdb.api.test.insert.TestInsertRecord_Normal"></class>
+            <class name="org.apache.iotdb.api.test.insert.TestInsertRecords_Inference_Normal"></class>
+            <class name="org.apache.iotdb.api.test.insert.TestInsertRecords_Normal"></class>
+            <class name="org.apache.iotdb.api.test.insert.TestInsertRecordsOfOneDevice_Normal"></class>
+            <class name="org.apache.iotdb.api.test.insert.TestInsertStringRecordsOfOneDevice_Inference_Normal"></class>
+            <class name="org.apache.iotdb.api.test.insert.TestInsertTablet_Normal"></class>
+            <class name="org.apache.iotdb.api.test.insert.TestInsertTablets_Normal"></class>
+        </classes>
+    </test>
+
     <test name="TestDataBase" preserve-order="true">
         <classes>
             <class name="org.apache.iotdb.api.test.detail.TestDataBase"></class>
@@ -79,6 +101,12 @@
             <class name="org.apache.iotdb.api.test.template.TestTemplateParams"></class>
         </classes>
     </test>
+
+
+
+
+
+
 <!--    <test name="TriggerNameTest" preserve-order="true">-->
 <!--        <classes>-->
 <!--            <class name="org.apache.iotdb.api.test.TriggerNameTest"></class>-->

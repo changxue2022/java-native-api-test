@@ -1,0 +1,11 @@
+Time,boolean_data,int32_data,int64_data,float_data,double_data,text_data,string_data,blob_data,timestamp_data,date_data
+1,true,0,0,0.0,0.0,1234567890,1234567890,iotdb1,0,1970-01-01
+7,false,-2147483649,-9223372036854775809,-0.12345678,-0.12345678901234567,abcdefghijklmnopqrstuvwsyz,abcdefghijklmnopqrstuvwsyz,iotdb2,-9223372036854775809,0999-01-01
+8,false,2147483648,9223372036854775808,0.123456789,0.12345678901234567,!@#$%^&*()-=`,!@#$%^&*()-=`,iotdb3,9223372036854775808,9999-13-33
+9,True,1.0,1.01,1,1,没问题,没问题,iotdb4,1,2024/07/25
+10,null,null,null,null,null,,,null,null,
+2,1,0.0,1.0,1,2,1234567890,1234567890,0,iotdb1,ture
+3,false,0.0,1.0,1,2,1234567890,1234567890,0,iotdb1,ture
+4,false,1,1.0,1,2,1234567890,1234567890,0,iotdb1,ture
+5,false,1,2,1,2,1234567890,1234567890,0,iotdb1,ture
+6,false,1,2,0,0,1234567890,1234567890,0,iotdb1,ture
