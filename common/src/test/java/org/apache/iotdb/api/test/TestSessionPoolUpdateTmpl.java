@@ -24,6 +24,10 @@ import java.util.Map;
 import static java.lang.System.out;
 
 //iotdb-5233
+
+/**
+ * 用于测试IoTDB会话池的功能
+ */
 public class TestSessionPoolUpdateTmpl {
     private static SessionPool session = new SessionPool.Builder()
                                         .host("iotdb-45")

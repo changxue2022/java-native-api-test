@@ -16,6 +16,7 @@ import org.apache.tsfile.write.schema.MeasurementSchema;
 import org.jetbrains.annotations.NotNull;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 import org.testng.log4testng.Logger;
 
 import java.io.IOException;
@@ -25,6 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
+/**
+ * 基础测试套件
+ */
 public class BaseTestSuite {
     public Logger logger = Logger.getLogger(BaseTestSuite.class);
     public Session session = null;
@@ -35,6 +39,7 @@ public class BaseTestSuite {
     // 自动创建元数据开关。 dynamic module. 动态模版相关
     protected boolean auto_create_schema;
     protected long baseTime;
+
     @BeforeClass
     public void beforeSuite() throws IoTDBConnectionException, ParseException, IOException {
         session = PrepareConnection.getSession();
@@ -44,6 +49,7 @@ public class BaseTestSuite {
         auto_create_schema = Boolean.parseBoolean(ReadConfig.getInstance().getValue("auto_create_schema"));
         baseTime = parseDate();
     }
+
     @AfterClass
     public void afterSuie() throws IoTDBConnectionException, StatementExecutionException {
 //        logger.warn("############ BaseTestSuite AfterClass ##########" );
@@ -51,17 +57,29 @@ public class BaseTestSuite {
         cleanTemplates(verbose);
         session.close();
     }
+
     private long parseDate() throws IOException, ParseException {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return format.parse(ReadConfig.getInstance().getValue("time_base")).getTime();
     }
+
     public boolean checkStroageGroupExists(String storageGroupId) throws IoTDBConnectionException, StatementExecutionException {
-        try (SessionDataSet records = session.executeQueryStatement("show storage group "+storageGroupId)) {
+        try (SessionDataSet records = session.executeQueryStatement("show storage group " + storageGroupId)) {
             return records.hasNext();
         }
     }
+
+    /**
+     * 统计sql获取的行数
+     *
+     * @param sql
+     * @param verbose
+     * @return
+     * @throws IoTDBConnectionException
+     * @throws StatementExecutionException
+     */
     public int countLines(String sql, boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
-        try (SessionDataSet records = session.executeQueryStatement(sql) ) {
+        try (SessionDataSet records = session.executeQueryStatement(sql)) {
             if (verbose) {
                 logger.info(sql);
                 logger.info("******** start ********");
@@ -81,6 +99,17 @@ public class BaseTestSuite {
             return count;
         }
     }
+
+
+    /**
+     * 获取某列实际有效记录条数
+     *
+     * @param sql
+     * @param verbose
+     * @return
+     * @throws IoTDBConnectionException
+     * @throws StatementExecutionException
+     */
     public int getCount(String sql, boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
         SessionDataSet records = session.executeQueryStatement(sql);
         SessionDataSet.DataIterator recordsIter = records.iterator();
@@ -100,14 +129,17 @@ public class BaseTestSuite {
         }
         return count;
     }
+
     public int getStorageGroupCount(String storageGroupId) throws IoTDBConnectionException, StatementExecutionException {
         return getStorageGroupCount(storageGroupId, false);
     }
+
     public int getStorageGroupCount(String storageGroupId, boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
-        return getCount("count databases "+storageGroupId, verbose);
+        return getCount("count databases " + storageGroupId, verbose);
     }
+
     public void assertTSExists(String path, boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
-        try (SessionDataSet dataSet = session.executeQueryStatement("show timeseries "+path) ) {
+        try (SessionDataSet dataSet = session.executeQueryStatement("show timeseries " + path)) {
             SessionDataSet.DataIterator recordsIter = dataSet.iterator();
             while (recordsIter.next()) {
                 if (verbose) {
@@ -120,18 +152,21 @@ public class BaseTestSuite {
             }
         }
     }
+
     public int getTimeSeriesCount(String timeSeries, boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
-        return getCount("count timeseries "+timeSeries, verbose);
+        return getCount("count timeseries " + timeSeries, verbose);
     }
+
     public int getDeviceCount(String device, boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
-        return getCount("count devices "+device, verbose);
+        return getCount("count devices " + device, verbose);
     }
+
     public int getRecordCount(String device, boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
-        return getCount("select count(*) from "+device, verbose);
+        return getCount("select count(*) from " + device, verbose);
     }
 
     public void checkQueryResult(String sql, Object expectValue) throws IoTDBConnectionException, StatementExecutionException {
-        logger.debug("sql="+sql);
+        logger.debug("sql=" + sql);
         try (SessionDataSet dataSet = session.executeQueryStatement(sql)) {
             if (expectValue instanceof Number) {
                 Double expect = Double.valueOf(expectValue.toString());
@@ -151,7 +186,7 @@ public class BaseTestSuite {
     }
 
     public boolean checkTemplateExists(String templateName) throws IoTDBConnectionException, StatementExecutionException {
-        try (SessionDataSet dataSet = session.executeQueryStatement("show schema templates ") ) {
+        try (SessionDataSet dataSet = session.executeQueryStatement("show schema templates ")) {
             SessionDataSet.DataIterator records = dataSet.iterator();
             while (records.next()) {
                 if (templateName.equals(records.getString(1))) {
@@ -161,8 +196,9 @@ public class BaseTestSuite {
             return false;
         }
     }
+
     public boolean checkTemplateContainPath(String templateName, String path) throws IoTDBConnectionException, StatementExecutionException {
-        try(SessionDataSet dataSet = PrepareConnection.getSession().executeQueryStatement("show paths set schema template "+templateName)) {
+        try (SessionDataSet dataSet = PrepareConnection.getSession().executeQueryStatement("show paths set schema template " + templateName)) {
             while (dataSet.hasNext()) {
                 String result = dataSet.next().getFields().get(0).toString();
                 if (result.equals(path)) {
@@ -172,8 +208,9 @@ public class BaseTestSuite {
             return false;
         }
     }
+
     public boolean checkUsingTemplate(String device, boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
-        try(SessionDataSet dataSet = PrepareConnection.getSession().executeQueryStatement("show child nodes "+device)) {
+        try (SessionDataSet dataSet = PrepareConnection.getSession().executeQueryStatement("show child nodes " + device)) {
             boolean result = dataSet.hasNext();
             if (verbose) {
                 while (dataSet.hasNext()) {
@@ -184,21 +221,23 @@ public class BaseTestSuite {
             return !result;
         }
     }
+
     public void cleanDatabases(boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
         int count = getCount("count databases", verbose);
         if (verbose) {
-            logger.info("drop databases: "+count);
+            logger.info("drop databases: " + count);
         }
         if (count > 0) {
             session.executeNonQueryStatement("drop database root.**");
         }
     }
+
     public void cleanTemplates(boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
         SessionDataSet records = session.executeQueryStatement("show schema templates");
         int count = 0;
         while (records.hasNext()) {
             count++;
-            session.dropSchemaTemplate("`"+records.next().getFields().get(0)+"`");
+            session.dropSchemaTemplate("`" + records.next().getFields().get(0) + "`");
         }
         if (verbose) {
             logger.info("drop templates:" + count);
@@ -211,21 +250,21 @@ public class BaseTestSuite {
 
         int index = 0;
         if (path.endsWith("`")) {
-            int endIndex = path.length()-2;
+            int endIndex = path.length() - 2;
             while (true) {
-                index = path.lastIndexOf("`", endIndex) -1;
+                index = path.lastIndexOf("`", endIndex) - 1;
                 if (path.charAt(index) == '`') {
-                    index = index-2;
+                    index = index - 2;
                 } else {
                     break;
                 }
-                endIndex = index -1;
+                endIndex = index - 1;
             }
         } else {
             index = path.lastIndexOf('.');
         }
         String device = path.substring(0, index);
-        String tsName = path.substring(index+ 1);
+        String tsName = path.substring(index + 1);
 //        System.out.println("device: "+device);
 //        System.out.println("tsName: "+tsName);
 
@@ -239,6 +278,7 @@ public class BaseTestSuite {
             insertRecordMulti(device, tsNames, tsDataTypeList, baseTime, isAligned, aliasList);
         }
     }
+
     public void insertRecordMulti(String device, List<String> tsNames, List<TSDataType> tsDataTypeList, long timestamp, boolean isAligned, List<String> aliasList) throws IoTDBConnectionException, StatementExecutionException {
 //        System.out.println("######## insertRecordMulti device = "+device);
         List<Object> values = new ArrayList<>(tsDataTypeList.size());
@@ -288,13 +328,14 @@ public class BaseTestSuite {
         schemaList.add(new MeasurementSchema(tsName, tsDataType));
         insertTabletMulti(device, schemaList, insertCount, isAligned);
     }
+
     public void insertTabletMulti(String device, List<MeasurementSchema> schemaList, int insertCount, boolean isAligned) throws IoTDBConnectionException, StatementExecutionException {
         Session session = this.session;
         if (insertCount == 0) {
             PrepareConnection.getSession();
         }
         if (verbose) {
-            logger.info("insertTabletMulti device="+device+" schema="+schemaList.size()+" insertCount="+insertCount);
+            logger.info("insertTabletMulti device=" + device + " schema=" + schemaList.size() + " insertCount=" + insertCount);
         }
         Tablet tablet = new Tablet(device, schemaList, insertCount);
         int rowIndex = 0;
@@ -306,7 +347,7 @@ public class BaseTestSuite {
             tablet.addTimestamp(rowIndex, timestamp);
 //            tablet.addTimestamp(rowIndex, row);
             for (int i = 0; i < schemaList.size(); i++) {
-                switch(schemaList.get(i).getType()) {
+                switch (schemaList.get(i).getType()) {
                     case BOOLEAN:
                         tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, GenerateValues.getBoolean());
                         break;
@@ -317,10 +358,10 @@ public class BaseTestSuite {
                         tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, GenerateValues.getLong(10));
                         break;
                     case FLOAT:
-                        tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, GenerateValues.getFloat(2,100,200));
+                        tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, GenerateValues.getFloat(2, 100, 200));
                         break;
                     case DOUBLE:
-                        tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, GenerateValues.getDouble(2,500,1000));
+                        tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, GenerateValues.getDouble(2, 500, 1000));
                         break;
                     case TEXT:
                         tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, GenerateValues.getChinese());
@@ -333,7 +374,7 @@ public class BaseTestSuite {
         } else {
             session.insertTablet(tablet);
         }
-        checkQueryResult("select count("+schemaList.get(0).getMeasurementId()+") from "
+        checkQueryResult("select count(" + schemaList.get(0).getMeasurementId() + ") from "
                 + device + ";", insertCount);
         if (insertCount == 0) {
             session.close();
@@ -351,8 +392,9 @@ public class BaseTestSuite {
             queryLastData(paths, null, verbose, null);
         }
     }
+
     public void queryLastData(List<String> paths, List<String> expectValues, boolean verbose, Long gtTime) throws IoTDBConnectionException, StatementExecutionException {
-        SessionDataSet dataSet ;
+        SessionDataSet dataSet;
         Session session = PrepareConnection.getSession();
         if (gtTime != null) {
             dataSet = session.executeLastDataQuery(paths, gtTime, 1000L);
@@ -360,7 +402,7 @@ public class BaseTestSuite {
             dataSet = session.executeLastDataQuery(paths);
         }
         if (verbose) {
-            logger.info(paths +" expect="+ expectValues);
+            logger.info(paths + " expect=" + expectValues);
             logger.info(dataSet.getColumnNames());
         }
         int i = 0;
@@ -368,7 +410,7 @@ public class BaseTestSuite {
         while (records.next()) {
             if (verbose) {
                 for (int j = 1; j <= dataSet.getColumnNames().size(); j++) {
-                    logger.info(records.getString(j)+",");
+                    logger.info(records.getString(j) + ",");
                 }
                 logger.info("");
             }
@@ -379,41 +421,47 @@ public class BaseTestSuite {
         }
         session.close();
     }
+
     public int getTemplateCount(boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
         return countLines("show schema templates", verbose);
     }
+
     public int getTSCountInTemplate(String templateName, boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
-        String sql = "show nodes in schema template "+templateName;
+        String sql = "show nodes in schema template " + templateName;
         return countLines(sql, verbose);
     }
+
     public int getSetPathsCount(String templateName, boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
-        String sql = "show paths set schema template "+templateName;
+        String sql = "show paths set schema template " + templateName;
         return countLines(sql, verbose);
     }
+
     public int getActivePathsCount(String templateName, boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
-        String sql = "show paths using schema template "+templateName;
+        String sql = "show paths using schema template " + templateName;
         return countLines(sql, verbose);
     }
+
     public void deactiveTemplate(String templateName, String path) throws IoTDBConnectionException, StatementExecutionException {
         // delete timeseries of schema template t1 from root.sg1.d1
         // deactivate schema template t1 from root.sg1.d1
-        String sql = "deactivate schema template "+templateName+" from "+path;
+        String sql = "deactivate schema template " + templateName + " from " + path;
         logger.debug(sql);
         Session session = PrepareConnection.getSession();
         session.executeNonQueryStatement(sql);
         session.close();
     }
-     public void deactiveTemplate(String templateName, @NotNull List<String> paths) throws IoTDBConnectionException, StatementExecutionException {
+
+    public void deactiveTemplate(String templateName, @NotNull List<String> paths) throws IoTDBConnectionException, StatementExecutionException {
         int count = getActivePathsCount(templateName, verbose);
         count -= paths.size();
         // delete timeseries of schema template t1 from root.sg1.d1
         // deactivate schema template t1 from root.sg1.d1
-         for (int i = 0; i < paths.size(); i++) {
-             checkUsingTemplate(paths.get(i), true) ;//: paths.get(i)+"使用了模版";
-             String sql = "deactivate schema template "+templateName+" from "+paths.get(i);
-             logger.debug(sql);
-             session.executeNonQueryStatement(sql);
-         }
+        for (int i = 0; i < paths.size(); i++) {
+            checkUsingTemplate(paths.get(i), true);//: paths.get(i)+"使用了模版";
+            String sql = "deactivate schema template " + templateName + " from " + paths.get(i);
+            logger.debug(sql);
+            session.executeNonQueryStatement(sql);
+        }
         assert count == getActivePathsCount(templateName, verbose) : "解除成功";
     }
 
@@ -439,9 +487,10 @@ public class BaseTestSuite {
 //        System.out.println(sb.toString());
         session.executeNonQueryStatement(sb.toString());
         int actualCount = getTSCountInTemplate(templateName, false);
-        logger.debug("beforeCount="+beforeCount);
-        assert expectCount == actualCount : "成功修改模版 expect="+expectCount+" actual="+actualCount;
+        logger.debug("beforeCount=" + beforeCount);
+        assert expectCount == actualCount : "成功修改模版 expect=" + expectCount + " actual=" + actualCount;
     }
+
     public void addTSIntoTemplate(String templateName, String tsName, TSDataType tsDataType, TSEncoding tsEncoding, CompressionType compressionType, Session conn) throws IoTDBConnectionException, StatementExecutionException {
 //        int count = getTSCountInTemplate(templateName, false);
 //        count ++;
@@ -465,8 +514,8 @@ public class BaseTestSuite {
 //        assert count == getTSCountInTemplate(templateName, false) : "成功修改模版";
     }
 
-    public void  cleanTemplateNodes(String templateName, String prefix) throws IoTDBConnectionException, StatementExecutionException {
-        String sql = "show paths using schema template "+templateName;
+    public void cleanTemplateNodes(String templateName, String prefix) throws IoTDBConnectionException, StatementExecutionException {
+        String sql = "show paths using schema template " + templateName;
         Session session = PrepareConnection.getSession();
         SessionDataSet records = session.executeQueryStatement(sql);
         SessionDataSet.DataIterator recordsIter = records.iterator();
@@ -475,7 +524,7 @@ public class BaseTestSuite {
                 deactiveTemplate(templateName, recordsIter.getString(1));
             }
         }
-        sql = "show paths set schema template "+templateName;
+        sql = "show paths set schema template " + templateName;
         records = session.executeQueryStatement(sql);
         recordsIter = records.iterator();
         while (recordsIter.next()) {

@@ -29,176 +29,221 @@ import static java.lang.System.out;
  * 6. 测试时间戳各种格式
  */
 public class TestInsert extends BaseTestSuite {
+    // 数据库名称
     private static final String database = "root.testInsert";
-    private static final String device = database+".d1";
-    private static final String alignedDevice = database+".d2";
+    // 设备名称
+    private static final String device = database + ".d1";
+    // 对齐设备名称
+    private static final String alignedDevice = database + ".d2";
+    // 物理量类型信息
     private Map<String, TSDataType> measureTSTypeInfos = new LinkedHashMap<>(6);
+    // 存储路径
     private final List<String> paths = new ArrayList<>(6);
+    // 物理量
     private final List<String> measurements = new ArrayList<>(6);
+    // 数据类型
     private final List<TSDataType> dataTypes = new ArrayList<>(6);
+    // 物理量模板
     private final List<MeasurementSchema> schemaList = new ArrayList<>();// tablet
+    // 预期的记录条数
+    private final int expectCount = 17;
 
-    private final int expectCount = 18;
-
-
+    // 在测试类之前准备好环境（数据库、时间序列）
     @BeforeClass(enabled = true)
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException {
+        // 检查存储组是否存在，如果存在则删除
         if (checkStroageGroupExists(database)) {
             session.deleteDatabase(database);
         }
+        // 创建数据库
         session.createDatabase(database);
+        // 添加不同的数据类型
         measureTSTypeInfos.put("s_boolean", TSDataType.BOOLEAN);
         measureTSTypeInfos.put("s_int", TSDataType.INT32);
         measureTSTypeInfos.put("s_long", TSDataType.INT64);
         measureTSTypeInfos.put("s_float", TSDataType.FLOAT);
         measureTSTypeInfos.put("s_double", TSDataType.DOUBLE);
         measureTSTypeInfos.put("s_text", TSDataType.TEXT);
-
-        measureTSTypeInfos.forEach((key,value) -> {
+        // 遍历measureTSTypeInfos，为时间序列添加路径、测量和数据类型
+        measureTSTypeInfos.forEach((key, value) -> {
             paths.add(device + "." + key);
             measurements.add(key);
             dataTypes.add(value);
             schemaList.add(new MeasurementSchema(key, value, TSEncoding.PLAIN, CompressionType.GZIP));
         });
-
+        // 为时间序列创建编码和压缩类型的列表
         List<TSEncoding> encodings = new ArrayList<>(6);
         List<CompressionType> compressionTypes = new ArrayList<>(6);
         for (int i = 0; i < 6; i++) {
             encodings.add(TSEncoding.PLAIN);
             compressionTypes.add(CompressionType.GZIP);
         }
-
-        session.createMultiTimeseries(paths,dataTypes,
-                encodings,compressionTypes,
-                null,null,null, null);
+        // 创建多个非对齐时间序列
+        session.createMultiTimeseries(paths, dataTypes,
+                encodings, compressionTypes,
+                null, null, null, null);
+        // 创建对齐时间序列
         session.createAlignedTimeseries(alignedDevice, measurements, dataTypes,
                 encodings, compressionTypes, null);
 
     }
+
+    // 在测试类之后执行的删除数据库
     @AfterClass
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
+        // 删除数据库
         session.deleteDatabase(database);
+        out.println("删除数据库"+database);
     }
 
-    /**
-     * 工具函数，用于查询比较 TS 中插入条数，清除已插入数据
+    /**show
+     * 用于查询比较对齐和非对齐插入条数看是否和预期相同
+     *
+     * @param expectNonAligned 预期非对齐时间序列的记录条数
+     * @param expectAligned    预期对齐时间序列的记录条数
+     * @param msg              断言失败时的消息
      */
     public void afterMethod(int expectNonAligned, int expectAligned, String msg) throws IoTDBConnectionException, StatementExecutionException {
+        // 获取非对齐时间序列的实际记录条数(不含null值的)
         int actualNonAligned = getRecordCount(device, verbose);
+        // 获取对齐时间序列的实际记录条数
         int actualAligned = getRecordCount(alignedDevice, verbose);
-        assert actualNonAligned == expectNonAligned : "非对齐：" + msg+" actual="+actualNonAligned+" expect="+expectNonAligned;
-        assert actualAligned == expectAligned : "对齐：" + msg;
-
+        // 断言实际记录条数与预期相等
+        assert actualNonAligned == expectNonAligned : "非对齐：" + msg + " actual=" + actualNonAligned + " expect=" + expectNonAligned;
+        assert actualAligned == expectAligned : "对齐：" + msg + " actual=" + actualAligned + " expect=" + expectAligned;;
+        // 打印清理数据的消息
         out.println("清理数据");
+        // 清理非对齐时间序列的数据
         session.deleteData(device, new Date().getTime());
+        // 清理对齐时间序列的数据
         session.deleteData(alignedDevice, new Date().getTime());
     }
 
     /**
      * 工具函数：检查一次插入多个设备的结果
+     *
+     * @param msg 断言失败时的消息
      */
     public void checkInsertMultiDevices(String msg) throws IoTDBConnectionException, StatementExecutionException {
-        int[] expectValueList = new int[]{2,1,6};
+        // 定义预期的记录条数列表
+        int[] expectValueList = new int[]{2, 1, 6};
+        // 检查每个设备的实际记录条数是否与预期相符
         for (int i = 0; i < 3; i++) {
-            assert getRecordCount("root.jni.d"+(i+1), true) == expectValueList[i] : "root.jni.d"+(i+1)+":" + msg;
+            assert getRecordCount("root.jni.d" + (i + 1), true) == expectValueList[i] : "root.jni.d" + (i + 1) + ":" + msg;
         }
+        // 打印清理数据的消息
         out.println("清理数据");
+        // 清理所有时间序列数据
         session.deleteTimeseries("root.jni.**");
     }
 
-    @DataProvider(name="insertSingleNormal")
+    // 获取正确的数据
+    @DataProvider(name = "insertSingleNormal")
     public Iterator<Object[]> getSingleNormal() throws IOException {
         return new CustomDataProvider().load("data/insert-records.csv").getData();
     }
-    @DataProvider(name="insertSingleError")
+
+    // 获取错误的数据
+    @DataProvider(name = "insertSingleError")
     public Iterator<Object[]> getSingleError() throws IOException {
         return new CustomDataProvider().load("data/insert-records-error.csv").getData();
     }
 
+    // 用于提供多条记录的数据
     // @DataProvider(name="insertMultiRecords")
     public Iterator<Object[]> getMultiRecords() throws IOException {
         return new CustomDataProvider().load("data/insert-records-multi.csv").getData();
     }
 
     /**
-     * insert tatblet 同设备
-     * 非对齐/对齐
+     * 测试插入tablet到同一设备中
+     * 包括非对齐和对齐两种情况
      */
-    @Test(priority = 10)
+    @Test(priority = 10) // 测试执行的优先级为10
     public void testInsertTablet() throws IOException, IoTDBConnectionException, StatementExecutionException {
+        // 创建一个新的tablet实例
         Tablet tablet = new Tablet(device, schemaList, 20);
+        // 初始化bitmap，用于标记null值
         tablet.initBitMaps();
+        // 行索引初始化为0
         int rowIndex = 0;
+
+        // 遍历获取的单行数据
         for (Iterator<Object[]> it = getSingleNormal(); it.hasNext(); ) {
             Object[] line = it.next();
-            tablet.addTimestamp(rowIndex++, Long.valueOf((String)line[0]));
-            out.println("########### "+rowIndex+":"+line[0]);
+            rowIndex = tablet.rowSize++;
+            // 向tablet添加时间戳
+            tablet.addTimestamp(rowIndex, Long.valueOf((String) line[0]));
+            out.println("########### " + (rowIndex + 1) + ":" + line[0]); // 打印行索引和时间戳
+            // 遍历schemaList，为每列添加数据
             for (int i = 0; i < schemaList.size(); i++) {
-                out.println("datatype="+schemaList.get(i).getType());
-                out.println("line["+(i+1)+"]="+line[i+1]);
-                if (line[i+1] == null) {
+                out.println("datatype=" + schemaList.get(i).getType()); // 打印数据类型
+                out.println("line[" + (i + 1) + "]=" + line[i + 1]); // 打印当前行的列值
+
+                // 处理null值
+                if (line[i + 1] == null) {
                     out.println("process null value");
-                    tablet.bitMaps[i].mark((int) rowIndex);
+                    tablet.bitMaps[i].mark(rowIndex); // 使用bitmap标记null值
                 }
+
+                // 根据数据类型添加值到tablet
                 switch (schemaList.get(i).getType()) {
-                    case BOOLEAN:
-                        if (line[i+1] == null) {
-                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, false);
-                        } else {
-                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, Boolean.valueOf((String) line[i + 1]));
-                        }
+                    case BOOLEAN: // 布尔类型
+                        // 添加布尔值，如果为null则添加默认值false
+                        tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                                line[i + 1] == null ? false : Boolean.valueOf((String) line[i + 1]));
                         break;
-                    case INT32:
-                        if (line[i+1] == null) {
-                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, 1);
-                        } else {
-                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, Integer.valueOf((String) line[i + 1]));
-                        }
+                    case INT32: // 32位整数类型
+                        // 添加整数值，如果为null则添加默认值1
+                        tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                                line[i + 1] == null ? 1 : Integer.valueOf((String) line[i + 1]));
                         break;
-                    case INT64:
-                        if (line[i+1] == null) {
-                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, 1L);
-                        } else {
-                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, Long.valueOf((String) line[i + 1]));
-                        }
+                    case INT64: // 64位整数类型
+                        // 添加长整数值，如果为null则添加默认值1L
+                        tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                                line[i + 1] == null ? 1L : Long.valueOf((String) line[i + 1]));
                         break;
-                    case FLOAT:
-                        if (line[i+1] == null) {
-                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, 1.01f);
-                        } else {
-                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, Float.valueOf((String) line[i + 1]));
-                        }
+                    case FLOAT: // 浮点类型
+                        // 添加浮点数值，如果为null则添加默认值1.01f
+                        tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                                line[i + 1] == null ? 1.01f : Float.valueOf((String) line[i + 1]));
                         break;
-                    case DOUBLE:
-                        if (line[i+1] == null) {
-                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, 1.0);
-                        } else {
-                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, Double.valueOf((String) line[i + 1]));
-                        }
+                    case DOUBLE: // 双精度浮点类型
+                        // 添加双精度浮点数值，如果为null则添加默认值1.0
+                        tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                                line[i + 1] == null ? 1.0 : Double.valueOf((String) line[i + 1]));
                         break;
-                    case TEXT:
-                        if (line[i+1] == null) {
-                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, "stringnull");
-                        } else {
-                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, (String) line[i + 1]);
-                        }
+                    case TEXT: // 文本类型
+                        // 添加文本值，如果为null则添加默认值"stringnull"
+                        tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                                line[i + 1] == null ? "stringnull" : line[i + 1]);
                         break;
                 }
             }
         }
+
+        // 将创建的tablet插入到会话中
         session.insertTablet(tablet);
-        countLines("select * from "+device, verbose);
-        // 使用对齐方式插入非对齐tablet 1.2 去掉该限制
-//        Assert.assertThrows(StatementExecutionException.class, ()-> session.insertAlignedTablet(tablet));
-        /**
-         * tablet变对齐设备
-         */
+
+        // 执行SQL查询并计算行数
+        int countLines = countLines("select * from " + device, verbose);
+
+        // 注释掉的代码，原意是测试非对齐方式插入对齐tablet时应该抛出异常
+        // Assert.assertThrows(StatementExecutionException.class, ()-> session.insertAlignedTablet(tablet));
+
+        // 将tablet的设备ID设置为对齐设备ID
         tablet.setDeviceId(alignedDevice);
+        // 插入对齐tablet
         session.insertAlignedTablet(tablet);
-        // 使用非对齐方法插入对齐tablet
-//        Assert.assertThrows(StatementExecutionException.class, ()-> session.insertTablet(tablet));
+
+        // 注释掉的代码，原意是测试使用非对齐方法插入对齐tablet时应该抛出异常
+        // Assert.assertThrows(StatementExecutionException.class, ()-> session.insertTablet(tablet));
+
+        // 重置tablet状态
         tablet.reset();
-        afterMethod(expectCount,expectCount, "insert tablet");
+
+        // 对比是否操作成功
+        afterMethod(expectCount, expectCount, "insert tablet");
     }
 
 //    /**

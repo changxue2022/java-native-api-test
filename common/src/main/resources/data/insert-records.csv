@@ -1,18 +1,18 @@
 Time,s_boolean,s_int,s_long,s_float,s_double,s_text
-1669109398772,0,0,0,0,0,0
-1669109398755,1,2147483647,0,0,0,max_int
-1669109398756,true,-2147483648,0,0,0,min_int
-1669109398757,false,0,9223372036854775807,0,0,max_long
-1669109398758,True,0,-9223372036854775808,0,0,min_long
-1669109398759,False,0,0,3.4028235E+38,0,max_float
-1669109398760,TRUE,0,0,1.4E-45,0,min_float
-1669109398761,FALSE,0,0,0,1.7976931348623157E308,max_double
-1669109398762,TRUE,0,0,0,5E-324,min_double
-1669109398754,FALSE,101,355,766.01,1899.21,Order
-1669109399000,null,1,1,1,1,boolean_null
-1669109400000,true,null,1,1,1,int_null
-1669109401000,true,1,null,1,1,long_null
-1669109402000,true,1,1,null,1,float_null
-1669109403000,true,1,1,1,null,double_null
-1669109404000,true,1,1,1,1,null
-1669109405000,FALSE,210,310,710.01,1810.21,Alphabet Rent News & Trends Here we explore timely issues and emerging trends that are shaping our new future. View all Micro-mobility and the last-mile trend E-Mobility & e-fuels 
+1,0,0,0,0,0,0
+2,1,2147483647,0,0,0,max_int
+3,true,-2147483648,0,0,0,min_int
+4,false,0,9223372036854775807,0,0,max_long
+5,True,0,-9223372036854775808,0,0,min_long
+6,False,0,0,3.4028235E+38,0,max_float
+7,TRUE,0,0,1.4E-45,0,min_float
+8,FALSE,0,0,0,1.7976931348623157E308,max_double
+9,TRUE,0,0,0,5E-324,min_double
+10,null,101,355,766.01,1899.21,Order
+11,true,1,1,1,1,boolean_null
+12,true,null,1,1,1,int_null
+13,true,1,null,1,1,long_null
+14,true,1,null,null,1,float_null
+15,true,1,null,1,null,double_null
+16,,1,1,1,null,null
+17,FALSE,210,310,710.01,1810.21,Alphaent News & Trends Here we explore timely issues and emerging trends that are shaping our new future. View all Micro-mobility and the last-mile trend E-Mobility & e-fuel

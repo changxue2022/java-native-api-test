@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
 
+// 模板
 public class Tmp extends BaseTestSuite {
     private Map<String, Object[]> structureInfo = new LinkedHashMap<>(6);
     Logger logger = Logger.getLogger(Tmp.class);
