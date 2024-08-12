@@ -11,6 +11,7 @@ import org.apache.iotdb.session.template.MeasurementNode;
 import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.file.metadata.enums.CompressionType;
 import org.apache.tsfile.file.metadata.enums.TSEncoding;
+import org.apache.tsfile.write.schema.IMeasurementSchema;
 import org.apache.tsfile.write.schema.MeasurementSchema;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -27,7 +28,7 @@ import java.util.Vector;
 public class TestOrdinary extends BaseTestSuite {
     private Logger logger = Logger.getLogger(TestOrdinary.class);
     private List<List<Object>> structures;
-    private Vector<MeasurementSchema> schemaList = new Vector<>();
+    private Vector<IMeasurementSchema> schemaList = new Vector<>();
     private List<String> devicePaths = new ArrayList<>();
     private String database = "root.db.factory";
     private String tsPrefix = "sensors_";

@@ -103,30 +103,30 @@ public class TestInsertAlignedRecord_Inference_Normal extends BaseTestSuite {
                 // 根据数据类型添加值到values中
                 switch (dataTypes.get(i)) {
                     case BOOLEAN:
-                        values.add(line[i + 1] == null ? "false" : (String) line[i + 1]);
+                        values.add(line[i + 1] == null ? null : (String) line[i + 1]);
                         break;
                     case INT32:
-                        values.add(line[i + 1] == null ? "1" : (String) line[i + 1]);
+                        values.add(line[i + 1] == null ? null : (String) line[i + 1]);
                         break;
                     case INT64:
                     case TIMESTAMP:
-                        values.add(line[i + 1] == null ? "1L" : line[i + 1] + "L");
+                        values.add(line[i + 1] == null ? null : line[i + 1] + "L");
                         break;
                     case FLOAT:
-                        values.add(line[i + 1] == null ? "1.01f" : line[i + 1] + "F");
+                        values.add(line[i + 1] == null ? null : line[i + 1] + "F");
                         break;
                     case DOUBLE:
-                        values.add(line[i + 1] == null ? "1.0" : (String) line[i + 1]);
+                        values.add(line[i + 1] == null ? null : (String) line[i + 1]);
                         break;
                     case TEXT:
                     case STRING:
-                        values.add(line[i + 1] == null ? "stringnull" : (String) line[i + 1]);
+                        values.add(line[i + 1] == null ? null : (String) line[i + 1]);
                         break;
                     case BLOB:
                         values.add("X'696f74646236'" );
                         break;
                     case DATE:
-                        values.add(line[i + 1] == null ? "2024-07-25": (String) line[i + 1]);
+                        values.add(line[i + 1] == null ? null: (String) line[i + 1]);
                         break;
                 }
             }

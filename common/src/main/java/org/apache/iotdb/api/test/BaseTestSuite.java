@@ -12,6 +12,7 @@ import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.file.metadata.enums.CompressionType;
 import org.apache.tsfile.file.metadata.enums.TSEncoding;
 import org.apache.tsfile.write.record.Tablet;
+import org.apache.tsfile.write.schema.IMeasurementSchema;
 import org.apache.tsfile.write.schema.MeasurementSchema;
 import org.jetbrains.annotations.NotNull;
 import org.testng.annotations.AfterClass;
@@ -284,11 +285,11 @@ public class BaseTestSuite {
     }
 
     public void insertTabletSingle(String device, String tsName, TSDataType tsDataType, int insertCount, boolean isAligned) throws IoTDBConnectionException, StatementExecutionException {
-        List<MeasurementSchema> schemaList = new ArrayList<>();
+        List<IMeasurementSchema> schemaList = new ArrayList<>();
         schemaList.add(new MeasurementSchema(tsName, tsDataType));
         insertTabletMulti(device, schemaList, insertCount, isAligned);
     }
-    public void insertTabletMulti(String device, List<MeasurementSchema> schemaList, int insertCount, boolean isAligned) throws IoTDBConnectionException, StatementExecutionException {
+    public void insertTabletMulti(String device, List<IMeasurementSchema> schemaList, int insertCount, boolean isAligned) throws IoTDBConnectionException, StatementExecutionException {
         Session session = this.session;
         if (insertCount == 0) {
             PrepareConnection.getSession();

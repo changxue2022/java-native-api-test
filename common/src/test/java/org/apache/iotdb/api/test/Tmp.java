@@ -7,6 +7,7 @@ import org.apache.iotdb.session.template.MeasurementNode;
 import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.file.metadata.enums.CompressionType;
 import org.apache.tsfile.file.metadata.enums.TSEncoding;
+import org.apache.tsfile.write.schema.IMeasurementSchema;
 import org.apache.tsfile.write.schema.MeasurementSchema;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -50,7 +51,7 @@ public class Tmp extends BaseTestSuite {
     @Test
     public void testINsert() throws IoTDBConnectionException, IOException, StatementExecutionException {
         session.createTimeseries("root.sg.d.s_name", TSDataType.BOOLEAN, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED, null, null, null, null);
-        List<MeasurementSchema> schemaTypeList = new ArrayList<>();
+        List<IMeasurementSchema> schemaTypeList = new ArrayList<>();
         schemaTypeList.add(new MeasurementSchema("s_name",TSDataType.BOOLEAN));
         insertTabletMulti("root.sg.d", schemaTypeList, 10, true);
     }
@@ -63,7 +64,7 @@ public class Tmp extends BaseTestSuite {
         session.createTimeseries("root.sg.d.s_name", TSDataType.BOOLEAN, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED, props, null, null, null);
     }
 
-    private List<MeasurementSchema> schemaList = new ArrayList<>(7);// tablet
+    private List<IMeasurementSchema> schemaList = new ArrayList<>(7);// tablet
 
     private void createTemplate (String templateName, String loadNode, boolean isAligned) throws
             IoTDBConnectionException, StatementExecutionException, IOException {

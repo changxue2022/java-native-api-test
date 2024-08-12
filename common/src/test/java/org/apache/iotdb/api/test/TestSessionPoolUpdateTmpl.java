@@ -12,6 +12,7 @@ import org.apache.tsfile.file.metadata.enums.CompressionType;
 import org.apache.tsfile.file.metadata.enums.TSEncoding;
 import org.apache.tsfile.read.common.RowRecord;
 import org.apache.tsfile.write.record.Tablet;
+import org.apache.tsfile.write.schema.IMeasurementSchema;
 import org.apache.tsfile.write.schema.MeasurementSchema;
 import org.testng.annotations.Test;
 
@@ -33,7 +34,7 @@ public class TestSessionPoolUpdateTmpl {
                                         .maxSize(3)
                                         .build();
     private static final Map<String, Object[]> structureInfo = new LinkedHashMap<>(6);
-    private static final List<MeasurementSchema> schemaList = new ArrayList<>(7);// tablet
+    private static final List<IMeasurementSchema> schemaList = new ArrayList<>(7);// tablet
    static {
         structureInfo.put("s_boolean", new Object[]{TSDataType.BOOLEAN, TSEncoding.RLE, CompressionType.SNAPPY});
         structureInfo.put("s_int", new Object[]{TSDataType.INT32, TSEncoding.RLE, CompressionType.SNAPPY});

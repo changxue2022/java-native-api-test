@@ -8,6 +8,7 @@ import org.apache.iotdb.rpc.StatementExecutionException;
 import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.file.metadata.enums.CompressionType;
 import org.apache.tsfile.file.metadata.enums.TSEncoding;
+import org.apache.tsfile.write.schema.IMeasurementSchema;
 import org.apache.tsfile.write.schema.MeasurementSchema;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -86,7 +87,7 @@ public class newTest extends BaseTestSuite {
         List<TSEncoding> tsEncodingList = new ArrayList<>(count);
         List<CompressionType> compressionTypeList = new ArrayList<>(count);
         List<String> aliasList = new ArrayList<>(count);
-        List<MeasurementSchema> schemaList = new ArrayList<>(count);
+        List<IMeasurementSchema> schemaList = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
             String path = "";
             if (i > normalNames.size() -1) {

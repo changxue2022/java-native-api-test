@@ -9,6 +9,7 @@ import org.apache.tsfile.file.metadata.enums.CompressionType;
 import org.apache.tsfile.file.metadata.enums.TSEncoding;
 import org.apache.tsfile.utils.Binary;
 import org.apache.tsfile.write.record.Tablet;
+import org.apache.tsfile.write.schema.IMeasurementSchema;
 import org.apache.tsfile.write.schema.MeasurementSchema;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -37,7 +38,7 @@ public class TestInsertTablets_Normal extends BaseTestSuite {
     // 存储数据类型
     private final List<TSDataType> dataTypes = new ArrayList<>(10);
     // 物理量的Schema
-    private final List<MeasurementSchema> schemaList = new ArrayList<>();
+    private final List<IMeasurementSchema> schemaList = new ArrayList<>();
     // 用于存储多个Tablet
     private final Map<String, Tablet> tablets = new HashMap<>();
 

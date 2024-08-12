@@ -8,6 +8,7 @@ import org.apache.iotdb.session.template.MeasurementNode;
 import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.file.metadata.enums.CompressionType;
 import org.apache.tsfile.file.metadata.enums.TSEncoding;
+import org.apache.tsfile.write.schema.IMeasurementSchema;
 import org.apache.tsfile.write.schema.MeasurementSchema;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -60,14 +61,14 @@ public class SubscriberDataPreparation extends BaseTestSuite{
 
         device = database + ".`1(TS)`";
         path = device + ".`1`";
-        List<MeasurementSchema> schemas_1 = new ArrayList<>(1);
+        List<IMeasurementSchema> schemas_1 = new ArrayList<>(1);
         schemas_1.add(new MeasurementSchema("`1`", dataType, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED));
         session.createTimeseries(path, dataType, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED);
         insertTabletMulti(device, schemas_1, 100, isAligned);
         schemas_1.clear();
 
         device = database +".6TS";
-        List<MeasurementSchema> schemas_6 = new ArrayList<>(6);
+        List<IMeasurementSchema> schemas_6 = new ArrayList<>(6);
         structureInfo.forEach((key, value) -> {
             paths.add(device+"."+key);
             aliasList.add(key);
@@ -90,7 +91,7 @@ public class SubscriberDataPreparation extends BaseTestSuite{
 
         device = database + ".100TS";
         int max = 1000;
-        List<MeasurementSchema> schemas = new ArrayList<>(max);
+        List<IMeasurementSchema> schemas = new ArrayList<>(max);
         for (int i = 0; i < structures.size() ; i++) {
             session.createTimeseries(device+".s_"+i, (TSDataType) structures.get(i).get(0),
                     (TSEncoding) structures.get(i).get(1), (CompressionType) structures.get(i).get(2));
@@ -115,7 +116,7 @@ public class SubscriberDataPreparation extends BaseTestSuite{
         database = "root.aligned";
         session.createDatabase(database);
 
-        List<MeasurementSchema> schemas = new ArrayList<>();
+        List<IMeasurementSchema> schemas = new ArrayList<>();
         TSDataType dataType = TSDataType.FLOAT;
 
         dataTypes.clear();
@@ -220,7 +221,7 @@ public class SubscriberDataPreparation extends BaseTestSuite{
         session.createDatabase(database);
 
         List<String> devicePaths = new ArrayList<>();
-        List<MeasurementSchema> schemas = new ArrayList<>();
+        List<IMeasurementSchema> schemas = new ArrayList<>();
 
         // 对齐序列
         TSDataType dataType = TSDataType.TEXT;
@@ -301,7 +302,7 @@ public class SubscriberDataPreparation extends BaseTestSuite{
     }
     private void generateTemplateData(String databasePrefix, String templatePrefix, boolean isAligned) throws IoTDBConnectionException, StatementExecutionException, IOException {
         List<String> devicePaths = new ArrayList<>(10);
-        List<MeasurementSchema> schemas = new ArrayList<>();
+        List<IMeasurementSchema> schemas = new ArrayList<>();
 
         String database = databasePrefix + ".template";
         List<String> databases = new ArrayList<>();

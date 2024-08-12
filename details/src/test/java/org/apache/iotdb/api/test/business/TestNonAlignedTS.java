@@ -8,6 +8,7 @@ import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.file.metadata.enums.CompressionType;
 import org.apache.tsfile.file.metadata.enums.TSEncoding;
 import org.apache.tsfile.write.record.Tablet;
+import org.apache.tsfile.write.schema.IMeasurementSchema;
 import org.apache.tsfile.write.schema.MeasurementSchema;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -30,7 +31,7 @@ public class TestNonAlignedTS extends BaseTestSuite {
     private Map<String, TSDataType> measureTSTypeInfos = new LinkedHashMap<>(6);
     private List<String> measurements = new ArrayList<>(6);
     private List<TSDataType> dataTypes = new ArrayList<>(6);
-    private List<MeasurementSchema> schemaList = new ArrayList<>(6);// tablet
+    private List<IMeasurementSchema> schemaList = new ArrayList<>(6);// tablet
 
 
     @BeforeClass(enabled = true)

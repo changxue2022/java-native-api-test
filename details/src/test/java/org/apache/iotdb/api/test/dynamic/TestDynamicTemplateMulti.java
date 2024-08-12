@@ -9,6 +9,7 @@ import org.apache.iotdb.session.template.MeasurementNode;
 import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.file.metadata.enums.CompressionType;
 import org.apache.tsfile.file.metadata.enums.TSEncoding;
+import org.apache.tsfile.write.schema.IMeasurementSchema;
 import org.apache.tsfile.write.schema.MeasurementSchema;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -21,8 +22,8 @@ import java.util.List;
 public class TestDynamicTemplateMulti extends BaseTestSuite {
     private Logger logger = Logger.getLogger(TestDynamicTemplateMulti.class);
 
-    private List<MeasurementSchema> schemaList = new ArrayList<>();
-    private List<MeasurementSchema> schemaList_clean = new ArrayList<>(1);
+    private List<IMeasurementSchema> schemaList = new ArrayList<>();
+    private List<IMeasurementSchema> schemaList_clean = new ArrayList<>(1);
 
     private String databasePrefix = "root.db.factory";
     private String templatePrefix = "template0";
@@ -38,7 +39,7 @@ public class TestDynamicTemplateMulti extends BaseTestSuite {
 
     private void createTemplate(int databaseCount, int deviceCount, String templateName, String suffix) throws StatementExecutionException, IoTDBConnectionException, IOException {
         int templateNodeCount = 10;
-        List<MeasurementSchema> schemaList = new ArrayList<>(templateNodeCount);
+        List<IMeasurementSchema> schemaList = new ArrayList<>(templateNodeCount);
         List<String> devicePaths = new ArrayList<>(deviceCount);
         int tsCount = getTimeSeriesCount("root.**", verbose);
         for (int i = 0; i < databaseCount; i++) {

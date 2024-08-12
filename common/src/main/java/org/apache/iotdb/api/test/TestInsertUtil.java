@@ -7,6 +7,7 @@ import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.file.metadata.enums.CompressionType;
 import org.apache.tsfile.file.metadata.enums.TSEncoding;
 import org.apache.tsfile.write.record.Tablet;
+import org.apache.tsfile.write.schema.IMeasurementSchema;
 import org.apache.tsfile.write.schema.MeasurementSchema;
 import org.testng.annotations.DataProvider;
 
@@ -33,7 +34,7 @@ public class TestInsertUtil extends BaseTestSuite {
     // 存储数据类型
     protected List<TSDataType> dataTypes;
     // 物理量的Schema
-    protected List<MeasurementSchema> schemaList;
+    protected List<IMeasurementSchema> schemaList;
     // 存储多个设备的多个物理量
     protected List<List<String>> measurementsList;
     // 存储多个设备的多个时间序列数据类型

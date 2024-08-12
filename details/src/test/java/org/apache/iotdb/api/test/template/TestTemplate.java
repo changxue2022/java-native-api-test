@@ -12,6 +12,7 @@ import org.apache.iotdb.session.template.MeasurementNode;
 import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.file.metadata.enums.CompressionType;
 import org.apache.tsfile.file.metadata.enums.TSEncoding;
+import org.apache.tsfile.write.schema.IMeasurementSchema;
 import org.apache.tsfile.write.schema.MeasurementSchema;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -29,7 +30,7 @@ public class TestTemplate extends BaseTestSuite {
 //    private final String[] databases = new String[]{"root.template.aligned", "root.template.nonAligned"};
     private int expectCount = 17;
     private Map<String, Object[]> structureInfo = new LinkedHashMap<>(6);
-    private List<MeasurementSchema> schemaList = new ArrayList<>(7);// tablet
+    private List<IMeasurementSchema> schemaList = new ArrayList<>(7);// tablet
     private List<List<Object>> structures;
     private List<List<Object>> errStructures;
 
@@ -221,7 +222,7 @@ public class TestTemplate extends BaseTestSuite {
             session.createDatabase(databaseStr);
         }
         String templateName = templatePrefix+"_struct";
-        List<MeasurementSchema> schemaList = new ArrayList<>(structures.size());
+        List<IMeasurementSchema> schemaList = new ArrayList<>(structures.size());
         int templateCount = getTemplateCount(verbose);
         Template template = new Template(templateName, isAligned);
         for (int i = 0; i < structures.size() ; i++) {

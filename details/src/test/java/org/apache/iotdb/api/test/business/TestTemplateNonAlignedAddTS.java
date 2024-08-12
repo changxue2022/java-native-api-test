@@ -10,6 +10,7 @@ import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.file.metadata.enums.CompressionType;
 import org.apache.tsfile.file.metadata.enums.TSEncoding;
 import org.apache.tsfile.write.record.Tablet;
+import org.apache.tsfile.write.schema.IMeasurementSchema;
 import org.apache.tsfile.write.schema.MeasurementSchema;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -26,7 +27,7 @@ public class TestTemplateNonAlignedAddTS extends BaseTestSuite {
     private Map<String, Object[]> structureInfo = new LinkedHashMap<>(6);
     private List<String> measurements = new ArrayList<>(7);
     private List<TSDataType> dataTypes = new ArrayList<>(7);
-    private List<MeasurementSchema> schemaList = new ArrayList<>(7);// tablet
+    private List<IMeasurementSchema> schemaList = new ArrayList<>(7);// tablet
 
     @BeforeClass(enabled = true)
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException, IOException {

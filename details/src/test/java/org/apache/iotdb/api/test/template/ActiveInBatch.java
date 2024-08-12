@@ -13,6 +13,7 @@ import org.apache.iotdb.session.template.MeasurementNode;
 import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.file.metadata.enums.CompressionType;
 import org.apache.tsfile.file.metadata.enums.TSEncoding;
+import org.apache.tsfile.write.schema.IMeasurementSchema;
 import org.apache.tsfile.write.schema.MeasurementSchema;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -295,7 +296,7 @@ public class ActiveInBatch extends BaseTestSuite {
     public void createTemplateBig() throws IoTDBConnectionException, StatementExecutionException, IOException {
         String templateName = templateNamePrefix;
         String database = databasePrefix;
-        List<MeasurementSchema> schemaList = new ArrayList<>(structures.size());
+        List<IMeasurementSchema> schemaList = new ArrayList<>(structures.size());
         Template template = new Template(templateName, isAligned);
         if(!checkStroageGroupExists(database)) {
             session.createDatabase(database);

@@ -8,6 +8,7 @@ import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.file.metadata.enums.CompressionType;
 import org.apache.tsfile.file.metadata.enums.TSEncoding;
 import org.apache.tsfile.write.record.Tablet;
+import org.apache.tsfile.write.schema.IMeasurementSchema;
 import org.apache.tsfile.write.schema.MeasurementSchema;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -33,7 +34,7 @@ public class TestAlignedTSAdd extends BaseTestSuite {
     private List<CompressionType> compressors = new ArrayList<>(7);
     private List<String> alias = new ArrayList<>(7);
 
-    private List<MeasurementSchema> schemaList = new ArrayList<>(7);// tablet
+    private List<IMeasurementSchema> schemaList = new ArrayList<>(7);// tablet
 
 
     @BeforeClass(enabled = true)

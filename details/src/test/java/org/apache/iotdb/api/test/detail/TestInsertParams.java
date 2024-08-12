@@ -9,6 +9,7 @@ import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.file.metadata.enums.CompressionType;
 import org.apache.tsfile.file.metadata.enums.TSEncoding;
 import org.apache.tsfile.write.record.Tablet;
+import org.apache.tsfile.write.schema.IMeasurementSchema;
 import org.apache.tsfile.write.schema.MeasurementSchema;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -30,7 +31,7 @@ public class TestInsertParams extends BaseTestSuite {
     private List<String> paths = new ArrayList<>(1);
     private List<String> measurements = new ArrayList<>(1);
     private List<TSDataType> dataTypes = new ArrayList<>(1);
-    private List<MeasurementSchema> schemaList = new ArrayList<>(1);// tablet
+    private List<IMeasurementSchema> schemaList = new ArrayList<>(1);// tablet
     private List<Object> values = new ArrayList<>(1);
 
     @BeforeClass
@@ -78,7 +79,7 @@ public class TestInsertParams extends BaseTestSuite {
     }
     @Test(priority = 13, expectedExceptions = NullPointerException.class) //TIMECHODB-145
     public void testInsertTablet_schemaListNullIn() throws IoTDBConnectionException, StatementExecutionException {
-        List<MeasurementSchema> schemas = new ArrayList<>(1);
+        List<IMeasurementSchema> schemas = new ArrayList<>(1);
         schemas.add(null);
         Tablet tablet = new Tablet(device, schemas);
         session.insertTablet(tablet);
@@ -88,7 +89,7 @@ public class TestInsertParams extends BaseTestSuite {
     @Test(priority = 13, expectedExceptions = IoTDBConnectionException.class)
     public void testInsertTablet_schemaListNullIn2() throws IoTDBConnectionException, StatementExecutionException {
         int insertCount = 1;
-        List<MeasurementSchema> schemas = new ArrayList<>(3);
+        List<IMeasurementSchema> schemas = new ArrayList<>(3);
         schemas.add(new MeasurementSchema("s_0", TSDataType.BOOLEAN));
         schemas.add(new MeasurementSchema(null, TSDataType.INT32));
         schemas.add(new MeasurementSchema("s_1", TSDataType.INT32));
@@ -361,7 +362,7 @@ public class TestInsertParams extends BaseTestSuite {
     @Test(priority = 50, expectedExceptions = StatementExecutionException.class)
     public void testInsertTablet_sameTS() throws IoTDBConnectionException, StatementExecutionException {
         int insertCount = 1;
-        List<MeasurementSchema> schemas = new ArrayList<>(3);
+        List<IMeasurementSchema> schemas = new ArrayList<>(3);
         schemas.add(new MeasurementSchema("s_0", TSDataType.BOOLEAN));
         schemas.add(new MeasurementSchema("s_1", TSDataType.INT32));
         schemas.add(new MeasurementSchema("s_1", TSDataType.INT32));

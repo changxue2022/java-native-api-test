@@ -106,30 +106,30 @@ public class TestInsertAlignedRecord_Normal extends BaseTestSuite {
                 // 根据数据类型添加值到values中
                 switch (dataTypes.get(i)) {
                     case BOOLEAN:
-                        values.add(line[i + 1] == null ? false : Boolean.valueOf((String) line[i + 1]));
+                        values.add(line[i + 1] == null ? null : Boolean.valueOf((String) line[i + 1]));
                         break;
                     case INT32:
-                        values.add(line[i + 1] == null ? 1 : Integer.valueOf((String) line[i + 1]));
+                        values.add(line[i + 1] == null ? null : Integer.valueOf((String) line[i + 1]));
                         break;
                     case INT64:
                     case TIMESTAMP:
-                        values.add(line[i + 1] == null ? 1L : Long.valueOf((String) line[i + 1]));
+                        values.add(line[i + 1] == null ? null : Long.valueOf((String) line[i + 1]));
                         break;
                     case FLOAT:
-                        values.add(line[i + 1] == null ? 1.01f : Float.valueOf((String) line[i + 1]));
+                        values.add(line[i + 1] == null ? null : Float.valueOf((String) line[i + 1]));
                         break;
                     case DOUBLE:
-                        values.add(line[i + 1] == null ? 1.0 : Double.valueOf((String) line[i + 1]));
+                        values.add(line[i + 1] == null ? null : Double.valueOf((String) line[i + 1]));
                         break;
                     case TEXT:
                     case STRING:
-                        values.add(line[i + 1] == null ? "stringnull" : line[i + 1]);
+                        values.add(line[i + 1] == null ? null : line[i + 1]);
                         break;
                     case BLOB:
-                        values.add(line[i + 1] == null ? new Binary("iotdb", Charset.defaultCharset()) : new Binary((String) line[i + 1], Charset.defaultCharset()));
+                        values.add(line[i + 1] == null ? null : new Binary((String) line[i + 1], Charset.defaultCharset()));
                         break;
                     case DATE:
-                        values.add(line[i + 1] == null ? LocalDate.parse("2024-07-25") : LocalDate.parse((CharSequence) line[i + 1]));
+                        values.add(line[i + 1] == null ? null : LocalDate.parse((CharSequence) line[i + 1]));
                         break;
                 }
             }
